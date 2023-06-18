@@ -49,8 +49,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,16 +56,34 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: RepaintBoundary(
-          child: CustomPaint(
-            isComplex: true,
-            willChange: true,
-            size: const Size(100, 100),
-            painter: DemoPainter(),
-          ),
-        ),
+        child: _buildCustomPaint(),
       ),
     );
   }
 
+  _buildCustomPaint() {
+    return RepaintBoundary(
+      child: CustomPaint(
+        isComplex: true,
+        willChange: true,
+        size: const Size(100, 100),
+        painter: DemoPainter(),
+      ),
+    );
+  }
+
+  _buildInteractiveViewer() {
+    return Container(
+      height: 250,
+      width: 250,
+      decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+      child: InteractiveViewer(
+        // constrained: false,
+        boundaryMargin: const EdgeInsets.all(double.infinity),
+        minScale: 1.0,
+        maxScale: 1.0,
+        child: _buildCustomPaint(),
+      ),
+    );
+  }
 }

@@ -1,6 +1,6 @@
 # flutter_kline
 
-A new Flutter project.
+股票K线图
 
 ## Getting Started
 
