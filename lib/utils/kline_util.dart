@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/num_util.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 
 class KlineUtil {
   /// 转换数据为图数据。
@@ -10,7 +10,7 @@ class KlineUtil {
     }
 
     // 找出非空数据数组中的最大值和最小值
-    var maxMinValue = NumUtil.maxMinValue(data);
+    var maxMinValue = KlineNumUtil.maxMinValue(data);
 
     // 计算数据在 maxHeight 范围内的高度比例
     double scaleFactor = maxHeight / (maxMinValue!.left - maxMinValue.right);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
-import 'package:flutter_kline/utils/collection_util.dart';
+import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/utils/num_util.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 
 /// 折线图
@@ -10,7 +10,6 @@ class LineChartPainter extends CustomPainter {
   final Size size;
   final List<LineChartVo?> lineChartData;
 
-  /// TODO lineChartData校验每一项长度都相等。
   LineChartPainter({
     required this.size,
     required this.lineChartData,
@@ -25,7 +24,6 @@ class LineChartPainter extends CustomPainter {
 
   /// 数据点宽度，和 [lineChartData] 一一对应。
   double _pointWidth = 0;
-  double _pointHeight = 0;
 
   _init({required Canvas canvas}) {
     _canvas = canvas;
@@ -35,25 +33,18 @@ class LineChartPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     _initMaxMinValue();
-    _initPointWidthHeight();
+    if (lineChartData.isNotEmpty) {
+      _pointWidth = size.width / (lineChartData.first!.dataList!.length - 1);
+    }
 
     debugPrint(
         "$_logPre _maxValue $_maxValue, _minValue $_minValue, size.width ${size.width}, _pointWidth $_pointWidth");
   }
 
-  /// 初始化数据点宽高
-  _initPointWidthHeight() {
-    if (CollectionUtil.isEmpty(lineChartData)) {
-      return;
-    }
-
-    _pointWidth = size.width / lineChartData.first!.dataList!.length;
-  }
-
   /// 初始化：最大最小值。
   _initMaxMinValue() {
     for (var dataVo in lineChartData) {
-      Pair<num, num>? maxMinValue = NumUtil.maxMinValue(dataVo?.dataList);
+      Pair<num, num>? maxMinValue = KlineNumUtil.maxMinValue(dataVo?.dataList);
       if (maxMinValue == null) {
         continue;
       }
@@ -77,7 +68,8 @@ class LineChartPainter extends CustomPainter {
     _init(canvas: canvas);
 
     for (LineChartVo? lineChartVo in lineChartData) {
-      if (lineChartVo == null || CollectionUtil.isEmpty(lineChartVo.dataList)) {
+      if (lineChartVo == null ||
+          KlineCollectionUtil.isEmpty(lineChartVo.dataList)) {
         continue;
       }
 

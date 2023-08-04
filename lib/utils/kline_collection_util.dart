@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 /// 集合工具
-class CollectionUtil {
+class KlineCollectionUtil {
   static List<T> copy<T>(List<T> dataList) {
-    if (CollectionUtil.isEmpty(dataList)) {
+    if (KlineCollectionUtil.isEmpty(dataList)) {
       return [];
     }
 
@@ -28,7 +28,7 @@ class CollectionUtil {
   }
 
   static bool contains<E>({List<E>? list, E? element}) {
-    if (CollectionUtil.isEmpty(list) || element == null) {
+    if (KlineCollectionUtil.isEmpty(list) || element == null) {
       return false;
     }
 
@@ -41,7 +41,7 @@ class CollectionUtil {
 
   static E? firstWhere<E>(List<E>? list, bool Function(E element) test,
       {E Function()? orElse}) {
-    if (CollectionUtil.isEmpty(list)) {
+    if (KlineCollectionUtil.isEmpty(list)) {
       return null;
     }
 
@@ -54,14 +54,21 @@ class CollectionUtil {
   }
 
   static E? last<E>(List<E>? list) {
-    if (CollectionUtil.isEmpty(list)) {
+    if (KlineCollectionUtil.isEmpty(list)) {
       return null;
     }
     return list?.last;
   }
 
+    static List<E>? lastN<E>(List<E>? list, int n) {
+    if (KlineCollectionUtil.isEmpty(list)) {
+      return null;
+    }
+    return list?.sublist(list.length - n);
+  }
+
   static E? first<E>(List<E>? list) {
-    if (CollectionUtil.isEmpty(list)) {
+    if (KlineCollectionUtil.isEmpty(list)) {
       return null;
     }
     return list?.first;

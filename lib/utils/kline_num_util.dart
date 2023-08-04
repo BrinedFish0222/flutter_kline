@@ -1,6 +1,6 @@
 import 'package:flutter_kline/common/pair.dart';
 
-class NumUtil {
+class KlineNumUtil {
   /// 提取最大最小值。
   /// @return Pair left 是最大值；Pair right 是最小值。
   static Pair<num, num>? maxMinValue(List<num?>? dataList) {
