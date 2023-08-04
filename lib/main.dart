@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/painter/rect_painter.dart';
+import 'package:flutter_kline/renderer/candlestick_chart_renderer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,17 +43,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _buildCustomPaint() {
-    var size = const Size(200, 200);
+    var size = const Size(300, 300);
     return RepaintBoundary(
       child: CustomPaint(
         size: size,
-        painter: RectPainter(
-            size: size,
-            transverseLineNum: 4,
-            maxValue: 100,
-            minValue: 50,
-            isDrawVerticalLine: true,
-            textStyle: const TextStyle(color: Colors.grey, fontSize: 8)),
+        painter: CandlestickChartRenderer(),
+        
       ),
     );
   }

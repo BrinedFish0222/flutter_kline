@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 矩形背景图
 class RectPainter extends CustomPainter {
   final Size size;
 
