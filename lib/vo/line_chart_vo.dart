@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 
 /// 折线图数据
 class LineChartVo {
-  List<double?>? dataList;
+  List<LineChartData>? dataList;
   Color color;
 
   LineChartVo({required this.dataList, this.color = Colors.black});
+}
+
+class LineChartData {
+  DateTime? dateTime;
+
+  double? value;
+
+  LineChartData({this.dateTime, this.value});
 }

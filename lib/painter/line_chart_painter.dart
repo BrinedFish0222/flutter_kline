@@ -9,12 +9,17 @@ import 'package:flutter_kline/vo/line_chart_vo.dart';
 class LineChartPainter extends CustomPainter {
   final Size size;
   final List<LineChartVo?> lineChartData;
+  final double? pointWidth;
+  final Pair<double, double>? maxMinValue;
 
   LineChartPainter({
     required this.size,
     required this.lineChartData,
+    this.pointWidth,
+    this.maxMinValue,
   });
 
+  // ignore: unused_field
   final String _logPre = "折线图：";
   late Canvas _canvas;
   late Paint _painter;
@@ -33,18 +38,27 @@ class LineChartPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     _initMaxMinValue();
+
     if (lineChartData.isNotEmpty) {
-      _pointWidth = size.width / (lineChartData.first!.dataList!.length - 1);
+      _pointWidth = pointWidth ??
+          size.width / (lineChartData.first!.dataList!.length - 1);
     }
 
-    debugPrint(
-        "$_logPre _maxValue $_maxValue, _minValue $_minValue, size.width ${size.width}, _pointWidth $_pointWidth");
+    // debugPrint(
+    //     "$_logPre _maxValue $_maxValue, _minValue $_minValue, size.width ${size.width}, _pointWidth $_pointWidth");
   }
 
   /// 初始化：最大最小值。
   _initMaxMinValue() {
+    if (maxMinValue != null) {
+      _maxValue = maxMinValue!.left;
+      _minValue = maxMinValue!.right;
+      return;
+    }
+
     for (var dataVo in lineChartData) {
-      Pair<num, num>? maxMinValue = KlineNumUtil.maxMinValue(dataVo?.dataList);
+      Pair<num, num>? maxMinValue = KlineNumUtil.maxMinValue(
+          dataVo?.dataList?.map((e) => e.value).toList());
       if (maxMinValue == null) {
         continue;
       }
@@ -75,8 +89,9 @@ class LineChartPainter extends CustomPainter {
 
       _painter.color = lineChartVo.color;
 
-      var convertDataList =
-          KlineUtil.convertDataToChartData(lineChartVo.dataList!, size.height);
+      var convertDataList = KlineUtil.convertDataToChartData(
+          lineChartVo.dataList!.map((e) => e.value).toList(), size.height,
+          maxMinValue: maxMinValue);
 
       double? lastX;
       double? lastY;
