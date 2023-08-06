@@ -30,6 +30,7 @@ class CrossCurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (selectedXY == null) {
+      selectedDataIndexStream?.add(-1);
       return;
     }
 

@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
+import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
@@ -44,7 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late Timer _updateDataTimer;
 
-  int dataIndex = 799;
+  final GlobalKey _tabKey = GlobalKey();
+
+  int dataIndex = 200;
   int showDataNum = 60;
 
   @override
@@ -56,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         candlestickChartData: candlestickChartData,
         lineChartData: ExampleLineData.getLineChartData(dataIndex: dataIndex));
 
-    _updateDataTimer =
+    _updateDataTimer =  
         Timer.periodic(const Duration(milliseconds: 300), (timer) {
       var num1 = ExampleLineData.lineData1[dataIndex];
       kChartRendererVo.lineChartData![0]!.dataList!
@@ -69,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _updateDataTimer.cancel();
       }
     });
+
     super.initState();
   }
 
@@ -81,12 +86,54 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: _buildCustomPaint(),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Column(
+          children: [
+            TabBar(key: _tabKey, tabs: const [
+              Tab(
+                child: Text(
+                  '分时',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  '日K',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  '周K',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ]),
+            Center(
+              child: _buildCustomPaint(),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            RenderBox? renderBox =
+                _tabKey.currentContext?.findRenderObject() as RenderBox?;
+            if (renderBox != null) {
+              // 获取组件在页面中的位置信息
+              Offset offset = renderBox.localToGlobal(Offset.zero);
+              double x = offset.dx; // X坐标
+              double y = offset.dy; // Y坐标
+              KlineUtil.showToast(
+                  context: context, text: 'tab widget location $x $y');
+            }
+          },
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
