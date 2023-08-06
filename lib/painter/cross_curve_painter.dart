@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../common/pair.dart';
@@ -16,12 +18,23 @@ class CrossCurvePainter extends CustomPainter {
   /// 图 margin 信息
   final EdgeInsets? margin;
 
+  final StreamController<int>? selectedDataIndexStream;
+
   const CrossCurvePainter(
-      {required this.selectedXY, this.pointWidth, this.pointGap, this.margin});
+      {required this.selectedXY,
+      this.pointWidth,
+      this.pointGap,
+      this.margin,
+      this.selectedDataIndexStream});
 
   @override
   void paint(Canvas canvas, Size size) {
     if (selectedXY == null) {
+      return;
+    }
+
+    /// x轴超出范围不画
+    if (selectedXY!.left != null && selectedXY!.left! > size.width) {
       return;
     }
 
@@ -36,9 +49,17 @@ class CrossCurvePainter extends CustomPainter {
           Offset(newSelectedXY.left!, size.height), paint);
     }
 
+    debugPrint("newSelectedXY.right: ${newSelectedXY.right}");
     if (newSelectedXY.right != null) {
-      canvas.drawLine(Offset(0, newSelectedXY.right!),
-          Offset(size.width, newSelectedXY.right!), paint);
+      bool isOutRange =
+          newSelectedXY.right! > size.height || newSelectedXY.right! < 0;
+      if (isOutRange) {
+        canvas.drawLine(Offset(0, newSelectedXY.right!),
+            Offset(0, newSelectedXY.right!), paint);
+      } else {
+        canvas.drawLine(Offset(0, newSelectedXY.right!),
+            Offset(size.width, newSelectedXY.right!), paint);
+      }
     }
   }
 
@@ -55,9 +76,11 @@ class CrossCurvePainter extends CustomPainter {
 
     double gap = pointGap ?? 0;
     double oldX = selectedXY!.left!;
-    double newX =
-        oldX ~/ (pointWidth! + gap) * (pointWidth! + gap) + pointWidth! / 2;
+    int dataIndex = oldX ~/ (pointWidth! + gap);
+    double newX = dataIndex * (pointWidth! + gap) + pointWidth! / 2;
 
+    // 通知选中的k线变了
+    selectedDataIndexStream?.add(dataIndex);
     return Pair(left: newX, right: selectedXY?.right);
   }
 

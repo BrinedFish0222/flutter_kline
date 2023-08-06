@@ -4,8 +4,9 @@ import 'package:flutter_kline/utils/kline_num_util.dart';
 import '../common/pair.dart';
 
 class KlineUtil {
-
-
+  static Widget noWidget() {
+    return const SizedBox();
+  }
 
   /// TODO 直接改成一个painter
   /// 画蜡烛

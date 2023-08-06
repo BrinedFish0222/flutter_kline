@@ -54,14 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     kChartRendererVo = KChartRendererVo(
         candlestickChartData: candlestickChartData,
-        lineChartData: [
-          LineChartVo(
-              dataList: ExampleLineData.lineData1
-                  .sublist(0, dataIndex)
-                  .map((e) => LineChartData(value: e))
-                  .toList(),
-              color: Colors.red),
-        ]);
+        lineChartData: ExampleLineData.getLineChartData(dataIndex: dataIndex));
 
     _updateDataTimer =
         Timer.periodic(const Duration(milliseconds: 300), (timer) {

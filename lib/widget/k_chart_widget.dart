@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/widget/gesture/k_chart_gesture_widget.dart';
 
 import '../vo/candlestick_chart_vo.dart';
@@ -29,15 +33,38 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 蜡烛数据流
   // final StreamController<CandlestickChartVo?> candlestickChartVoStream = StreamController();
 
+  // 选中的数据索引
+  final StreamController<int> _selectedDataIndexStream = StreamController();
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
         InkWell(
           onTap: () => _onTapIndicator(0),
-          child: Row(children: const [
-            Text('MA'),
-            Icon(Icons.arrow_drop_down),
+          child: Row(children: [
+            const Text('MA'),
+            const Icon(Icons.arrow_drop_down),
+            StreamBuilder(
+                initialData: widget.lineChartData == null
+                    ? -1
+                    : widget.lineChartData!.length - 1,
+                stream: _selectedDataIndexStream.stream,
+                builder: (context, snapshot) {
+                  var data = snapshot.data;
+                  if (data == -1 ||
+                      KlineCollectionUtil.isEmpty(widget.lineChartData)) {
+                    return KlineUtil.noWidget();
+                  }
+
+                  return Row(
+                    children: [
+                      const Text('A: '),
+                      Text(
+                          '${widget.lineChartData![0]!.dataList![data!].value?.toStringAsFixed(2)}'),
+                    ],
+                  );
+                })
           ]),
         ),
         KChartGestureWidget(
@@ -45,6 +72,7 @@ class _KChartWidgetState extends State<KChartWidget> {
           candlestickChartData: widget.candlestickChartData,
           lineChartData: widget.lineChartData,
           margin: widget.margin,
+          selectedDataIndexStream: _selectedDataIndexStream,
         )
       ],
     );

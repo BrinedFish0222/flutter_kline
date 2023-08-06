@@ -4,13 +4,15 @@ import '../common/pair.dart';
 
 /// 蜡烛图数据vo
 class CandlestickChartVo {
+  final String? id;
   final double open;
   final double close;
   final double high;
   final double low;
 
   const CandlestickChartVo(
-      {required this.open,
+      {this.id,
+      required this.open,
       required this.close,
       required this.high,
       required this.low});

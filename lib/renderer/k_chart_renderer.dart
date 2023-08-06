@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/candlestick_chart_painter.dart';
-import 'package:flutter_kline/painter/cross_curve_painter.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/vo/k_chart_renderer_config.dart';
 
 import '../painter/line_chart_painter.dart';
 import '../painter/rect_painter.dart';
@@ -29,26 +29,25 @@ class KChartRenderer extends CustomPainter {
   /// TODO 目前只有 right 生效。
   final EdgeInsets? margin;
 
-  /// 选中的x、y
-  final Pair<double?, double?>? selectedXY;
+  final KChartRendererConfig config;
 
-  const KChartRenderer({
-    required this.candlestickCharData,
-    this.lineChartData,
-    this.rectTransverseLineNum = 2,
-    this.candlestickGapRatio = 3,
-    this.margin,
-    this.selectedXY,
-  });
+  const KChartRenderer(
+      {required this.candlestickCharData,
+      this.lineChartData,
+      this.rectTransverseLineNum = 2,
+      this.candlestickGapRatio = 3,
+      this.margin,
+      required this.config});
 
   @override
   void paint(Canvas canvas, Size size) {
+    debugPrint("KChartRenderer paint run ...");
     Size marginSize =
         margin == null ? size : Size(size.width - margin!.right, size.height);
 
     Pair<double, double> heightRange = getHeightRange();
-    double pointWidth = getPointWidth(size: marginSize);
-    double pointGap = pointWidth / candlestickGapRatio;
+    config.pointWidth = getPointWidth(size: marginSize);
+    config.pointGap = config.pointWidth! / candlestickGapRatio;
 
     // 画矩形
     RectPainter(
@@ -64,8 +63,8 @@ class KChartRenderer extends CustomPainter {
     CandlestickChartPainter(
       dataList: candlestickCharData,
       maxMinHeight: heightRange,
-      pointWidth: pointWidth,
-      pointGap: pointGap,
+      pointWidth: config.pointWidth!,
+      pointGap: config.pointGap!,
     ).paint(canvas, marginSize);
 
     // 画折线
@@ -75,15 +74,6 @@ class KChartRenderer extends CustomPainter {
               size: size,
               maxMinValue: heightRange)
           .paint(canvas, marginSize);
-    }
-
-    // 画十字线
-    if (selectedXY != null) {
-      CrossCurvePainter(
-              selectedXY: selectedXY,
-              pointWidth: pointWidth,
-              pointGap: pointGap)
-          .paint(canvas, size);
     }
   }
 

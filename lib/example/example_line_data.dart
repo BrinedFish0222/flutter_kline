@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
+
+import '../vo/line_chart_vo.dart';
 
 class ExampleLineData {
   static List<double?> lineData1 = [
@@ -804,6 +807,18 @@ class ExampleLineData {
     11.405384615384618,
     11.486153846153847
   ];
+
+  static List<LineChartVo?>? getLineChartData({int dataIndex = 799}) {
+    return [
+      LineChartVo(
+          name: 'A',
+          dataList: ExampleLineData.lineData1
+              .sublist(0, dataIndex)
+              .map((e) => LineChartData(value: e))
+              .toList(),
+          color: Colors.red),
+    ];
+  }
 
   static List<CandlestickChartVo?> _candlestickChartData = [];
 
