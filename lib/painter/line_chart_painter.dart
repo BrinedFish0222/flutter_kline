@@ -43,9 +43,6 @@ class LineChartPainter extends CustomPainter {
       _pointWidth = pointWidth ??
           size.width / (lineChartData.first!.dataList!.length - 1);
     }
-
-    // debugPrint(
-    //     "$_logPre _maxValue $_maxValue, _minValue $_minValue, size.width ${size.width}, _pointWidth $_pointWidth");
   }
 
   /// 初始化：最大最小值。

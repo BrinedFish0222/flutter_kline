@@ -4,6 +4,10 @@ import 'package:flutter_kline/utils/kline_num_util.dart';
 import '../common/pair.dart';
 
 class KlineUtil {
+
+
+
+  /// TODO 直接改成一个painter
   /// 画蜡烛
   static void drawCandlestick(
       {required Canvas canvas,
@@ -70,5 +74,15 @@ class KlineUtil {
     }).toList();
 
     return heights;
+  }
+
+  static void showToast({required BuildContext context, required String text}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        dismissDirection: DismissDirection.endToStart,
+        duration: const Duration(seconds: 2), // 显示时长
+      ),
+    );
   }
 }

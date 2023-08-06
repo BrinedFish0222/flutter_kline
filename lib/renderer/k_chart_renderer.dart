@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/candlestick_chart_painter.dart';
+import 'package:flutter_kline/painter/cross_curve_painter.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 
 import '../painter/line_chart_painter.dart';
@@ -9,6 +10,9 @@ import '../vo/candlestick_chart_vo.dart';
 import '../vo/line_chart_vo.dart';
 
 /// K线图渲染器
+/// 计算：
+///   - 点的宽度
+///   - 高度范围
 class KChartRenderer extends CustomPainter {
   /// 蜡烛图数据
   final List<CandlestickChartVo?> candlestickCharData;
@@ -25,12 +29,16 @@ class KChartRenderer extends CustomPainter {
   /// TODO 目前只有 right 生效。
   final EdgeInsets? margin;
 
+  /// 选中的x、y
+  final Pair<double?, double?>? selectedXY;
+
   const KChartRenderer({
     required this.candlestickCharData,
     this.lineChartData,
     this.rectTransverseLineNum = 2,
     this.candlestickGapRatio = 3,
     this.margin,
+    this.selectedXY,
   });
 
   @override
@@ -40,6 +48,7 @@ class KChartRenderer extends CustomPainter {
 
     Pair<double, double> heightRange = getHeightRange();
     double pointWidth = getPointWidth(size: marginSize);
+    double pointGap = pointWidth / candlestickGapRatio;
 
     // 画矩形
     RectPainter(
@@ -56,7 +65,7 @@ class KChartRenderer extends CustomPainter {
       dataList: candlestickCharData,
       maxMinHeight: heightRange,
       pointWidth: pointWidth,
-      pointGap: pointWidth / candlestickGapRatio,
+      pointGap: pointGap,
     ).paint(canvas, marginSize);
 
     // 画折线
@@ -66,6 +75,15 @@ class KChartRenderer extends CustomPainter {
               size: size,
               maxMinValue: heightRange)
           .paint(canvas, marginSize);
+    }
+
+    // 画十字线
+    if (selectedXY != null) {
+      CrossCurvePainter(
+              selectedXY: selectedXY,
+              pointWidth: pointWidth,
+              pointGap: pointGap)
+          .paint(canvas, size);
     }
   }
 

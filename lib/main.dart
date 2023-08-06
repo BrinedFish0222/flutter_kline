@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
-import 'package:flutter_kline/renderer/k_chart_renderer.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
+import 'package:flutter_kline/widget/k_chart_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late Timer _updateDataTimer;
 
-  int dataIndex = 780;
+  int dataIndex = 799;
   int showDataNum = 60;
 
   @override
@@ -100,31 +101,30 @@ class _MyHomePageState extends State<MyHomePage> {
   _buildCustomPaint() {
     var size = Size(MediaQuery.of(context).size.width - 20, 300);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RepaintBoundary(
-        child: StreamBuilder(
-            initialData: kChartRendererVo,
-            stream: _streamController.stream,
-            builder: (context, snapshot) {
-              // 只展示5条数据。
-              var lastN = KlineCollectionUtil.lastN(
-                  snapshot.data!.candlestickChartData, showDataNum);
-              snapshot.data!.candlestickChartData.clear();
-              snapshot.data!.candlestickChartData.addAll(lastN!);
-              for (var element in snapshot.data!.lineChartData!) {
-                element!.dataList =
-                    KlineCollectionUtil.lastN(element.dataList, showDataNum);
-              }
+      padding: const EdgeInsets.all(15.0),
+      child: StreamBuilder(
+          initialData: kChartRendererVo,
+          stream: _streamController.stream,
+          builder: (context, snapshot) {
+            // 只展示5条数据。
+            var lastN = KlineCollectionUtil.lastN(
+                snapshot.data!.candlestickChartData, showDataNum);
+            snapshot.data!.candlestickChartData.clear();
+            snapshot.data!.candlestickChartData.addAll(lastN!);
+            for (var element in snapshot.data!.lineChartData!) {
+              element!.dataList =
+                  KlineCollectionUtil.lastN(element.dataList, showDataNum);
+            }
 
-              return CustomPaint(
+            return KChartWidget(
                 size: size,
-                painter: KChartRenderer(
-                    lineChartData: snapshot.data?.lineChartData,
-                    candlestickCharData: snapshot.data!.candlestickChartData,
-                    margin: const EdgeInsets.all(5)),
-              );
-            }),
-      ),
+                lineChartData: snapshot.data?.lineChartData,
+                candlestickChartData: snapshot.data!.candlestickChartData,
+                onTapIndicator: (index) {
+                  KlineUtil.showToast(context: context, text: '点击指标索引：$index');
+                },
+                margin: const EdgeInsets.all(5));
+          }),
     );
   }
 }
