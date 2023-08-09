@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'candlestick_chart_vo.dart';
+
 /// 折线图数据
 class LineChartVo {
   String? id;
@@ -17,4 +19,15 @@ class LineChartData {
   double? value;
 
   LineChartData({this.dateTime, this.value});
+}
+
+class SelectedLineChartDataStreamVo {
+  String? name;
+  Color color;
+  double? value;
+
+  /// 对应的蜡烛图数据
+  CandlestickChartVo? candlestickChartVo;
+
+  SelectedLineChartDataStreamVo({this.name, required this.color, this.value, this.candlestickChartVo});
 }

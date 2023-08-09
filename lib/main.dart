@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final GlobalKey _tabKey = GlobalKey();
 
-  int dataIndex = 200;
+  int dataIndex = 799;
   int showDataNum = 60;
 
   @override
@@ -58,11 +58,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
     kChartRendererVo = KChartRendererVo(
         candlestickChartData: candlestickChartData,
-        lineChartData: ExampleLineData.getLineChartData(dataIndex: dataIndex));
+        lineChartData: ExampleLineData.getLineChartMA13(dataIndex: dataIndex));
 
-    _updateDataTimer =  
+    _updateDataTimer =
         Timer.periodic(const Duration(milliseconds: 300), (timer) {
-      var num1 = ExampleLineData.lineData1[dataIndex];
+      var num1 = ExampleLineData.ma13[dataIndex];
       kChartRendererVo.lineChartData![0]!.dataList!
           .add(LineChartData(value: num1));
       kChartRendererVo.candlestickChartData

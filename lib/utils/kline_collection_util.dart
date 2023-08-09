@@ -39,6 +39,18 @@ class KlineCollectionUtil {
     return false;
   }
 
+  static E? getByIndex<E>(List<E?>? list, int index) {
+    if (KlineCollectionUtil.isEmpty(list)) {
+      return null;
+    }
+
+    if (index >= list!.length) {
+      return null;
+    }
+
+    return list[index];
+  }
+
   static E? firstWhere<E>(List<E>? list, bool Function(E element) test,
       {E Function()? orElse}) {
     if (KlineCollectionUtil.isEmpty(list)) {
@@ -60,11 +72,15 @@ class KlineCollectionUtil {
     return list?.last;
   }
 
-    static List<E>? lastN<E>(List<E>? list, int n) {
+  static List<E>? lastN<E>(List<E>? list, int n) {
     if (KlineCollectionUtil.isEmpty(list)) {
       return null;
     }
-    return list?.sublist(list.length - n);
+
+    if (list!.length < n) {
+      return list;
+    }
+    return list.sublist(list.length - n);
   }
 
   static E? first<E>(List<E>? list) {

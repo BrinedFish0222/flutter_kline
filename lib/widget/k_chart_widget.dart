@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
+import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
 import 'package:flutter_kline/widget/gesture/k_chart_gesture_widget.dart';
 
 import '../common/pair.dart';
 import '../vo/candlestick_chart_vo.dart';
 import '../vo/line_chart_vo.dart';
 
+/// k线组件
+/// -
 class KChartWidget extends StatefulWidget {
   const KChartWidget({
     super.key,
@@ -38,13 +41,18 @@ class _KChartWidgetState extends State<KChartWidget> {
   final StreamController<CandlestickChartVo?> _candlestickChartVoStream =
       StreamController();
 
-  // 选中的数据索引
-  final StreamController<int> _selectedDataIndexStream = StreamController();
+  // 选中的折线数据
+  final StreamController<SelectedChartDataStreamVo>
+      _selectedLineChartDataStream = StreamController();
+
+  /// 最后一根选中的折线数据
+  List<SelectedLineChartDataStreamVo>? _lastSelectedLineChartData;
 
   OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
+    _initLastSelectedLineChartData();
     _candlestickChartVoStream.stream.listen((event) {
       debugPrint("_candlestickChartVoStream listen run ....");
       if (event == null) {
@@ -67,7 +75,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   @override
   void dispose() {
     _candlestickChartVoStream.close();
-    _selectedDataIndexStream.close();
+    _selectedLineChartDataStream.close();
     super.dispose();
   }
 
@@ -81,30 +89,24 @@ class _KChartWidgetState extends State<KChartWidget> {
           child: Row(children: [
             const Text('MA'),
             const Icon(Icons.arrow_drop_down),
-            StreamBuilder(
-                initialData: widget.lineChartData == null
-                    ? -1
-                    : widget.lineChartData!.length - 1,
-                stream: _selectedDataIndexStream.stream,
+            StreamBuilder<SelectedChartDataStreamVo>(
+                initialData: SelectedChartDataStreamVo(
+                    lineChartList: _lastSelectedLineChartData),
+                stream: _selectedLineChartDataStream.stream,
                 builder: (context, snapshot) {
                   var data = snapshot.data;
                   if (KlineCollectionUtil.isEmpty(widget.lineChartData)) {
                     return KlineUtil.noWidget();
                   }
-                  if (data == -1) {
-                    _candlestickChartVoStream.add(null);
-                    data = widget.lineChartData!.length - 1;
-                  } else {
-                    _candlestickChartVoStream
-                        .add(widget.candlestickChartData[data!]);
-                  }
 
-                  return Row(
-                    children: [
-                      const Text('A: '),
-                      Text(
-                          '${widget.lineChartData![0]!.dataList![data].value?.toStringAsFixed(2)}'),
-                    ],
+                  _candlestickChartVoStream.add(data?.candlestickChartVo);
+
+                  return Wrap(
+                    children: data?.lineChartList
+                            ?.map((e) => Text(
+                                '${e.name} ${e.value?.toStringAsFixed(2)}'))
+                            .toList() ??
+                        [],
                   );
                 })
           ]),
@@ -114,10 +116,25 @@ class _KChartWidgetState extends State<KChartWidget> {
           candlestickChartData: widget.candlestickChartData,
           lineChartData: widget.lineChartData,
           margin: widget.margin,
-          selectedDataIndexStream: _selectedDataIndexStream,
+          selectedLineChartDataStream: _selectedLineChartDataStream,
         )
       ],
     );
+  }
+
+  _initLastSelectedLineChartData() {
+    if (KlineCollectionUtil.isEmpty(widget.lineChartData)) {
+      return;
+    }
+
+    _lastSelectedLineChartData ??= [];
+    for (var element in widget.lineChartData!) {
+      var lastData = element?.dataList?.last;
+      _lastSelectedLineChartData!.add(SelectedLineChartDataStreamVo(
+          color: element?.color ?? Colors.black,
+          name: element?.name,
+          value: lastData?.value));
+    }
   }
 
   /// 获取蜡烛浮层地址

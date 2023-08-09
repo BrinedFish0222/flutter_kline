@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/painter/cross_curve_painter.dart';
+import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_config.dart';
+import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
 
 import '../../common/pair.dart';
 import '../../renderer/k_chart_renderer.dart';
@@ -17,14 +19,19 @@ class KChartGestureWidget extends StatefulWidget {
       required this.size,
       required this.candlestickChartData,
       this.lineChartData,
-      this.selectedDataIndexStream,
+      this.showDataNum = 60,
+      this.selectedLineChartDataStream,
       this.margin});
 
   final Size size;
   final List<CandlestickChartVo?> candlestickChartData;
   final List<LineChartVo?>? lineChartData;
   final EdgeInsets? margin;
-  final StreamController<int>? selectedDataIndexStream;
+  final int showDataNum;
+
+  /// 选中的折线数据流
+  final StreamController<SelectedChartDataStreamVo>?
+      selectedLineChartDataStream;
 
   @override
   State<KChartGestureWidget> createState() => _KChartGestureWidgetState();
@@ -39,8 +46,35 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
   /// 十字线刷新句柄
   late void Function(void Function()) _crossCurvePainterState;
 
+  /// 十字线选中数据索引流。
+  StreamController<int>? _selectedLineChartDataIndexStream;
+
   bool _isShowCrossCurve = false;
   bool _isOnHorizontalDragStart = true;
+
+  /// [widget.showDataNum]
+  late int _showDataNum;
+
+  /// 显示的蜡烛数据
+  List<CandlestickChartVo?> _showCandlestickChartData = [];
+
+  /// 显示的折线数据
+  List<LineChartVo?>? _showLineChartData;
+
+  @override
+  void initState() {
+    _showDataNum = widget.showDataNum;
+    _resetShowData();
+    _initSelectedLineChartDataIndexStream();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _selectedLineChartDataIndexStream?.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +103,7 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
               painter: CrossCurvePainter(
                   selectedXY: _selectedXY,
                   margin: widget.margin,
-                  selectedDataIndexStream: widget.selectedDataIndexStream,
+                  selectedDataIndexStream: _selectedLineChartDataIndexStream,
                   pointWidth: _kChartRendererConfig.pointWidth,
                   pointGap: _kChartRendererConfig.pointGap),
             );
@@ -77,6 +111,56 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
         ],
       ),
     );
+  }
+
+  _initSelectedLineChartDataIndexStream() {
+    if (widget.selectedLineChartDataStream == null ||
+        KlineCollectionUtil.isEmpty(_showLineChartData)) {
+      return;
+    }
+
+    _selectedLineChartDataIndexStream = StreamController();
+    _selectedLineChartDataIndexStream!.stream
+        .listen(_selectedLineChartDataIndexStreamListen);
+  }
+
+  _selectedLineChartDataIndexStreamListen(int index) {
+    if (widget.selectedLineChartDataStream == null ||
+        KlineCollectionUtil.isEmpty(_showLineChartData)) {
+      return;
+    }
+
+    if (index <= -1) {
+      widget.selectedLineChartDataStream!.add(SelectedChartDataStreamVo());
+      return;
+    }
+
+    SelectedChartDataStreamVo vo = SelectedChartDataStreamVo(lineChartList: []);
+    vo.candlestickChartVo =
+        KlineCollectionUtil.getByIndex(_showCandlestickChartData, index);
+    for (var lineData in _showLineChartData!) {
+      if (lineData == null) {
+        continue;
+      }
+
+      LineChartData? indexData =
+          KlineCollectionUtil.getByIndex(lineData.dataList, index);
+      if (indexData == null) {
+        continue;
+      }
+      vo.lineChartList!.add(SelectedLineChartDataStreamVo(
+          color: lineData.color, name: lineData.name, value: indexData.value));
+    }
+    widget.selectedLineChartDataStream!.add(vo);
+  }
+
+  _resetShowData() {
+    _showCandlestickChartData =
+        KlineCollectionUtil.lastN(widget.candlestickChartData, _showDataNum)!;
+    if (KlineCollectionUtil.isNotEmpty(widget.lineChartData)) {
+      _showLineChartData =
+          KlineCollectionUtil.lastN(widget.lineChartData, _showDataNum);
+    }
   }
 
   /// 长按移动事件
@@ -103,8 +187,11 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
 
     if (_selectedXY != null) {
       _selectedXY = null;
-      widget.selectedDataIndexStream
-          ?.add((widget.candlestickChartData.length - 1));
+      // 恢复默认最后一根k线的数据
+      if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
+        _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
+      }
+
       _isShowCrossCurve = _isOnHorizontalDragStart ? _isShowCrossCurve : false;
       _crossCurvePainterState(() {});
       return;
