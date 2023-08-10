@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 
@@ -2422,21 +2423,21 @@ class ExampleLineData {
               .sublist(0, dataIndex)
               .map((e) => LineChartData(value: e))
               .toList(),
-          color: Colors.red),
+          color: KlineConfig.kLineColors[0]),
       LineChartVo(
           name: 'MA34',
           dataList: ExampleLineData.ma34
               .sublist(0, dataIndex)
               .map((e) => LineChartData(value: e))
               .toList(),
-          color: Colors.yellow),
+          color: KlineConfig.kLineColors[1]),
       LineChartVo(
           name: 'MA144',
           dataList: ExampleLineData.ma144
               .sublist(0, dataIndex)
               .map((e) => LineChartData(value: e))
               .toList(),
-          color: Colors.black),
+          color: KlineConfig.kLineColors[2]),
     ];
   }
 

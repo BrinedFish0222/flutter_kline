@@ -104,14 +104,17 @@ class _KChartWidgetState extends State<KChartWidget> {
 
                   return Wrap(
                     children: data?.lineChartList
-                            ?.map((e) => Text(
-                                '${e.name} ${e.value?.toStringAsFixed(2)}   '))
+                            ?.where((element) => element.value != null).map((e) => Text(
+                                  '${e.name} ${e.value?.toStringAsFixed(2)}   ',
+                                  style: TextStyle(color: e.color),
+                                ))
                             .toList() ??
                         [],
                   );
                 })
           ]),
         ),
+
         /// K线图
         KChartGestureWidget(
           size: widget.size,
