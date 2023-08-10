@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _buildCustomPaint() {
-    var size = Size(MediaQuery.of(context).size.width - 20, 300);
+    var size = Size(MediaQuery.of(context).size.width - 20, 140);
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: StreamBuilder(
@@ -147,14 +147,14 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: _streamController.stream,
           builder: (context, snapshot) {
             // 只展示5条数据。
-            var lastN = KlineCollectionUtil.lastN(
+            /* var lastN = KlineCollectionUtil.lastN(
                 snapshot.data!.candlestickChartData, showDataNum);
             snapshot.data!.candlestickChartData.clear();
             snapshot.data!.candlestickChartData.addAll(lastN!);
             for (var element in snapshot.data!.lineChartData!) {
               element!.dataList =
                   KlineCollectionUtil.lastN(element.dataList, showDataNum);
-            }
+            } */
 
             return KChartWidget(
                 size: size,

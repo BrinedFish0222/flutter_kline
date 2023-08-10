@@ -69,6 +69,7 @@ class RectPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    debugPrint("绘制矩形。。。");
     _init(canvas: canvas, size: size);
 
     // 绘制矩形边框

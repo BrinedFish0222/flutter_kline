@@ -61,9 +61,18 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
   /// 显示的折线数据
   List<LineChartVo?>? _showLineChartData;
 
+  /// 显示数据的开始索引值。
+  late int _showDataStartIndex;
+
+  /// 同一时间上一个拖动的x轴坐标
+  late double _sameTimeLastHorizontalDragX;
+
   @override
   void initState() {
     _showDataNum = widget.showDataNum;
+    _showDataStartIndex =
+        (widget.candlestickChartData.length - widget.showDataNum - 1)
+            .clamp(0, widget.candlestickChartData.length - 1);
     _resetShowData();
     _initSelectedLineChartDataIndexStream();
 
@@ -80,22 +89,29 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: _onTapDown,
-      onHorizontalDragStart: (details) => _isOnHorizontalDragStart = true,
+      onHorizontalDragStart: (details) {
+        debugPrint("GestureDetector onHorizontalDragStart");
+        _sameTimeLastHorizontalDragX = details.localPosition.dx;
+        _isOnHorizontalDragStart = true;
+      },
       onHorizontalDragUpdate: _onHorizontalDragUpdate,
       onHorizontalDragEnd: (details) => _isOnHorizontalDragStart = false,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: Stack(
         children: [
+          /// K线图
           RepaintBoundary(
             child: CustomPaint(
               size: widget.size,
               painter: KChartRenderer(
-                  candlestickCharData: widget.candlestickChartData,
-                  lineChartData: widget.lineChartData,
+                  candlestickCharData: _showCandlestickChartData,
+                  lineChartData: _showLineChartData,
                   margin: widget.margin,
                   config: _kChartRendererConfig),
             ),
           ),
+
+          /// 十字线
           StatefulBuilder(builder: (context, state) {
             _crossCurvePainterState = state;
             return CustomPaint(
@@ -154,13 +170,45 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
     widget.selectedLineChartDataStream!.add(vo);
   }
 
-  _resetShowData() {
-    _showCandlestickChartData =
-        KlineCollectionUtil.lastN(widget.candlestickChartData, _showDataNum)!;
-    if (KlineCollectionUtil.isNotEmpty(widget.lineChartData)) {
-      _showLineChartData =
-          KlineCollectionUtil.lastN(widget.lineChartData, _showDataNum);
+  /// 重置显示的数据。
+  /// 自动适配
+  _resetShowData({int? startIndex}) {
+    if (startIndex == null) {
+      _showDataStartIndex =
+          (widget.candlestickChartData.length - widget.showDataNum - 1)
+              .clamp(0, widget.candlestickChartData.length - 1);
+    } else {
+      _showDataStartIndex = startIndex;
     }
+
+    int endIndex = (_showDataStartIndex + widget.showDataNum)
+        .clamp(0, widget.candlestickChartData.length - 1);
+
+    _showDataStartIndex = (endIndex - widget.showDataNum)
+        .clamp(0, widget.candlestickChartData.length);
+
+    _showCandlestickChartData = KlineCollectionUtil.sublist(
+            list: widget.candlestickChartData,
+            startIndex: _showDataStartIndex,
+            endIndex: endIndex) ??
+        [];
+
+    if (KlineCollectionUtil.isNotEmpty(widget.lineChartData)) {
+      _showLineChartData = [];
+      for (LineChartVo? element in widget.lineChartData!) {
+        if (element == null) {
+          _showLineChartData!.add(element);
+          continue;
+        }
+
+        var newVo = element.copy();
+        newVo.dataList =
+            element.dataList?.sublist(_showDataStartIndex, endIndex);
+        _showLineChartData?.add(newVo);
+      }
+    }
+
+    setState(() {});
   }
 
   /// 长按移动事件
@@ -173,12 +221,27 @@ class _KChartGestureWidgetState extends State<KChartGestureWidget> {
 
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
-    debugPrint("_onHorizontalDragUpdate execute");
+    debugPrint(
+        "_onHorizontalDragUpdate execute, _isShowCrossCurve: $_isShowCrossCurve, dx: ${details.localPosition.dx}, dy: ${details.localPosition.dy}");
+
+    // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
       _selectedXY =
           Pair(left: details.localPosition.dx, right: details.localPosition.dy);
       _crossCurvePainterState(() {});
+
+      return;
     }
+
+    // 滑动更新数据。
+    var dx = details.localPosition.dx;
+    if (_sameTimeLastHorizontalDragX > dx) {
+      _resetShowData(startIndex: _showDataStartIndex + 1);
+    } else {
+      _resetShowData(startIndex: _showDataStartIndex - 1);
+    }
+
+    _sameTimeLastHorizontalDragX = dx;
   }
 
   _onTapDown(TapDownDetails detail) {

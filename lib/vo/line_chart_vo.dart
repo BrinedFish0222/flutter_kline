@@ -11,6 +11,11 @@ class LineChartVo {
 
   LineChartVo(
       {this.id, this.name, required this.dataList, this.color = Colors.black});
+
+  LineChartVo copy() {
+    var newDataList = dataList?.map((e) => e).toList();
+    return LineChartVo(dataList: newDataList, id: id, name: name, color: color);
+  }
 }
 
 class LineChartData {
@@ -29,5 +34,6 @@ class SelectedLineChartDataStreamVo {
   /// 对应的蜡烛图数据
   CandlestickChartVo? candlestickChartVo;
 
-  SelectedLineChartDataStreamVo({this.name, required this.color, this.value, this.candlestickChartVo});
+  SelectedLineChartDataStreamVo(
+      {this.name, required this.color, this.value, this.candlestickChartVo});
 }

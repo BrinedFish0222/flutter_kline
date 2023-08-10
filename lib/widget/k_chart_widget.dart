@@ -84,6 +84,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     return Column(
       key: _masterKey,
       children: [
+        /// 信息栏
         InkWell(
           onTap: () => _onTapIndicator(0),
           child: Row(children: [
@@ -104,13 +105,14 @@ class _KChartWidgetState extends State<KChartWidget> {
                   return Wrap(
                     children: data?.lineChartList
                             ?.map((e) => Text(
-                                '${e.name} ${e.value?.toStringAsFixed(2)}'))
+                                '${e.name} ${e.value?.toStringAsFixed(2)}   '))
                             .toList() ??
                         [],
                   );
                 })
           ]),
         ),
+        /// K线图
         KChartGestureWidget(
           size: widget.size,
           candlestickChartData: widget.candlestickChartData,
