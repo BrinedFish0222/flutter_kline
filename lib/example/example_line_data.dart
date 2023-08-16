@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';

@@ -1,11 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
@@ -49,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey _tabKey = GlobalKey();
 
   int dataIndex = 799;
-  int showDataNum = 60;
 
   @override
   void initState() {
@@ -146,17 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
           initialData: kChartRendererVo,
           stream: _streamController.stream,
           builder: (context, snapshot) {
-            // 只展示5条数据。
-            /* var lastN = KlineCollectionUtil.lastN(
-                snapshot.data!.candlestickChartData, showDataNum);
-            snapshot.data!.candlestickChartData.clear();
-            snapshot.data!.candlestickChartData.addAll(lastN!);
-            for (var element in snapshot.data!.lineChartData!) {
-              element!.dataList =
-                  KlineCollectionUtil.lastN(element.dataList, showDataNum);
-            } */
-
             return KChartWidget(
+                showDataNum: 60,
                 size: size,
                 lineChartData: snapshot.data?.lineChartData,
                 candlestickChartData: snapshot.data!.candlestickChartData,
