@@ -143,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: _streamController.stream,
           builder: (context, snapshot) {
             return KChartWidget(
-                showDataNum: 60,
+                showDataNum: 30,
                 size: size,
                 lineChartData: snapshot.data?.lineChartData,
                 candlestickChartData: snapshot.data!.candlestickChartData,

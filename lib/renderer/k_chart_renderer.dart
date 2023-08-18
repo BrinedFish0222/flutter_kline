@@ -71,7 +71,6 @@ class KChartRenderer extends CustomPainter {
     if (KlineCollectionUtil.isNotEmpty(lineChartData)) {
       LineChartPainter(
               lineChartData: lineChartData!,
-              size: size,
               maxMinValue: heightRange)
           .paint(canvas, marginSize);
     }

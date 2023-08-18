@@ -7,13 +7,11 @@ import 'package:flutter_kline/vo/line_chart_vo.dart';
 
 /// 折线图
 class LineChartPainter extends CustomPainter {
-  final Size size;
   final List<LineChartVo?> lineChartData;
   final double? pointWidth;
   final Pair<double, double>? maxMinValue;
 
   LineChartPainter({
-    required this.size,
     required this.lineChartData,
     this.pointWidth,
     this.maxMinValue,
@@ -30,7 +28,7 @@ class LineChartPainter extends CustomPainter {
   /// 数据点宽度，和 [lineChartData] 一一对应。
   double _pointWidth = 0;
 
-  _init({required Canvas canvas}) {
+  _init({required Canvas canvas, required Size size}) {
     _canvas = canvas;
     _painter = Paint()
       ..style = PaintingStyle.stroke
@@ -76,7 +74,7 @@ class LineChartPainter extends CustomPainter {
       return;
     }
 
-    _init(canvas: canvas);
+    _init(canvas: canvas, size: size);
 
     for (LineChartVo? lineChartVo in lineChartData) {
       if (lineChartVo == null ||

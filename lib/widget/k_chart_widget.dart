@@ -5,6 +5,7 @@ import 'package:flutter_kline/painter/cross_curve_painter.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_config.dart';
 import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
+import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
 import '../common/pair.dart';
 import '../renderer/k_chart_renderer.dart';
@@ -199,6 +200,17 @@ class _KChartWidgetState extends State<KChartWidget> {
               }),
             ],
           ),
+          InkWell(
+            onTap: () => _onTapIndicator(1),
+            child: Container(
+              height: 10,
+              color: Colors.yellow,
+            ),
+          ),
+          SubChartWidget(
+            size: widget.size,
+            chartData: _showLineChartData ?? [],
+          ),
         ],
       ),
     );
@@ -206,8 +218,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 获取蜡烛浮层地址
   Pair<double, double> _getCandlestickOverlayLocation() {
-    RenderBox? renderBox =
-        context.findRenderObject() as RenderBox?;
+    RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       // 获取组件在页面中的位置信息
       Offset offset = renderBox.localToGlobal(Offset.zero);
