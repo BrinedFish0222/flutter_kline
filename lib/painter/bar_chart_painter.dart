@@ -28,8 +28,7 @@ class BarChartPainter extends CustomPainter {
 
     for (int i = 0; i < barHeightData.length; i++) {
       var data = barHeightData[i];
-      paint.color =
-          data.color ??= data.isFill ? KlineConfig.green : KlineConfig.red;
+      paint.color = data.color;
       paint.style = data.isFill ? PaintingStyle.fill : PaintingStyle.stroke;
 
       final barHeight = (data.value / maxDataValue) * size.height;

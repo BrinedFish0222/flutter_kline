@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
 import 'base_chart_vo.dart';
@@ -41,8 +42,11 @@ class LineChartVo extends BaseChartVo {
   }
 
   @override
-  List<double?>? getShowData() {
-    return dataList?.map((e) => e.value).toList();
+  List<ChartShowDataItemVo?>? getSelectedShowData() {
+    return dataList
+        ?.map((e) =>
+            ChartShowDataItemVo(name: name ?? '', value: e.value, color: color))
+        .toList();
   }
 
   @override
@@ -64,15 +68,14 @@ class LineChartVo extends BaseChartVo {
 
     return result;
   }
-  
+
   @override
   BaseChartVo subData({required int start, int? end}) {
     return LineChartVo(
-      id: id,
-      name: name,
-      dataList: dataList?.sublist(start, end),
-      color: color
-    );
+        id: id,
+        name: name,
+        dataList: dataList?.sublist(start, end),
+        color: color);
   }
 }
 

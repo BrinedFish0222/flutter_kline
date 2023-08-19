@@ -211,6 +211,7 @@ class _KChartWidgetState extends State<KChartWidget> {
               size: widget.size,
               name: 'VOL',
               chartData: subChart,
+              selectedChartDataIndexStream: _selectedLineChartDataIndexStream,
             ),
         ],
       ),

@@ -2439,7 +2439,7 @@ class ExampleVolData {
           BarChartData(value: _volume[i] ?? 0, color: color, isFill: isFill));
     }
 
-    return BarChartVo(data: dataList.toList());
+    return BarChartVo(name: 'VOLUME', data: dataList.toList());
   }
 
   static BarChartVo barChartDataLastN(int lastN) {
@@ -2453,9 +2453,11 @@ class ExampleVolData {
   static List<LineChartVo> get lineChartData {
     return [
       LineChartVo(
+          name: 'M5',
           dataList: _vol1.map((e) => LineChartData(value: e)).toList(),
           color: KlineConfig.kLineColors[0]),
       LineChartVo(
+          name: 'M10',
           dataList: _vol2.map((e) => LineChartData(value: e)).toList(),
           color: KlineConfig.kLineColors[2]),
     ];

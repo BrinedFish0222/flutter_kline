@@ -1,3 +1,5 @@
+import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
+
 import '../common/pair.dart';
 
 /// 图数据基类
@@ -7,8 +9,8 @@ abstract class BaseChartVo {
 
   BaseChartVo({this.id, this.name});
 
-  /// 获取显示的数据
-  List<double?>? getShowData();
+  /// 获取选中显示的数据
+  List<ChartShowDataItemVo?>? getSelectedShowData();
 
   /// 获取最大最小值。
   /// 左  最大值；右 最小值。
