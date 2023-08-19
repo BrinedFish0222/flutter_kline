@@ -34,9 +34,10 @@ class _SubChartWidgetState extends State<SubChartWidget> {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
       debugPrint("副图触发【监听选中的数据索引位置】监听");
       List<ChartShowDataItemVo> showDataList = [];
+      
       for (var data in widget.chartData) {
         var showData =
-            KlineCollectionUtil.getByIndex(data.getSelectedShowData(), index);
+            KlineCollectionUtil.getByIndex(data.getSelectedShowData(), index, indexMinZeroValue: data.getSelectedShowData()?.last);
         if (showData == null) {
           continue;
         }

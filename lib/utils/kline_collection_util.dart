@@ -39,13 +39,17 @@ class KlineCollectionUtil {
     return false;
   }
 
-  static E? getByIndex<E>(List<E?>? list, int index) {
+  static E? getByIndex<E>(List<E?>? list, int index, {E? indexMinZeroValue}) {
     if (KlineCollectionUtil.isEmpty(list)) {
       return null;
     }
 
     if (index >= list!.length) {
       return null;
+    }
+
+    if (index < 0) {
+      return indexMinZeroValue;
     }
 
     return list[index];

@@ -11,11 +11,15 @@ class LineChartVo extends BaseChartVo {
   List<LineChartData>? dataList;
   Color color;
 
+  List<ChartShowDataItemVo?>? _selectedShowData;
+
   LineChartVo(
       {super.id,
       super.name,
       required this.dataList,
-      this.color = Colors.black});
+      this.color = Colors.black}) {
+    getSelectedShowData();
+  }
 
   LineChartVo copy() {
     var newDataList = dataList?.map((e) => e).toList();
@@ -43,6 +47,10 @@ class LineChartVo extends BaseChartVo {
 
   @override
   List<ChartShowDataItemVo?>? getSelectedShowData() {
+    if (KlineCollectionUtil.isNotEmpty(_selectedShowData)) {
+      return _selectedShowData;
+    }
+
     return dataList
         ?.map((e) =>
             ChartShowDataItemVo(name: name ?? '', value: e.value, color: color))
