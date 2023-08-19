@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_vo.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_kline/widget/k_chart_widget.dart';
 import 'example/example_vol_data.dart';
 
 void main() {
+  ExampleCandlestickData.getCandlestickData();
   runApp(const MyApp());
 }
 
@@ -91,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Column(
+        body: ListView(
           children: [
             TabBar(key: _tabKey, tabs: const [
               Tab(
@@ -140,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: _streamController.stream,
           builder: (context, snapshot) {
             return KChartWidget(
-              showDataNum: 60,
+              showDataNum: 30,
               size: size,
               lineChartData: snapshot.data?.lineChartData,
               candlestickChartData: snapshot.data!.candlestickChartData,

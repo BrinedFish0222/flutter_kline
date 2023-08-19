@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
+
+import 'example_candlestick_data.dart';
 
 class ExampleVolData {
   static const List<double?> _volume = [
@@ -2413,9 +2416,30 @@ class ExampleVolData {
     660265.193999999
   ];
 
+  static BarChartVo? barChartVo;
+
   static BarChartVo get barChartData {
-    return BarChartVo(
-        data: _volume.map((e) => BarChartData(value: e ?? 0)).toList());
+    if (barChartVo != null) {
+      return barChartVo!;
+    }
+
+    var candlestickData = ExampleCandlestickData.getCandlestickData();
+
+    List<BarChartData> dataList = [];
+    for (int i = 0; i < _volume.length; ++i) {
+      Color color =
+          (candlestickData[i]?.close ?? 0) < (candlestickData[i]?.open ?? 0)
+              ? KlineConfig.green
+              : KlineConfig.red;
+      bool isFill =
+          (candlestickData[i]?.close ?? 0) < (candlestickData[i]?.open ?? 0)
+              ? true
+              : false;
+      dataList.add(
+          BarChartData(value: _volume[i] ?? 0, color: color, isFill: isFill));
+    }
+
+    return BarChartVo(data: dataList.toList());
   }
 
   static BarChartVo barChartDataLastN(int lastN) {
