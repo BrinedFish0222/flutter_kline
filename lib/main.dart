@@ -7,6 +7,8 @@ import 'package:flutter_kline/vo/k_chart_renderer_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
 
+import 'example/example_vol_data.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -83,7 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
+      initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -100,12 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
               Tab(
                 child: Text(
                   '日K',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  '周K',
                   style: TextStyle(color: Colors.black),
                 ),
               ),
@@ -143,14 +140,19 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: _streamController.stream,
           builder: (context, snapshot) {
             return KChartWidget(
-                showDataNum: 30,
-                size: size,
-                lineChartData: snapshot.data?.lineChartData,
-                candlestickChartData: snapshot.data!.candlestickChartData,
-                onTapIndicator: (index) {
-                  KlineUtil.showToast(context: context, text: '点击指标索引：$index');
-                },
-                margin: const EdgeInsets.all(5));
+              showDataNum: 60,
+              size: size,
+              lineChartData: snapshot.data?.lineChartData,
+              candlestickChartData: snapshot.data!.candlestickChartData,
+              onTapIndicator: (index) {
+                KlineUtil.showToast(context: context, text: '点击指标索引：$index');
+              },
+              margin: const EdgeInsets.all(5),
+              subChartData: [
+                [ExampleVolData.barChartData, ...ExampleVolData.lineChartData],
+                [...ExampleVolData.lineChartData],
+              ],
+            );
           }),
     );
   }

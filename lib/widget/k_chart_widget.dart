@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/painter/cross_curve_painter.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_config.dart';
 import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
@@ -20,6 +21,7 @@ class KChartWidget extends StatefulWidget {
       required this.size,
       required this.candlestickChartData,
       this.lineChartData,
+      required this.subChartData,
       this.showDataNum = 60,
       this.margin,
       this.onTapIndicator});
@@ -27,6 +29,7 @@ class KChartWidget extends StatefulWidget {
   final Size size;
   final List<CandlestickChartVo?> candlestickChartData;
   final List<LineChartVo?>? lineChartData;
+  final List<List<BaseChartVo>> subChartData;
   final EdgeInsets? margin;
   final int showDataNum;
 
@@ -59,7 +62,9 @@ class _KChartWidgetState extends State<KChartWidget> {
   List<CandlestickChartVo?> _showCandlestickChartData = [];
 
   /// 显示的折线数据
-  List<LineChartVo?>? _showLineChartData;
+  List<LineChartVo>? _showLineChartData;
+
+  List<List<BaseChartVo>> _showSubChartData = [];
 
   /// 显示数据的开始索引值。
   late int _showDataStartIndex;
@@ -200,17 +205,13 @@ class _KChartWidgetState extends State<KChartWidget> {
               }),
             ],
           ),
-          InkWell(
-            onTap: () => _onTapIndicator(1),
-            child: Container(
-              height: 10,
-              color: Colors.yellow,
+
+          for (List<BaseChartVo> subChart in _showSubChartData)
+            SubChartWidget(
+              size: widget.size,
+              name: 'VOL',
+              chartData: subChart,
             ),
-          ),
-          SubChartWidget(
-            size: widget.size,
-            chartData: _showLineChartData ?? [],
-          ),
         ],
       ),
     );
@@ -302,10 +303,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     vo.candlestickChartVo =
         KlineCollectionUtil.getByIndex(_showCandlestickChartData, index);
     for (var lineData in _showLineChartData!) {
-      if (lineData == null) {
-        continue;
-      }
-
       LineChartData? indexData =
           KlineCollectionUtil.getByIndex(lineData.dataList, index);
       if (indexData == null) {
@@ -344,7 +341,6 @@ class _KChartWidgetState extends State<KChartWidget> {
       _showLineChartData = [];
       for (LineChartVo? element in widget.lineChartData!) {
         if (element == null) {
-          _showLineChartData!.add(element);
           continue;
         }
 
@@ -352,6 +348,17 @@ class _KChartWidgetState extends State<KChartWidget> {
         newVo.dataList =
             element.dataList?.sublist(_showDataStartIndex, endIndex);
         _showLineChartData?.add(newVo);
+      }
+    }
+
+    if (KlineCollectionUtil.isNotEmpty(widget.subChartData)) {
+      _showSubChartData = [];
+      for (List<BaseChartVo> dataList in widget.subChartData) {
+        List<BaseChartVo> newDataList = [];
+        for (BaseChartVo data in dataList) {
+          newDataList.add(data.subData(start: _showDataStartIndex, end: endIndex));
+        }
+        _showSubChartData.add(newDataList);
       }
     }
 

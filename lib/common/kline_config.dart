@@ -13,4 +13,8 @@ class KlineConfig {
     Colors.yellow,
     Colors.pink
   ];
+
+  static const Color red = Colors.red;
+  static const Color green = Colors.green;
+
 }

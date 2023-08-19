@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/utils/kline_collection_util.dart';
 
 import '../common/pair.dart';
 import 'base_chart_vo.dart';
@@ -6,13 +7,14 @@ import 'candlestick_chart_vo.dart';
 
 /// 折线图数据
 class LineChartVo extends BaseChartVo {
-  String? id;
-  String? name;
   List<LineChartData>? dataList;
   Color color;
 
   LineChartVo(
-      {this.id, this.name, required this.dataList, this.color = Colors.black});
+      {super.id,
+      super.name,
+      required this.dataList,
+      this.color = Colors.black});
 
   LineChartVo copy() {
     var newDataList = dataList?.map((e) => e).toList();
@@ -21,7 +23,8 @@ class LineChartVo extends BaseChartVo {
 
   /// result: left maxValue; right minValue
   static Pair<double, double> getHeightRange(List<LineChartVo?> lineChartData) {
-    Pair<double, double> result = Pair(left: -double.maxFinite, right: double.maxFinite);
+    Pair<double, double> result =
+        Pair(left: -double.maxFinite, right: double.maxFinite);
 
     for (var element in lineChartData) {
       element?.dataList?.forEach((data) {
@@ -35,6 +38,41 @@ class LineChartVo extends BaseChartVo {
     }
 
     return result;
+  }
+
+  @override
+  List<double?>? getShowData() {
+    return dataList?.map((e) => e.value).toList();
+  }
+
+  @override
+  Pair<double, double> getMaxMinData() {
+    Pair<double, double> result =
+        Pair(left: -double.maxFinite, right: double.maxFinite);
+    if (KlineCollectionUtil.isEmpty(dataList)) {
+      return result;
+    }
+
+    dataList?.forEach((data) {
+      result.left = (data.value ?? -double.maxFinite) > result.left
+          ? data.value!
+          : result.left;
+      result.right = (data.value ?? double.maxFinite) < result.right
+          ? data.value!
+          : result.right;
+    });
+
+    return result;
+  }
+  
+  @override
+  BaseChartVo subData({required int start, int? end}) {
+    return LineChartVo(
+      id: id,
+      name: name,
+      dataList: dataList?.sublist(start, end),
+      color: color
+    );
   }
 }
 
