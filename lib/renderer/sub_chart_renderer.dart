@@ -11,8 +11,11 @@ import '../vo/line_chart_vo.dart';
 /// 副图
 class SubChartRenderer extends CustomPainter {
   final List<BaseChartVo> chartData;
+  final double? pointWidth;
+  final double? pointGap;
 
-  const SubChartRenderer({required this.chartData});
+  const SubChartRenderer(
+      {required this.chartData, this.pointWidth, this.pointGap});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -32,11 +35,6 @@ class SubChartRenderer extends CustomPainter {
             textStyle: const TextStyle(color: Colors.grey, fontSize: 8))
         .paint(canvas, size);
 
-    // 统一画线图
-    if (lineChartData.isNotEmpty) {
-      LineChartPainter(lineChartData: lineChartData, maxMinValue: heightRange).paint(canvas, size);
-    }
-
     for (var data in chartData) {
       // 线图无需再画
       if (data is LineChartVo) {
@@ -45,9 +43,21 @@ class SubChartRenderer extends CustomPainter {
 
       // 画柱图
       if (data is BarChartVo) {
-        BarChartPainter(barData: data).paint(canvas, size);
+        BarChartPainter(
+                barData: data, pointWidth: pointWidth, pointGap: pointGap ?? 5)
+            .paint(canvas, size);
         continue;
       }
+    }
+
+    // 统一画线图
+    if (lineChartData.isNotEmpty) {
+      LineChartPainter(
+              lineChartData: lineChartData,
+              maxMinValue: heightRange,
+              pointWidth: pointWidth,
+              pointGap: pointGap ?? 0)
+          .paint(canvas, size);
     }
   }
 

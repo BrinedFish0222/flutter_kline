@@ -9,7 +9,7 @@ abstract class BaseChartVo {
 
   BaseChartVo({this.id, this.name});
 
-  /// 获取选中显示的数据
+  /// 获取整个图**所有**选中显示的数据集合
   List<ChartShowDataItemVo?>? getSelectedShowData();
 
   /// 获取最大最小值。

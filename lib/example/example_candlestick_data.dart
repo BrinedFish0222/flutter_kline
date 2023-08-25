@@ -1,4 +1,5 @@
-import '../utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
+
 import '../vo/candlestick_chart_vo.dart';
 
 class ExampleCandlestickData {
@@ -3613,17 +3614,24 @@ class ExampleCandlestickData {
     [20230818, 11.57, 11.58, 11.74, 11.53, 11.56, 659818, 767047296]
   ];
 
-  static List<CandlestickChartVo?> _candlestickData = [];
+  static CandlestickChartVo? _candlestickData;
 
-  static List<CandlestickChartVo?> getCandlestickData() {
-    if (KlineCollectionUtil.isNotEmpty(_candlestickData)) {
-      return _candlestickData;
+  static CandlestickChartVo getCandlestickData() {
+    if (_candlestickData != null) {
+      return _candlestickData!;
     }
 
-    _candlestickData = originData.map((e) {
-      return CandlestickChartVo(open: e[2], close: e[5], high: e[3], low: e[4]);
+    var dataList = originData.map((e) {
+      return CandlestickChartData(
+          dateTime: KlineUtil.parseIntDateToDateTime(e[0].toInt()),
+          open: e[2],
+          close: e[5],
+          high: e[3],
+          low: e[4]);
     }).toList();
 
-    return _candlestickData;
+    _candlestickData = CandlestickChartVo(dataList: dataList);
+
+    return _candlestickData!;
   }
 }

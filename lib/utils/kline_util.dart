@@ -4,6 +4,7 @@ import 'package:flutter_kline/utils/kline_num_util.dart';
 import '../common/pair.dart';
 
 class KlineUtil {
+  /// TODO 直接改成一个painter
   static Widget noWidget() {
     return const SizedBox();
   }
@@ -77,6 +78,14 @@ class KlineUtil {
     return heights;
   }
 
+  static DateTime parseIntDateToDateTime(int intDate) {
+    var dateStr = intDate.toString();
+    int year = int.parse(dateStr.substring(0, 4));
+    int month = int.parse(dateStr.substring(4, 6));
+    int day = int.parse(dateStr.substring(6, 8));
+    return DateTime(year, month, day);
+  }
+
   static void showToast({required BuildContext context, required String text}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -85,5 +94,39 @@ class KlineUtil {
         duration: const Duration(seconds: 2), // 显示时长
       ),
     );
+  }
+
+  /// 自动分配图高度
+  /// [totalHeight] 总高度
+  /// [subChartRatio] 副图相对于主图的比例
+  /// [subChartNum] 副图数量
+  /// 返回结果：左边 主图高度；右边 单个副图高度。
+  static Pair<double, double> autoAllotChartHeight(
+      {required double totalHeight,
+      required double subChartRatio,
+      required int subChartNum}) {
+    double totalRatio = 1 + subChartRatio * subChartNum;
+    double singleHeight = totalHeight / totalRatio;
+
+    return Pair<double, double>(
+        left: singleHeight * 1, right: singleHeight * subChartRatio);
+  }
+
+  /// 获取点宽度，公式：画布长 / (数据数组长度 * 数据宽度和空间间隔比 + 数据数组长度 - 1) * 数据宽度和空间间隔比
+  /// [width] 画布长
+  /// [dataLength] 数据数组长度
+  /// [gapRatio] 数据宽度和空间间隔比
+  static double getPointWidth(
+      {required double width,
+      required int dataLength,
+      required double gapRatio}) {
+    if (dataLength == 0) {
+      return 0;
+    }
+
+    /// 画布长 / (数据数组长度 * 数据宽度和空间间隔比 + 数据数组长度 - 1)
+    /// 示例：800 / (50 * 3 + 50 - 1);
+    var s = width / (gapRatio * dataLength + dataLength - 1);
+    return s * gapRatio;
   }
 }

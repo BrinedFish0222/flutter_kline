@@ -9,11 +9,13 @@ import 'package:flutter_kline/vo/line_chart_vo.dart';
 class LineChartPainter extends CustomPainter {
   final List<LineChartVo?> lineChartData;
   final double? pointWidth;
+  final double pointGap;
   final Pair<double, double>? maxMinValue;
 
   LineChartPainter({
     required this.lineChartData,
     this.pointWidth,
+    this.pointGap = 0,
     this.maxMinValue,
   });
 
@@ -38,8 +40,8 @@ class LineChartPainter extends CustomPainter {
     _initMaxMinValue();
 
     if (lineChartData.isNotEmpty) {
-      _pointWidth = pointWidth ??
-          size.width / (lineChartData.first!.dataList!.length - 1);
+      _pointWidth = (pointWidth ??
+          size.width / (lineChartData.first!.dataList!.length - 1));
     }
   }
 
@@ -96,10 +98,11 @@ class LineChartPainter extends CustomPainter {
           continue;
         }
 
-        lastX ??= j * _pointWidth;
+        lastX ??= computeX(index: j, pointWidth: _pointWidth, pointGap: pointGap);
         lastY ??= data;
 
-        double x = j * _pointWidth;
+        // x轴 =  
+        double x = computeX(index: j, pointWidth: _pointWidth, pointGap: pointGap);
         double y = data;
 
         _canvas.drawLine(Offset(lastX, lastY), Offset(x, y), _painter);
@@ -107,6 +110,11 @@ class LineChartPainter extends CustomPainter {
         lastY = y;
       }
     }
+  }
+
+  /// 计算画图x轴位置
+  double computeX({required int index, required double pointWidth, required double pointGap}) {
+    return index * pointWidth + index * pointGap + pointWidth / 2;
   }
 
   @override

@@ -1,14 +1,13 @@
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 
-import 'line_chart_vo.dart';
+import 'chart_show_data_item_vo.dart';
 
-class SelectedChartDataStreamVo {
-
+class MainChartSelectedDataVo {
   /// 蜡烛数据
-  CandlestickChartVo? candlestickChartVo;
+  CandlestickChartData? candlestickChartData;
 
   /// 折线数据
-  List<SelectedLineChartDataStreamVo>? lineChartList;
+  List<ChartShowDataItemVo?>? lineChartList;
 
-  SelectedChartDataStreamVo({this.candlestickChartVo, this.lineChartList});
+  MainChartSelectedDataVo({this.candlestickChartData, this.lineChartList});
 }

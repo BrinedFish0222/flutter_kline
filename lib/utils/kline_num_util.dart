@@ -29,4 +29,26 @@ class KlineNumUtil {
 
     return result;
   }
+
+  static Pair<double, double>? maxMinValueDouble(List<num?>? dataList) {
+    var value = maxMinValue(dataList);
+    return Pair(
+        left: value?.left.toDouble() ?? -double.maxFinite,
+        right: value?.right.toDouble() ?? double.maxFinite);
+  }
+
+  /// 格式化数字，返回带单位的结果
+  static String formatNumberUnit(double? number) {
+    if (number == null || number == 0) {
+      return '0';
+    } else if (number >= 100000000) {
+      double result = number / 100000000.0;
+      return '${result.toStringAsFixed(2)}亿';
+    } else if (number >= 10000) {
+      double result = number / 10000.0;
+      return '${result.toStringAsFixed(2)}万';
+    } else {
+      return number.toStringAsFixed(2);
+    }
+  }
 }

@@ -6,16 +6,17 @@ import '../vo/bar_chart_vo.dart';
 /// 柱图
 class BarChartPainter extends CustomPainter {
   final BarChartVo barData;
-  final double gap;
+  final double? pointWidth;
+  final double pointGap;
 
-  BarChartPainter({required this.barData, this.gap = 5});
+  BarChartPainter({required this.barData, this.pointWidth, this.pointGap = 5});
 
   @override
   void paint(Canvas canvas, Size size) {
     var barHeightData = barData.data;
     // 柱体宽度 = （总宽度 - 间隔空间）/ 柱体数据长度。
-    final barWidth =
-        (size.width - (barHeightData.length - 1) * gap) / barHeightData.length;
+    final barWidth = pointWidth ??
+        (size.width - (barHeightData.length - 1) * pointGap) / barHeightData.length;
 
     // 柱体最大值
     final maxDataValue = barHeightData
@@ -34,7 +35,7 @@ class BarChartPainter extends CustomPainter {
       final barHeight = (data.value / maxDataValue) * size.height;
 
       // 左边坐标点
-      final left = i * barWidth + (i == 0 ? 0 : i * gap);
+      final left = i * barWidth + (i == 0 ? 0 : i * pointGap);
       final top = size.height - barHeight;
 
       final rect = Rect.fromLTRB(left, top, left + barWidth, size.height);

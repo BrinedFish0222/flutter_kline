@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/painter/cross_curve_painter.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/k_chart_renderer_config.dart';
 import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
 import '../common/pair.dart';
-import '../renderer/k_chart_renderer.dart';
-import '../utils/kline_util.dart';
 import '../vo/candlestick_chart_vo.dart';
+import '../vo/chart_show_data_item_vo.dart';
 import '../vo/line_chart_vo.dart';
+import 'main_chart_widget.dart';
 
 /// k线图手势操作组件
 class KChartWidget extends StatefulWidget {
@@ -24,14 +24,22 @@ class KChartWidget extends StatefulWidget {
       required this.subChartData,
       this.showDataNum = 60,
       this.margin,
-      this.onTapIndicator});
+      this.onTapIndicator,
+      this.dataGapRatio = 3,
+      this.subChartRatio = 0.5});
 
   final Size size;
-  final List<CandlestickChartVo?> candlestickChartData;
+  final CandlestickChartVo candlestickChartData;
   final List<LineChartVo?>? lineChartData;
   final List<List<BaseChartVo>> subChartData;
   final EdgeInsets? margin;
   final int showDataNum;
+
+  /// 数据宽度和空间间隔比
+  final double dataGapRatio;
+
+  /// 副图对于主图的比例
+  final double subChartRatio;
 
   /// 点击股票指标事件
   final void Function(int index)? onTapIndicator;
@@ -41,13 +49,23 @@ class KChartWidget extends StatefulWidget {
 }
 
 class _KChartWidgetState extends State<KChartWidget> {
-  Pair<double?, double?>? _selectedXY;
+  /// 主图size
+  late Size _mainChartSize;
 
-  /// k线图配置
-  final KChartRendererConfig _kChartRendererConfig = KChartRendererConfig();
+  /// 副图size
+  late Size _subChartSize;
 
-  /// 十字线刷新句柄
-  late void Function(void Function()) _crossCurvePainterState;
+  /// 十字线选中的xy轴
+  Pair<double?, double?>? _crossCurveXY;
+
+  /// 十字线流。索引0是主图，其它均是副图。
+  late List<StreamController<Pair<double?, double?>>> _crossCurveStreamList;
+
+  /// 数据点宽度
+  late double _pointWidth;
+
+  /// 数据点间隔
+  late double _pointGap;
 
   /// 十字线选中数据索引流。
   StreamController<int>? _selectedLineChartDataIndexStream;
@@ -59,7 +77,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   late int _showDataNum;
 
   /// 显示的蜡烛数据
-  List<CandlestickChartVo?> _showCandlestickChartData = [];
+  CandlestickChartVo? _showCandlestickChartData;
 
   /// 显示的折线数据
   List<LineChartVo>? _showLineChartData;
@@ -72,15 +90,12 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 同一时间上一个拖动的x轴坐标
   late double _sameTimeLastHorizontalDragX;
 
-  /// 最后一根选中的折线数据
-  List<SelectedLineChartDataStreamVo>? _lastSelectedLineChartData;
-
   // 选中的折线数据
-  final StreamController<SelectedChartDataStreamVo>
-      _selectedLineChartDataStream = StreamController();
+  final StreamController<MainChartSelectedDataVo> _selectedLineChartDataStream =
+      StreamController();
 
   /// 蜡烛数据流
-  final StreamController<CandlestickChartVo?> _candlestickChartVoStream =
+  final StreamController<CandlestickChartData?> _candlestickChartVoStream =
       StreamController();
 
   /// 蜡烛选中数据悬浮层
@@ -88,29 +103,28 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   void initState() {
+    _initCrossCurveStream();
     _showDataNum = widget.showDataNum;
     _showDataStartIndex =
-        (widget.candlestickChartData.length - _showDataNum - 1)
-            .clamp(0, widget.candlestickChartData.length - 1);
+        (widget.candlestickChartData.dataList.length - _showDataNum - 1)
+            .clamp(0, widget.candlestickChartData.dataList.length - 1);
     _resetShowData();
     _initSelectedLineChartDataIndexStream();
 
     _selectedLineChartDataIndexStream?.stream.listen((index) {
       if (index == -1) {
+        _hideCandlestickOverlay();
         return;
       }
-      _candlestickChartVoStream.add(_showCandlestickChartData[index]);
+      _candlestickChartVoStream.add(_showCandlestickChartData?.dataList[index]);
     });
 
     _candlestickChartVoStream.stream.listen((event) {
-      debugPrint("_candlestickChartVoStream listen run ....");
       if (event == null) {
-        debugPrint("_candlestickChartVoStream listen run, even is null ....");
         _hideCandlestickOverlay();
         return;
       }
 
-      debugPrint("_candlestickChartVoStream listen run, even is not null ....");
       var overlayLocation = _getCandlestickOverlayLocation();
       _showCandlestickOverlay(
           context: context,
@@ -120,6 +134,15 @@ class _KChartWidgetState extends State<KChartWidget> {
     });
 
     super.initState();
+  }
+
+  /// 初始化十字线 StreamController
+  void _initCrossCurveStream() {
+    _crossCurveStreamList = [];
+    _crossCurveStreamList.add(StreamController());
+    for (int i = 0; i < widget.subChartData.length; ++i) {
+      _crossCurveStreamList.add(StreamController());
+    }
   }
 
   @override
@@ -142,80 +165,60 @@ class _KChartWidgetState extends State<KChartWidget> {
       onHorizontalDragUpdate: _onHorizontalDragUpdate,
       onHorizontalDragEnd: (details) => _isOnHorizontalDragStart = false,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
-      child: Column(
-        children: [
-          /// 信息栏
-          InkWell(
-            onTap: () => _onTapIndicator(0),
-            child: Row(children: [
-              const Text('MA'),
-              const Icon(Icons.arrow_drop_down),
-              StreamBuilder<SelectedChartDataStreamVo>(
-                  initialData: SelectedChartDataStreamVo(
-                      lineChartList: _lastSelectedLineChartData),
-                  stream: _selectedLineChartDataStream.stream,
-                  builder: (context, snapshot) {
-                    var data = snapshot.data;
-                    if (KlineCollectionUtil.isEmpty(widget.lineChartData)) {
-                      return KlineUtil.noWidget();
-                    }
-
-                    _candlestickChartVoStream.add(data?.candlestickChartVo);
-
-                    return Wrap(
-                      children: data?.lineChartList
-                              ?.where((element) => element.value != null)
-                              .map((e) => Text(
-                                    '${e.name} ${e.value?.toStringAsFixed(2)}   ',
-                                    style: TextStyle(color: e.color),
-                                  ))
-                              .toList() ??
-                          [],
-                    );
-                  })
-            ]),
-          ),
-          Stack(
-            children: [
-              /// K线图
-              RepaintBoundary(
-                child: CustomPaint(
-                  size: widget.size,
-                  painter: KChartRenderer(
-                      candlestickCharData: _showCandlestickChartData,
-                      lineChartData: _showLineChartData,
-                      margin: widget.margin,
-                      config: _kChartRendererConfig),
+      child: LayoutBuilder(builder: (context, constraints) {
+        _computeLayout(constraints);
+        return Stack(
+          children: [
+            Column(
+              children: [
+                MainChartWidget(
+                  candlestickChartData: _showCandlestickChartData,
+                  size: _mainChartSize,
+                  lineChartData: _showLineChartData,
+                  margin: widget.margin,
+                  pointWidth: _pointWidth,
+                  pointGap: _pointGap,
+                  crossCurveStream: _crossCurveStreamList[0],
+                  selectedChartDataIndexStream:
+                      _selectedLineChartDataIndexStream,
                 ),
-              ),
-
-              /// 十字线
-              StatefulBuilder(builder: (context, state) {
-                _crossCurvePainterState = state;
-                return CustomPaint(
-                  size: widget.size,
-                  painter: CrossCurvePainter(
-                      selectedXY: _selectedXY,
-                      margin: widget.margin,
-                      selectedDataIndexStream:
-                          _selectedLineChartDataIndexStream,
-                      pointWidth: _kChartRendererConfig.pointWidth,
-                      pointGap: _kChartRendererConfig.pointGap),
-                );
-              }),
-            ],
-          ),
-
-          for (List<BaseChartVo> subChart in _showSubChartData)
-            SubChartWidget(
-              size: widget.size,
-              name: 'VOL',
-              chartData: subChart,
-              selectedChartDataIndexStream: _selectedLineChartDataIndexStream,
+                for (int i = 0; i < _showSubChartData.length; ++i)
+                  SubChartWidget(
+                    size: _subChartSize,
+                    name: 'VOL',
+                    chartData: _showSubChartData[i],
+                    pointWidth: _pointWidth,
+                    pointGap: _pointGap,
+                    crossCurveStream: _crossCurveStreamList[i + 1],
+                    selectedChartDataIndexStream:
+                        _selectedLineChartDataIndexStream,
+                  ),
+              ],
             ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
+  }
+
+  /// 重算布局
+  void _computeLayout(BoxConstraints constraints) {
+    double width = widget.size.width > constraints.maxWidth
+        ? constraints.maxWidth
+        : widget.size.width;
+
+    Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
+        totalHeight: widget.size.height,
+        subChartRatio: widget.subChartRatio,
+        subChartNum: widget.subChartData.length);
+    _mainChartSize = Size(width, heightPair.left);
+    _subChartSize = Size(width, heightPair.right);
+
+    _pointWidth = KlineUtil.getPointWidth(
+        width: width - (widget.margin?.right ?? 0),
+        dataLength: _showCandlestickChartData?.dataList.length ?? 0,
+        gapRatio: widget.dataGapRatio);
+    _pointGap = _pointWidth / widget.dataGapRatio;
   }
 
   /// 获取蜡烛浮层地址
@@ -235,7 +238,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       {required BuildContext context,
       required double left,
       required double top,
-      required CandlestickChartVo vo}) {
+      required CandlestickChartData vo}) {
     if (_candlestickOverlayEntry != null) {
       _candlestickOverlayEntry?.remove();
     }
@@ -253,7 +256,7 @@ class _KChartWidgetState extends State<KChartWidget> {
             color: Colors.grey,
             child: Center(
               child: Text(
-                'open ${vo.open.toStringAsFixed(2)}, close ${vo.close.toStringAsFixed(2)}, high ${vo.high.toStringAsFixed(2)}, low ${vo.low.toStringAsFixed(2)}',
+                'time ${vo.dateTime}, open ${vo.open.toStringAsFixed(2)}, close ${vo.close.toStringAsFixed(2)}, high ${vo.high.toStringAsFixed(2)}, low ${vo.low.toStringAsFixed(2)}',
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
             ),
@@ -269,15 +272,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     _candlestickOverlayEntry?.remove();
     _candlestickOverlayEntry = null;
     debugPrint("hide overlay execute ... ");
-  }
-
-  /// 点击指标事件
-  void _onTapIndicator(int index) {
-    if (widget.onTapIndicator == null) {
-      return;
-    }
-
-    widget.onTapIndicator!(index);
   }
 
   _initSelectedLineChartDataIndexStream() {
@@ -296,21 +290,23 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     if (index <= -1) {
-      _selectedLineChartDataStream.add(SelectedChartDataStreamVo());
+      _selectedLineChartDataStream.add(MainChartSelectedDataVo());
       return;
     }
 
-    SelectedChartDataStreamVo vo = SelectedChartDataStreamVo(lineChartList: []);
-    vo.candlestickChartVo =
-        KlineCollectionUtil.getByIndex(_showCandlestickChartData, index);
+    MainChartSelectedDataVo vo = MainChartSelectedDataVo(lineChartList: []);
+    vo.candlestickChartData = KlineCollectionUtil.getByIndex(
+        _showCandlestickChartData?.dataList, index);
     for (var lineData in _showLineChartData!) {
       LineChartData? indexData =
           KlineCollectionUtil.getByIndex(lineData.dataList, index);
       if (indexData == null) {
         continue;
       }
-      vo.lineChartList!.add(SelectedLineChartDataStreamVo(
-          color: lineData.color, name: lineData.name, value: indexData.value));
+      vo.lineChartList!.add(ChartShowDataItemVo(
+          color: lineData.color,
+          name: lineData.name ?? '',
+          value: indexData.value));
     }
     _selectedLineChartDataStream.add(vo);
   }
@@ -320,23 +316,20 @@ class _KChartWidgetState extends State<KChartWidget> {
   _resetShowData({int? startIndex}) {
     if (startIndex == null) {
       _showDataStartIndex =
-          (widget.candlestickChartData.length - _showDataNum - 1)
-              .clamp(0, widget.candlestickChartData.length - 1);
+          (widget.candlestickChartData.dataList.length - _showDataNum - 1)
+              .clamp(0, widget.candlestickChartData.dataList.length - 1);
     } else {
       _showDataStartIndex = startIndex;
     }
 
     int endIndex = (_showDataStartIndex + _showDataNum)
-        .clamp(0, widget.candlestickChartData.length - 1);
+        .clamp(0, widget.candlestickChartData.dataList.length - 1);
 
-    _showDataStartIndex =
-        (endIndex - _showDataNum).clamp(0, widget.candlestickChartData.length);
+    _showDataStartIndex = (endIndex - _showDataNum)
+        .clamp(0, widget.candlestickChartData.dataList.length);
 
-    _showCandlestickChartData = KlineCollectionUtil.sublist(
-            list: widget.candlestickChartData,
-            startIndex: _showDataStartIndex,
-            endIndex: endIndex) ??
-        [];
+    _showCandlestickChartData = widget.candlestickChartData.subData(
+        start: _showDataStartIndex, end: endIndex) as CandlestickChartVo;
 
     if (KlineCollectionUtil.isNotEmpty(widget.lineChartData)) {
       _showLineChartData = [];
@@ -357,7 +350,8 @@ class _KChartWidgetState extends State<KChartWidget> {
       for (List<BaseChartVo> dataList in widget.subChartData) {
         List<BaseChartVo> newDataList = [];
         for (BaseChartVo data in dataList) {
-          newDataList.add(data.subData(start: _showDataStartIndex, end: endIndex));
+          newDataList
+              .add(data.subData(start: _showDataStartIndex, end: endIndex));
         }
         _showSubChartData.add(newDataList);
       }
@@ -368,10 +362,9 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 长按移动事件
   _onLongPressMoveUpdate(details) {
-    _selectedXY =
+    _crossCurveXY =
         Pair(left: details.localPosition.dx, right: details.localPosition.dy);
     _isShowCrossCurve = true;
-    _crossCurvePainterState(() {});
   }
 
   /// 拖动事件
@@ -381,9 +374,8 @@ class _KChartWidgetState extends State<KChartWidget> {
 
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
-      _selectedXY =
+      _crossCurveXY =
           Pair(left: details.localPosition.dx, right: details.localPosition.dy);
-      _crossCurvePainterState(() {});
 
       return;
     }
@@ -403,22 +395,28 @@ class _KChartWidgetState extends State<KChartWidget> {
     debugPrint(
         "点击x：${detail.localPosition.dx}, 点击y：${detail.localPosition.dy}");
 
-    if (_selectedXY != null) {
-      _selectedXY = null;
+    if (_crossCurveXY != null) {
+      _crossCurveXY = null;
+      _resetCrossCurve();
       // 恢复默认最后一根k线的数据
       if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
         _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
       }
 
       _isShowCrossCurve = _isOnHorizontalDragStart ? _isShowCrossCurve : false;
-      _crossCurvePainterState(() {});
       return;
     }
 
-    _selectedXY =
+    _crossCurveXY =
         Pair(left: detail.localPosition.dx, right: detail.localPosition.dy);
     _isShowCrossCurve = true;
+    _resetCrossCurve();
+  }
 
-    _crossCurvePainterState(() {});
+  /// 重置十字线位置
+  void _resetCrossCurve() {
+    for (var element in _crossCurveStreamList) {
+      element.add(_crossCurveXY ?? Pair(left: null, right: null));
+    }
   }
 }

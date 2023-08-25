@@ -2428,11 +2428,11 @@ class ExampleVolData {
     List<BarChartData> dataList = [];
     for (int i = 0; i < _volume.length; ++i) {
       Color color =
-          (candlestickData[i]?.close ?? 0) < (candlestickData[i]?.open ?? 0)
+          (candlestickData.dataList[i]?.close ?? 0) < (candlestickData.dataList[i]?.open ?? 0)
               ? KlineConfig.green
               : KlineConfig.red;
       bool isFill =
-          (candlestickData[i]?.close ?? 0) < (candlestickData[i]?.open ?? 0)
+          (candlestickData.dataList[i]?.close ?? 0) < (candlestickData.dataList[i]?.open ?? 0)
               ? true
               : false;
       dataList.add(

@@ -7,6 +7,6 @@ class ChartShowDataItemVo {
   double? value;
   Color color;
 
-  ChartShowDataItemVo({this.name = '', this.value, this.color = Colors.black});
+  ChartShowDataItemVo({this.name = '', this.value, this.color = Colors.black,});
 
 }
