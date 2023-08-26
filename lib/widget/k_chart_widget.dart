@@ -70,6 +70,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 十字线选中数据索引流。
   StreamController<int>? _selectedLineChartDataIndexStream;
 
+  /// 十字线是否显示
   bool _isShowCrossCurve = false;
   bool _isOnHorizontalDragStart = true;
 
@@ -365,6 +366,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _crossCurveXY =
         Pair(left: details.localPosition.dx, right: details.localPosition.dy);
     _isShowCrossCurve = true;
+    _resetCrossCurve();
   }
 
   /// 拖动事件
@@ -376,7 +378,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     if (_isShowCrossCurve) {
       _crossCurveXY =
           Pair(left: details.localPosition.dx, right: details.localPosition.dy);
-
+      _resetCrossCurve();
       return;
     }
 
@@ -393,9 +395,10 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   _onTapDown(TapDownDetails detail) {
     debugPrint(
-        "点击x：${detail.localPosition.dx}, 点击y：${detail.localPosition.dy}");
+        "_onTapDown 点击x：${detail.localPosition.dx}, 点击y：${detail.localPosition.dy}");
 
-    if (_crossCurveXY != null) {
+    // 取消选中的十字线
+    if (_isShowCrossCurve && !_isOnHorizontalDragStart) {
       _crossCurveXY = null;
       _resetCrossCurve();
       // 恢复默认最后一根k线的数据
@@ -403,7 +406,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
       }
 
-      _isShowCrossCurve = _isOnHorizontalDragStart ? _isShowCrossCurve : false;
+      _isShowCrossCurve = false;
       return;
     }
 

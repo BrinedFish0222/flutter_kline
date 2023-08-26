@@ -86,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
         subChartData: [
           [ExampleVolData.barChartData, ...ExampleVolData.lineChartData],
           [...ExampleVolData.lineChartData],
+          [...ExampleVolData.lineChartData],
         ],
       ),
     );
