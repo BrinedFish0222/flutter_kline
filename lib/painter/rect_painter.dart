@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 
 /// 矩形背景图
 class RectPainter extends CustomPainter {
@@ -103,7 +104,7 @@ class RectPainter extends CustomPainter {
     if (_transverseLineTextValues.isNotEmpty) {
       TextPainter firstTextPainter = TextPainter(
         text: TextSpan(
-          text: _transverseLineTextValues[0].toStringAsFixed(2),
+          text: KlineNumUtil.formatNumberUnit(_transverseLineTextValues[0]),
           style: fontTextStyle,
         ),
         textDirection: TextDirection.ltr,
@@ -122,7 +123,7 @@ class RectPainter extends CustomPainter {
       }
 
       TextSpan span = TextSpan(
-        text: _transverseLineTextValues[i].toStringAsFixed(2),
+        text: KlineNumUtil.formatNumberUnit(_transverseLineTextValues[i]),
         style: fontTextStyle,
       );
 

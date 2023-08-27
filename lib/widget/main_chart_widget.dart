@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';
 import '../renderer/main_chart_renderer.dart';
+import '../utils/kline_util.dart';
 import '../vo/candlestick_chart_vo.dart';
 import '../vo/chart_show_data_item_vo.dart';
 import '../vo/line_chart_vo.dart';
@@ -49,6 +51,8 @@ class _MainChartWidgetState extends State<MainChartWidget> {
   final StreamController<MainChartSelectedDataVo> _mainChartSelectedDataStream =
       StreamController();
 
+  final GlobalKey _chartKey = GlobalKey();
+
   @override
   void initState() {
     _initSelectedChartData();
@@ -77,6 +81,10 @@ class _MainChartWidgetState extends State<MainChartWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var maxMinValue = KlineUtil.getMaxMinValue(
+        candlestickCharVo: widget.candlestickChartData,
+        chartDataList: widget.lineChartData);
+
     return Column(
       children: [
         // 信息栏
@@ -88,6 +96,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
           children: [
             RepaintBoundary(
               child: CustomPaint(
+                key: _chartKey,
                 size: widget.size,
                 painter: MainChartRenderer(
                     candlestickCharData: widget.candlestickChartData!,
@@ -95,6 +104,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                     margin: widget.margin,
                     pointWidth: widget.pointWidth,
                     pointGap: widget.pointGap,
+                    maxMinValue: maxMinValue,
                     candlestickGapRatio: widget.candlestickGapRatio ?? 3),
               ),
             ),
@@ -102,11 +112,34 @@ class _MainChartWidgetState extends State<MainChartWidget> {
               child: StreamBuilder(
                   stream: widget.crossCurveStream?.stream,
                   builder: (context, snapshot) {
+                    Pair<double?, double?> selectedXY =
+                        Pair(left: null, right: null);
+                    if (snapshot.data != null && !snapshot.data!.isNull()) {
+                      RenderBox renderBox = _chartKey.currentContext!
+                          .findRenderObject() as RenderBox;
+
+                      Offset? selectedOffset =
+                          snapshot.data == null || snapshot.data!.isNull()
+                              ? null
+                              : renderBox.globalToLocal(Offset(
+                                  snapshot.data?.left ?? 0,
+                                  snapshot.data?.right ?? 0));
+                      selectedXY.left = selectedOffset?.dx;
+                      selectedXY.right = selectedOffset?.dy;
+                    }
+
+                    double? selectedHorizontalValue =
+                        KlineUtil.computeSelectedHorizontalValue(
+                            maxMinValue: maxMinValue,
+                            height: widget.size.height,
+                            selectedY: selectedXY.right);
+
                     return CustomPaint(
                       size: widget.size,
                       painter: CrossCurvePainter(
-                          selectedXY: snapshot.data,
+                          selectedXY: selectedXY,
                           margin: widget.margin,
+                          selectedHorizontalValue: selectedHorizontalValue,
                           selectedDataIndexStream:
                               widget.selectedChartDataIndexStream,
                           pointWidth: widget.pointWidth,

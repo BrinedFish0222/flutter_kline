@@ -13,14 +13,18 @@ class SubChartRenderer extends CustomPainter {
   final List<BaseChartVo> chartData;
   final double? pointWidth;
   final double? pointGap;
+  final Pair<double, double>? heightRange;
 
   const SubChartRenderer(
-      {required this.chartData, this.pointWidth, this.pointGap});
+      {required this.chartData,
+      this.pointWidth,
+      this.pointGap,
+      this.heightRange});
 
   @override
   void paint(Canvas canvas, Size size) {
     // 统计高度范围
-    Pair<double, double> heightRange =
+    Pair<double, double> heightRange = this.heightRange ??
         Pair.getMaxMinValue(chartData.map((e) => e.getMaxMinData()).toList());
     // 提取线图
     var lineChartData = chartData.whereType<LineChartVo>().toList();

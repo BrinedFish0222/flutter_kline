@@ -28,6 +28,8 @@ class MainChartRenderer extends CustomPainter {
   final double? pointWidth;
   final double? pointGap;
 
+  final Pair<double, double>? maxMinValue;
+
   const MainChartRenderer({
     required this.candlestickCharData,
     this.lineChartData,
@@ -36,6 +38,7 @@ class MainChartRenderer extends CustomPainter {
     this.margin,
     this.pointWidth,
     this.pointGap,
+    this.maxMinValue,
   });
 
   @override
@@ -44,7 +47,10 @@ class MainChartRenderer extends CustomPainter {
     Size marginSize =
         margin == null ? size : Size(size.width - margin!.right, size.height);
 
-    Pair<double, double> heightRange = getHeightRange();
+    Pair<double, double> maxMinValue = this.maxMinValue ??
+        KlineUtil.getMaxMinValue(
+            candlestickCharVo: candlestickCharData,
+            chartDataList: lineChartData);
     double pointWidth = this.pointWidth ??
         KlineUtil.getPointWidth(
             width: marginSize.width,
@@ -56,8 +62,8 @@ class MainChartRenderer extends CustomPainter {
     RectPainter(
             size: size,
             transverseLineNum: rectTransverseLineNum,
-            maxValue: heightRange.left,
-            minValue: heightRange.right,
+            maxValue: maxMinValue.left,
+            minValue: maxMinValue.right,
             isDrawVerticalLine: true,
             textStyle: const TextStyle(color: Colors.grey, fontSize: 8))
         .paint(canvas, size);
@@ -65,7 +71,7 @@ class MainChartRenderer extends CustomPainter {
     // 画蜡烛图
     CandlestickChartPainter(
       data: candlestickCharData,
-      maxMinHeight: heightRange,
+      maxMinHeight: maxMinValue,
       pointWidth: pointWidth,
       pointGap: pointGap,
     ).paint(canvas, marginSize);
@@ -74,29 +80,11 @@ class MainChartRenderer extends CustomPainter {
     if (KlineCollectionUtil.isNotEmpty(lineChartData)) {
       LineChartPainter(
               lineChartData: lineChartData!,
-              maxMinValue: heightRange,
+              maxMinValue: maxMinValue,
               pointWidth: pointWidth,
               pointGap: pointGap)
           .paint(canvas, marginSize);
     }
-  }
-
-  /// 获取高度范围
-  Pair<double, double> getHeightRange() {
-    Pair<double, double> result = candlestickCharData.getMaxMinData();
-
-    lineChartData?.forEach((element) {
-      element?.dataList?.forEach((data) {
-        result.left = (data.value ?? -double.maxFinite) > result.left
-            ? data.value!
-            : result.left;
-        result.right = (data.value ?? double.maxFinite) < result.right
-            ? data.value!
-            : result.right;
-      });
-    });
-
-    return result;
   }
 
   @override

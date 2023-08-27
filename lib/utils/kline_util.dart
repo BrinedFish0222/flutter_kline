@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
+import 'package:flutter_kline/vo/base_chart_vo.dart';
 
 import '../common/pair.dart';
+import '../vo/candlestick_chart_vo.dart';
 
 class KlineUtil {
   /// TODO 直接改成一个painter
@@ -128,5 +130,44 @@ class KlineUtil {
     /// 示例：800 / (50 * 3 + 50 - 1);
     var s = width / (gapRatio * dataLength + dataLength - 1);
     return s * gapRatio;
+  }
+
+  /// 计算y轴值：最大最小值范围差 / 高度 * 选中的y轴高度 + 底数
+  /// [maxMinValue] 最大最小值
+  /// [selectedY] 选中的y轴
+  static double? computeSelectedHorizontalValue(
+      {required Pair<double, double> maxMinValue,
+      required double height,
+      required double? selectedY}) {
+    if (selectedY == null) {
+      return null;
+    }
+
+    return (maxMinValue.left - maxMinValue.right) /
+            height *
+            (height - selectedY) +
+        maxMinValue.right;
+  }
+
+  /// 计算最大最小值
+  static Pair<double, double> getMaxMinValue(
+      {CandlestickChartVo? candlestickCharVo,
+      List<BaseChartVo?>? chartDataList}) {
+    Pair<double, double> result = candlestickCharVo?.getMaxMinData() ??
+        Pair(left: -double.maxFinite, right: double.maxFinite);
+
+    chartDataList?.forEach((element) {
+      if (element == null) {
+        return;
+      }
+
+      var maxMinData = element.getMaxMinData();
+      result.left =
+          maxMinData.left > result.left ? maxMinData.left : result.left;
+      result.right =
+          maxMinData.right < result.right ? maxMinData.right : result.right;
+    });
+
+    return result;
   }
 }

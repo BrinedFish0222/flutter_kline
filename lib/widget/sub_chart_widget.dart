@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/renderer/sub_chart_renderer.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
@@ -41,6 +42,8 @@ class _SubChartWidgetState extends State<SubChartWidget> {
   final StreamController<List<ChartShowDataItemVo>> _chartShowDataItemsStream =
       StreamController();
 
+  final GlobalKey _chartKey = GlobalKey();
+
   @override
   void initState() {
     // 监听选中的数据索引位置
@@ -64,6 +67,10 @@ class _SubChartWidgetState extends State<SubChartWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // 统计高度范围
+    Pair<double, double> heightRange = Pair.getMaxMinValue(
+        widget.chartData.map((e) => e.getMaxMinData()).toList());
+
     return Column(
       children: [
         // 信息栏
@@ -75,27 +82,43 @@ class _SubChartWidgetState extends State<SubChartWidget> {
           children: [
             RepaintBoundary(
               child: CustomPaint(
+                key: _chartKey,
                 size: widget.size,
                 painter: SubChartRenderer(
                     chartData: widget.chartData,
                     pointWidth: widget.pointWidth,
-                    pointGap: widget.pointGap),
+                    pointGap: widget.pointGap,
+                    heightRange: heightRange),
               ),
             ),
             RepaintBoundary(
               child: StreamBuilder(
                   stream: widget.crossCurveStream?.stream,
                   builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return const SizedBox();
+                    }
+
+                    RenderBox renderBox = _chartKey.currentContext!
+                        .findRenderObject() as RenderBox;
+                    var selectedXY = renderBox.globalToLocal(Offset(
+                        snapshot.data?.left ?? 0, snapshot.data?.right ?? 0));
+
+                    double? selectedHorizontalValue =
+                        KlineUtil.computeSelectedHorizontalValue(
+                            maxMinValue: heightRange,
+                            height: widget.size.height,
+                            selectedY: selectedXY.dy);
+
+                    debugPrint("副图十字线绘制，选中的横轴值：$selectedHorizontalValue");
                     return CustomPaint(
                       size: widget.size,
                       painter: CrossCurvePainter(
-                        selectedXY: snapshot.data,
-                        pointWidth: widget.pointWidth,
-                        pointGap: widget.pointGap,
-                        // margin: widget.margin,
-                        // selectedDataIndexStream:
-                        //     widget.selectedChartDataIndexStream,
-                      ),
+                          selectedXY:
+                              Pair(left: selectedXY.dx, right: selectedXY.dy),
+                          pointWidth: widget.pointWidth,
+                          pointGap: widget.pointGap,
+                          selectedHorizontalValue: selectedHorizontalValue),
                     );
                   }),
             )

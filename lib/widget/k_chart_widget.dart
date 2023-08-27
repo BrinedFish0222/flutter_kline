@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/k_chart_renderer_config.dart';
 import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
@@ -56,7 +55,8 @@ class _KChartWidgetState extends State<KChartWidget> {
   late Size _subChartSize;
 
   /// 十字线选中的xy轴
-  Pair<double?, double?>? _crossCurveXY;
+  /// TODO DELET
+  // Pair<double?, double?>? _crossCurveXY;
 
   /// 十字线流。索引0是主图，其它均是副图。
   late List<StreamController<Pair<double?, double?>>> _crossCurveStreamList;
@@ -362,11 +362,12 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   /// 长按移动事件
-  _onLongPressMoveUpdate(details) {
-    _crossCurveXY =
-        Pair(left: details.localPosition.dx, right: details.localPosition.dy);
-    _isShowCrossCurve = true;
-    _resetCrossCurve();
+  _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    debugPrint(
+        "_onLongPressMoveUpdate, dx: ${details.localPosition.dx}, dy ${details.localPosition.dy}");
+
+    _resetCrossCurve(Pair(
+        left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 
   /// 拖动事件
@@ -376,9 +377,8 @@ class _KChartWidgetState extends State<KChartWidget> {
 
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
-      _crossCurveXY =
-          Pair(left: details.localPosition.dx, right: details.localPosition.dy);
-      _resetCrossCurve();
+      _resetCrossCurve(Pair(
+          left: details.globalPosition.dx, right: details.globalPosition.dy));
       return;
     }
 
@@ -399,27 +399,25 @@ class _KChartWidgetState extends State<KChartWidget> {
 
     // 取消选中的十字线
     if (_isShowCrossCurve && !_isOnHorizontalDragStart) {
-      _crossCurveXY = null;
-      _resetCrossCurve();
+      _resetCrossCurve(null);
       // 恢复默认最后一根k线的数据
       if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
         _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
       }
 
-      _isShowCrossCurve = false;
       return;
     }
 
-    _crossCurveXY =
-        Pair(left: detail.localPosition.dx, right: detail.localPosition.dy);
-    _isShowCrossCurve = true;
-    _resetCrossCurve();
+    _resetCrossCurve(
+        Pair(left: detail.globalPosition.dx, right: detail.globalPosition.dy));
   }
 
   /// 重置十字线位置
-  void _resetCrossCurve() {
+  void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
+    _isShowCrossCurve = crossCurveXY != null;
+
     for (var element in _crossCurveStreamList) {
-      element.add(_crossCurveXY ?? Pair(left: null, right: null));
+      element.add(crossCurveXY ?? Pair(left: null, right: null));
     }
   }
 }

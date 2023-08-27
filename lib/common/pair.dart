@@ -4,6 +4,10 @@ class Pair<L, R> {
 
   Pair({required this.left, required this.right});
 
+  bool isNull() {
+    return left == null && right == null;
+  }
+
   static Pair<double, double> getMaxMinValue(
       List<Pair<double, double>?> dataList) {
     Pair<double, double> maxMinValue =

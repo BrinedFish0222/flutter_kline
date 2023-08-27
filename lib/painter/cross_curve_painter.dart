@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/painter/cross_curve_text_painter.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../common/pair.dart';
 
@@ -18,6 +20,9 @@ class CrossCurvePainter extends CustomPainter {
   /// 图 margin 信息
   final EdgeInsets? margin;
 
+  /// 选中的y轴值
+  final double? selectedHorizontalValue;
+
   final StreamController<int>? selectedDataIndexStream;
 
   const CrossCurvePainter(
@@ -25,17 +30,16 @@ class CrossCurvePainter extends CustomPainter {
       this.pointWidth,
       this.pointGap,
       this.margin,
+      this.selectedHorizontalValue,
       this.selectedDataIndexStream});
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (selectedXY == null) {
+    // x轴空或超出范围，不画
+    if (selectedXY == null ||
+        (selectedXY!.left != null && selectedXY!.left! > size.width) ||
+        (selectedXY!.left != null && selectedXY!.left! < 0)) {
       selectedDataIndexStream?.add(-1);
-      return;
-    }
-
-    /// x轴超出范围不画
-    if (selectedXY!.left != null && selectedXY!.left! > size.width) {
       return;
     }
 
@@ -51,17 +55,33 @@ class CrossCurvePainter extends CustomPainter {
     }
 
     debugPrint("newSelectedXY.right: ${newSelectedXY.right}");
-    if (newSelectedXY.right != null) {
-      bool isOutRange =
-          newSelectedXY.right! > size.height || newSelectedXY.right! < 0;
-      if (isOutRange) {
-        canvas.drawLine(Offset(0, newSelectedXY.right!),
-            Offset(0, newSelectedXY.right!), paint);
-      } else {
-        canvas.drawLine(Offset(0, newSelectedXY.right!),
-            Offset(size.width, newSelectedXY.right!), paint);
-      }
+
+    if (newSelectedXY.right == null) {
+      return;
     }
+    bool isOutRange =
+        newSelectedXY.right! > size.height || newSelectedXY.right! < 0;
+    // 超出范围
+    if (isOutRange) {
+      // canvas.drawLine(Offset(0, newSelectedXY.right!),
+      //     Offset(0, newSelectedXY.right!), paint);
+      return;
+    }
+
+    // 画线
+    canvas.drawLine(Offset(0, newSelectedXY.right!),
+        Offset(size.width, newSelectedXY.right!), paint);
+
+    if (selectedHorizontalValue == null || newSelectedXY.right == null) {
+      // 无显示数据，结束。
+      return;
+    }
+
+    // 画选中文本
+    CrossCurveTextPainter(
+            text: KlineNumUtil.formatNumberUnit(selectedHorizontalValue),
+            offset: Offset(0, newSelectedXY.right!))
+        .paint(canvas, size);
   }
 
   /// 重新计算选中的x轴。
