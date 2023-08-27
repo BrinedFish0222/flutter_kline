@@ -16,16 +16,20 @@ class RectPainter extends CustomPainter {
   /// 是否画竖线
   final bool isDrawVerticalLine;
 
-  RectPainter(
-      {required this.size,
-      this.transverseLineNum = 2,
-      this.isDrawVerticalLine = false,
-      this.lineColor = Colors.grey,
-      this.lineWidth = 0.1,
-      this.textStyle,
-      this.maxValue,
-      this.minValue})
-      : assert(
+  /// 是否显示最低值文本
+  final bool showMinValueText;
+
+  RectPainter({
+    required this.size,
+    this.transverseLineNum = 2,
+    this.isDrawVerticalLine = false,
+    this.lineColor = Colors.grey,
+    this.lineWidth = 0.1,
+    this.textStyle,
+    this.maxValue,
+    this.minValue,
+    this.showMinValueText = true,
+  }) : assert(
             !((maxValue != null && minValue == null) ||
                 (maxValue == null && minValue != null)),
             "maxValue和minValue必须二者同时为空或不为空");
@@ -119,6 +123,11 @@ class RectPainter extends CustomPainter {
       _canvas.drawLine(Offset(0, y), Offset(size.width, y), _painter);
 
       if (_transverseLineTextValues.isEmpty) {
+        continue;
+      }
+
+      // 检测是否需要画最后一根线的文本
+      if (i == transverseLineNum + 1 && !showMinValueText) {
         continue;
       }
 
