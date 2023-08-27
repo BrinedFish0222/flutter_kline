@@ -404,6 +404,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
         _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
       }
+      _hideCandlestickOverlay();
 
       return;
     }
