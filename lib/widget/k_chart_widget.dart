@@ -172,16 +172,19 @@ class _KChartWidgetState extends State<KChartWidget> {
           children: [
             Column(
               children: [
-                MainChartWidget(
-                  candlestickChartData: _showCandlestickChartData,
-                  size: _mainChartSize,
-                  lineChartData: _showLineChartData,
-                  margin: widget.margin,
-                  pointWidth: _pointWidth,
-                  pointGap: _pointGap,
-                  crossCurveStream: _crossCurveStreamList[0],
-                  selectedChartDataIndexStream:
-                      _selectedLineChartDataIndexStream,
+                GestureDetector(
+                  onVerticalDragUpdate: _onVerticalDragUpdate,
+                  child: MainChartWidget(
+                    candlestickChartData: _showCandlestickChartData,
+                    size: _mainChartSize,
+                    lineChartData: _showLineChartData,
+                    margin: widget.margin,
+                    pointWidth: _pointWidth,
+                    pointGap: _pointGap,
+                    crossCurveStream: _crossCurveStreamList[0],
+                    selectedChartDataIndexStream:
+                        _selectedLineChartDataIndexStream,
+                  ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
                   SubChartWidget(
@@ -200,6 +203,17 @@ class _KChartWidgetState extends State<KChartWidget> {
         );
       }),
     );
+  }
+
+  void _onVerticalDragUpdate(details) {
+    var delta = details.delta;
+    debugPrint("垂直拉动: $delta");
+    if (delta.dy < 0) {
+      _showDataNum = (_showDataNum - 1).clamp(10, 90);
+    } else {
+      _showDataNum = (_showDataNum + 1).clamp(10, 90);
+    }
+    _resetShowData(startIndex: _showDataStartIndex);
   }
 
   /// 重算布局
