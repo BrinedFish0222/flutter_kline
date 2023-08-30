@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';

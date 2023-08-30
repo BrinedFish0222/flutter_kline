@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../vo/chart_show_data_item_vo.dart';
 
