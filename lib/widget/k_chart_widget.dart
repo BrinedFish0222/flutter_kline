@@ -157,14 +157,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: _onTapDown,
-      onHorizontalDragStart: (details) {
-        debugPrint("GestureDetector onHorizontalDragStart");
-        _sameTimeLastHorizontalDragX = details.localPosition.dx;
-        _isOnHorizontalDragStart = true;
-      },
-      onHorizontalDragUpdate: _onHorizontalDragUpdate,
-      onHorizontalDragEnd: (details) => _isOnHorizontalDragStart = false,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: LayoutBuilder(builder: (context, constraints) {
         _computeLayout(constraints);
@@ -173,6 +165,11 @@ class _KChartWidgetState extends State<KChartWidget> {
             Column(
               children: [
                 GestureDetector(
+                  onTapDown: _onTapDown,
+                  onHorizontalDragStart: _onHorizontalDragStart,
+                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                  onHorizontalDragEnd: (details) =>
+                      _isOnHorizontalDragStart = false,
                   onVerticalDragUpdate: _onVerticalDragUpdate,
                   child: MainChartWidget(
                     candlestickChartData: _showCandlestickChartData,
@@ -203,6 +200,12 @@ class _KChartWidgetState extends State<KChartWidget> {
         );
       }),
     );
+  }
+
+  void _onHorizontalDragStart(details) {
+    debugPrint("GestureDetector onHorizontalDragStart");
+    _sameTimeLastHorizontalDragX = details.localPosition.dx;
+    _isOnHorizontalDragStart = true;
   }
 
   void _onVerticalDragUpdate(details) {

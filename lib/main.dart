@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const DoubleBackExitAppWidget(
+          child: MyHomePage(title: 'Flutter Demo Home Page')),
     );
   }
 }
@@ -71,7 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _buildCustomPaint() {
-    var size = Size(MediaQuery.of(context).size.width - 20, MediaQuery.of(context).size.height * 0.6);
+    var size = Size(MediaQuery.of(context).size.width - 20,
+        MediaQuery.of(context).size.height * 0.6);
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: KChartWidget(
