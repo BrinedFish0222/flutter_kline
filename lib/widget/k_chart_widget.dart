@@ -412,7 +412,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         "_onTapDown 点击x：${detail.localPosition.dx}, 点击y：${detail.localPosition.dy}");
 
     // 取消选中的十字线
-    if (_isShowCrossCurve && !_isOnHorizontalDragStart) {
+    if (_isShowCrossCurve || (_isShowCrossCurve && !_isOnHorizontalDragStart)) {
       _resetCrossCurve(null);
       // 恢复默认最后一根k线的数据
       if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
