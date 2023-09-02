@@ -3,8 +3,10 @@ import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
+import 'package:flutter_kline/vo/bar_chart_vo.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
 
+import 'example/example_ess_data.dart';
 import 'example/example_vol_data.dart';
 
 void main() {
@@ -75,6 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
   _buildCustomPaint() {
     var size = Size(MediaQuery.of(context).size.width - 20,
         MediaQuery.of(context).size.height * 0.6);
+    BarChartVo barChartVo = ExampleVolData.barChartData..barWidth = 2;
+    for (var element in barChartVo.data) {
+      element.isFill = true;
+    }
+
     return Padding(
       padding: const EdgeInsets.all(15),
       child: KChartWidget(
@@ -88,7 +95,11 @@ class _MyHomePageState extends State<MyHomePage> {
         margin: const EdgeInsets.all(5),
         subChartData: [
           [ExampleVolData.barChartData, ...ExampleVolData.lineChartData],
-          [...ExampleVolData.lineChartData],
+          [
+            ExampleEssData.barChartData..barWidth = 2,
+            ExampleEssData.lineChartA,
+            ExampleEssData.lineChartB
+          ],
           [...ExampleVolData.lineChartData],
         ],
       ),

@@ -5,10 +5,12 @@ import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 class BarChartVo extends BaseChartVo {
+  /// 柱体宽度
+  double? barWidth;
   List<BarChartData> data;
   List<ChartShowDataItemVo?>? _selectedShowData;
 
-  BarChartVo({super.id, super.name, required this.data}) {
+  BarChartVo({super.id, super.name, this.barWidth, required this.data}) {
     getSelectedShowData();
   }
 
@@ -35,7 +37,8 @@ class BarChartVo extends BaseChartVo {
 
   @override
   BaseChartVo subData({required int start, int? end}) {
-    return BarChartVo(id: id, name: name, data: data.sublist(start, end));
+    return BarChartVo(
+        id: id, name: name, barWidth: barWidth, data: data.sublist(start, end));
   }
 }
 
