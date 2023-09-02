@@ -48,7 +48,10 @@ class SubChartRenderer extends CustomPainter {
       // 画柱图
       if (data is BarChartVo) {
         BarChartPainter(
-                barData: data, pointWidth: pointWidth, pointGap: pointGap ?? 5)
+                barData: data,
+                pointWidth: pointWidth,
+                pointGap: pointGap ?? 5,
+                heightRange: heightRange)
             .paint(canvas, size);
         continue;
       }

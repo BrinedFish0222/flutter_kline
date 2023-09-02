@@ -8,7 +8,10 @@ abstract class BaseChartVo {
   String? id;
   String? name;
 
-  BaseChartVo({this.id, this.name});
+  /// 最小值
+  double? minValue;
+
+  BaseChartVo({this.id, this.name, this.minValue});
 
   /// 获取整个图**所有**选中显示的数据集合
   List<ChartShowDataItemVo?>? getSelectedShowData();

@@ -9,8 +9,14 @@ class BarChartVo extends BaseChartVo {
   double? barWidth;
   List<BarChartData> data;
   List<ChartShowDataItemVo?>? _selectedShowData;
+  Pair<double, double>? _maxMinData;
 
-  BarChartVo({super.id, super.name, this.barWidth, required this.data}) {
+  BarChartVo(
+      {super.id,
+      super.name,
+      super.minValue,
+      this.barWidth,
+      required this.data}) {
     getSelectedShowData();
   }
 
@@ -28,17 +34,30 @@ class BarChartVo extends BaseChartVo {
 
   @override
   Pair<double, double> getMaxMinData() {
+    if (_maxMinData != null) {
+      return _maxMinData!;
+    }
+
     double max = data
         .map((e) => e.value)
         .reduce((value, element) => value > element ? value : element);
-    // double min = data.map((e) => e.value).reduce((value, element) => value < element ? value : element);
-    return Pair<double, double>(left: max, right: 0);
+    double min = minValue ??
+        data
+            .map((e) => e.value)
+            .reduce((value, element) => value < element ? value : element);
+
+    _maxMinData = Pair<double, double>(left: max, right: min);
+    return _maxMinData!;
   }
 
   @override
   BaseChartVo subData({required int start, int? end}) {
     return BarChartVo(
-        id: id, name: name, barWidth: barWidth, data: data.sublist(start, end));
+        id: id,
+        name: name,
+        barWidth: barWidth,
+        minValue: minValue,
+        data: data.sublist(start, end));
   }
 }
 

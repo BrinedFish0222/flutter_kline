@@ -10,7 +10,14 @@ class BarChartPainter extends CustomPainter {
   final double? pointWidth;
   final double pointGap;
 
-  BarChartPainter({required this.barData, this.pointWidth, this.pointGap = 5});
+  /// 高度范围
+  final Pair<double, double>? heightRange;
+
+  BarChartPainter(
+      {required this.barData,
+      this.pointWidth,
+      this.pointGap = 5,
+      this.heightRange});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -21,9 +28,13 @@ class BarChartPainter extends CustomPainter {
             barHeightData.length;
 
     // 柱体最大值
-    final maxDataValue = barHeightData
-        .map((element) => element.value)
-        .reduce((value, element) => value > element ? value : element);
+    final maxDataValue = barData.getMaxMinData().left;
+    // 数据最低值
+    final minDataValue = heightRange?.right ?? barData.getMaxMinData().right;
+    // 数据份额
+    final dataShare = _getDataShare();
+    // 数据图高度份额
+    final dataChartHeightShare = size.height / dataShare;
 
     final paint = Paint()
       ..color = KlineConfig.red
@@ -34,17 +45,17 @@ class BarChartPainter extends CustomPainter {
       paint.color = data.color;
       paint.style = data.isFill ? PaintingStyle.fill : PaintingStyle.stroke;
 
-      final barHeight = (data.value / maxDataValue) * size.height;
-
       // 左边坐标点
       final left = i * pointWidth + (i == 0 ? 0 : i * pointGap);
-      final top = size.height - barHeight;
+      final top =
+          size.height - dataChartHeightShare * (data.value - minDataValue);
       final right = left + pointWidth;
+      final bottom = size.height - dataChartHeightShare * (0 - minDataValue);
       Pair<double, double> newLeftRight =
           _resetBarWidth(left: left, right: right);
 
-      final rect = Rect.fromLTRB(
-          newLeftRight.left, top, newLeftRight.right, size.height);
+      final rect = Rect.fromLTRB(newLeftRight.left, top < 0 ? 0 : top,
+          newLeftRight.right, bottom < 0 ? 0 : bottom);
       canvas.drawRect(rect, paint);
     }
   }
@@ -69,5 +80,15 @@ class BarChartPainter extends CustomPainter {
 
     double differenceWidth = (oldWidth - barWidth) / 2;
     return Pair(left: left + differenceWidth, right: right - differenceWidth);
+  }
+
+  /// 获取数据份额
+  double _getDataShare() {
+    if (heightRange != null) {
+      return (heightRange?.left ?? 0) - (heightRange?.right ?? 0);
+    }
+
+    var maxMinData = barData.getMaxMinData();
+    return maxMinData.left - maxMinData.right;
   }
 }

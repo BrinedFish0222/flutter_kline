@@ -10,7 +10,8 @@ class CandlestickChartVo extends BaseChartVo {
 
   Pair<double, double>? _maxMinData;
 
-  CandlestickChartVo({super.id, super.name, required this.dataList}) {
+  CandlestickChartVo(
+      {super.id, super.name, super.minValue, required this.dataList}) {
     getMaxMinData();
   }
 
@@ -57,6 +58,10 @@ class CandlestickChartVo extends BaseChartVo {
         .toList();
     _maxMinData = Pair.getMaxMinValue(pairList);
 
+    if (minValue != null) {
+      _maxMinData?.right = minValue!;
+    }
+
     return _maxMinData!;
   }
 
@@ -69,7 +74,10 @@ class CandlestickChartVo extends BaseChartVo {
   @override
   BaseChartVo subData({required int start, int? end}) {
     return CandlestickChartVo(
-        id: id, name: name, dataList: dataList.sublist(start, end));
+        id: id,
+        name: name,
+        minValue: minValue,
+        dataList: dataList.sublist(start, end));
   }
 }
 

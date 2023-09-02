@@ -16,6 +16,7 @@ class LineChartVo extends BaseChartVo {
   LineChartVo(
       {super.id,
       super.name,
+      super.minValue,
       required this.dataList,
       this.color = Colors.black}) {
     getSelectedShowData();
@@ -74,6 +75,10 @@ class LineChartVo extends BaseChartVo {
           : result.right;
     });
 
+    if (minValue != null) {
+      result.right = minValue!;
+    }
+
     return result;
   }
 
@@ -82,6 +87,7 @@ class LineChartVo extends BaseChartVo {
     return LineChartVo(
         id: id,
         name: name,
+        minValue: minValue,
         dataList: dataList?.sublist(start, end),
         color: color);
   }
