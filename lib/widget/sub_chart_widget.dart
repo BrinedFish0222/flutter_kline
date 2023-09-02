@@ -75,6 +75,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
       children: [
         // 信息栏
         SubChartShowDataWidget(
+            initData: BaseChartVo.getLastShowData(widget.chartData),
             name: widget.name,
             onTapName: () => debugPrint("副图点击"),
             chartShowDataItemsStream: _chartShowDataItemsStream),

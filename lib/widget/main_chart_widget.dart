@@ -88,6 +88,9 @@ class _MainChartWidgetState extends State<MainChartWidget> {
       children: [
         // 信息栏
         MainChartShowDataWidget(
+          initData: MainChartSelectedDataVo.getLastShowData(
+              candlestickChartVo: widget.candlestickChartData,
+              lineChartVoList: widget.lineChartData),
           name: widget.lineChartName ?? 'MA',
           mainChartSelectedDataStream: _mainChartSelectedDataStream,
         ),

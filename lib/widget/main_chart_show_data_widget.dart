@@ -11,10 +11,12 @@ class MainChartShowDataWidget extends StatelessWidget {
     required this.name,
     required StreamController<MainChartSelectedDataVo>
         mainChartSelectedDataStream,
+    this.initData,
   }) : _mainChartSelectedDataStream = mainChartSelectedDataStream;
 
   final String name;
   final StreamController<MainChartSelectedDataVo> _mainChartSelectedDataStream;
+  final MainChartSelectedDataVo? initData;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class MainChartShowDataWidget extends StatelessWidget {
         ),
         Expanded(
           child: StreamBuilder<MainChartSelectedDataVo>(
+              initialData: initData,
               stream: _mainChartSelectedDataStream.stream,
               builder: (context, snapshot) {
                 var data = snapshot.data;

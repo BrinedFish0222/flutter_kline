@@ -41,10 +41,10 @@ class KlineNumUtil {
   static String formatNumberUnit(double? number) {
     if (number == null || number == 0) {
       return '0';
-    } else if (number >= 100000000 ) {
+    } else if (number >= 100000000 || number <= -100000000) {
       double result = number / 100000000.0;
       return '${result.toStringAsFixed(2)}亿';
-    } else if (number >= 10000 ) {
+    } else if (number >= 10000 || number <= -10000) {
       double result = number / 10000.0;
       return '${result.toStringAsFixed(2)}万';
     } else {

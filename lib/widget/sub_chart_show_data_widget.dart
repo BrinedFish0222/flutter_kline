@@ -12,11 +12,13 @@ class SubChartShowDataWidget extends StatelessWidget {
     super.key,
     required this.name,
     required this.onTapName,
+    this.initData,
     required this.chartShowDataItemsStream,
   });
 
   final String name;
   final GestureTapCallback? onTapName;
+  final List<ChartShowDataItemVo>? initData;
   final StreamController<List<ChartShowDataItemVo>> chartShowDataItemsStream;
 
   @override
@@ -35,11 +37,11 @@ class SubChartShowDataWidget extends StatelessWidget {
           ),
           Expanded(
             child: StreamBuilder<List<ChartShowDataItemVo>>(
+                initialData: initData,
                 stream: chartShowDataItemsStream.stream,
                 builder: (context, snapshot) {
                   var data = snapshot.data;
-                  
-                  // TODO 将显示的内容进行单位转换
+
                   return ListView(
                     scrollDirection: Axis.horizontal,
                     children: data

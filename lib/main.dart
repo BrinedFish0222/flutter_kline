@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var size = Size(MediaQuery.of(context).size.width - 20,
         MediaQuery.of(context).size.height * 0.6);
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(15),
       child: KChartWidget(
         showDataNum: 30,
         size: size,

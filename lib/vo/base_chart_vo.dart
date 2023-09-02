@@ -1,3 +1,4 @@
+import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
@@ -18,4 +19,16 @@ abstract class BaseChartVo {
 
   /// 子数据
   BaseChartVo subData({required int start, int? end});
+
+  /// 获取最后一根显示的数据
+  static List<ChartShowDataItemVo>? getLastShowData(List<BaseChartVo>? voList) {
+    if (KlineCollectionUtil.isEmpty(voList)) {
+      return null;
+    }
+
+    return voList!
+        .where((e) => KlineCollectionUtil.isNotEmpty(e.getSelectedShowData()))
+        .map((e) => e.getSelectedShowData()!.last!)
+        .toList();
+  }
 }
