@@ -17,4 +17,12 @@ class KlineConfig {
   static const Color red = Colors.red;
   static const Color green = Colors.green;
 
+  /// 显示数据 - 空间大小
+  static const double showDataSpaceSize = 22;
+
+  /// 显示数据 - 字体大小
+  static const double showDataFontSize = 10;
+
+  /// 显示数据 - 图标大小
+  static const double showDataIconSize = 12;
 }

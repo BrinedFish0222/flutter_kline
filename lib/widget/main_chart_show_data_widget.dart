@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../common/kline_config.dart';
 import '../vo/selected_chart_data_stream_vo.dart';
 
 /// 主图信息栏
@@ -21,14 +22,20 @@ class MainChartShowDataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 50,
+      height: KlineConfig.showDataSpaceSize,
       child: Row(children: [
         InkWell(
           onTap: () => debugPrint("主图信息栏点击"),
           child: Row(
             children: [
-              Text(name),
-              const Icon(Icons.arrow_drop_down),
+              Text(
+                name,
+                style: const TextStyle(fontSize: KlineConfig.showDataFontSize),
+              ),
+              const Icon(
+                Icons.arrow_drop_down,
+                size: KlineConfig.showDataIconSize,
+              ),
             ],
           ),
         ),
@@ -48,7 +55,9 @@ class MainChartShowDataWidget extends StatelessWidget {
                                 child: Center(
                                   child: Text(
                                     '${e?.name} ${e?.value?.toStringAsFixed(2)}',
-                                    style: TextStyle(color: e?.color),
+                                    style: TextStyle(
+                                        color: e?.color,
+                                        fontSize: KlineConfig.showDataFontSize),
                                   ),
                                 ),
                               ))

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../vo/chart_show_data_item_vo.dart';
@@ -24,14 +25,21 @@ class SubChartShowDataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 50,
+        height: KlineConfig.showDataSpaceSize,
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           InkWell(
             onTap: onTapName,
             child: Row(
               children: [
-                Text(name),
-                const Icon(Icons.arrow_drop_down),
+                Text(
+                  name,
+                  style:
+                      const TextStyle(fontSize: KlineConfig.showDataFontSize),
+                ),
+                const Icon(
+                  Icons.arrow_drop_down,
+                  size: KlineConfig.showDataIconSize,
+                ),
               ],
             ),
           ),
@@ -51,7 +59,10 @@ class SubChartShowDataWidget extends StatelessWidget {
                                   child: Center(
                                     child: Text(
                                       '${e.name} ${KlineNumUtil.formatNumberUnit(e.value)}',
-                                      style: TextStyle(color: e.color),
+                                      style: TextStyle(
+                                          color: e.color,
+                                          fontSize:
+                                              KlineConfig.showDataFontSize),
                                     ),
                                   ),
                                 ))

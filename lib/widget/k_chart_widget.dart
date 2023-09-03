@@ -201,8 +201,8 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 所有图的点击事件
   void _allChartOnTapDown(details) {
-      _cancelCrossCurve();
-    }
+    _cancelCrossCurve();
+  }
 
   void _onHorizontalDragStart(details) {
     debugPrint("GestureDetector onHorizontalDragStart");
