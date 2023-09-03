@@ -28,7 +28,10 @@ class BarChartPainter extends CustomPainter {
             barHeightData.length;
 
     // 数据最低值
-    final minDataValue = heightRange?.right ?? barData.getMaxMinData().right;
+    double minDataValue = heightRange?.right ?? barData.getMaxMinData().right;
+    if (minDataValue > 0) {
+      minDataValue = 0;
+    }
     // 数据份额
     final dataShare = _getDataShare();
     // 数据图高度份额

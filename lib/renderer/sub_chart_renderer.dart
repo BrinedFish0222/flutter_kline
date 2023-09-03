@@ -23,9 +23,9 @@ class SubChartRenderer extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 统计高度范围
-    Pair<double, double> heightRange = this.heightRange ??
-        Pair.getMaxMinValue(chartData.map((e) => e.getMaxMinData()).toList());
+    bool hasBarChart = _hasBarChart;
+    Pair<double, double> heightRange =
+        _computeHeightRange(hasBarChart: hasBarChart);
     // 提取线图
     var lineChartData = chartData.whereType<LineChartVo>().toList();
 
@@ -66,6 +66,27 @@ class SubChartRenderer extends CustomPainter {
               pointGap: pointGap ?? 0)
           .paint(canvas, size);
     }
+  }
+
+  /// 统计高度范围
+  /// [hasBarChart] 是否有柱图
+  Pair<double, double> _computeHeightRange({required bool hasBarChart}) {
+    var result = heightRange ??
+        Pair.getMaxMinValue(chartData.map((e) => e.getMaxMinData()).toList());
+    if (hasBarChart && result.right > 0) {
+      result.right = 0;
+    }
+    return result;
+  }
+
+  /// 判断是否有柱图
+  bool get _hasBarChart {
+    for (var element in chartData) {
+      if (element is BarChartVo) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
