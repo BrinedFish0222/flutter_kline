@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
+import 'package:flutter_kline/example/example_macd_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
@@ -97,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
         subChartData: [
           [ExampleVolData.barChartData..minValue = 0, ...ExampleVolData.lineChartData],
           [ExampleRmoData.barChartData..barWidth = 4],
+          ExampleMacdData.macd,
           [
             ExampleEssData.barChartData..barWidth = 2,
             ExampleEssData.lineChartA,
