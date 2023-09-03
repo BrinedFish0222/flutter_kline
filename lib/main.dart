@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
@@ -12,8 +13,13 @@ import 'example/example_ess_data.dart';
 import 'example/example_vol_data.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   ExampleCandlestickData.getCandlestickData();
-  runApp(const MyApp());
+  // 设置应用程序的方向为竖屏（只允许竖屏显示）
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -96,7 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         margin: const EdgeInsets.all(5),
         subChartData: [
-          [ExampleVolData.barChartData..minValue = 0, ...ExampleVolData.lineChartData],
+          [
+            ExampleVolData.barChartData..minValue = 0,
+            ...ExampleVolData.lineChartData
+          ],
           [ExampleRmoData.barChartData..barWidth = 4],
           ExampleMacdData.macd,
           [

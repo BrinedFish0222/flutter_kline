@@ -154,6 +154,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      onTapDown: _allChartOnTapDown,
       child: LayoutBuilder(builder: (context, constraints) {
         _computeLayout(constraints);
         return Stack(
@@ -197,6 +198,11 @@ class _KChartWidgetState extends State<KChartWidget> {
       }),
     );
   }
+
+  /// 所有图的点击事件
+  void _allChartOnTapDown(details) {
+      _cancelCrossCurve();
+    }
 
   void _onHorizontalDragStart(details) {
     debugPrint("GestureDetector onHorizontalDragStart");
@@ -411,19 +417,29 @@ class _KChartWidgetState extends State<KChartWidget> {
         "_onTapDown 点击x：${detail.localPosition.dx}, 点击y：${detail.localPosition.dy}");
 
     // 取消选中的十字线
-    if (_isShowCrossCurve || (_isShowCrossCurve && !_isOnHorizontalDragStart)) {
-      _resetCrossCurve(null);
-      // 恢复默认最后一根k线的数据
-      if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
-        _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
-      }
-      _hideCandlestickOverlay();
-
+    if (_cancelCrossCurve()) {
       return;
     }
 
     _resetCrossCurve(
         Pair(left: detail.globalPosition.dx, right: detail.globalPosition.dy));
+  }
+
+  /// 取消十字线
+  bool _cancelCrossCurve() {
+    if (!(_isShowCrossCurve ||
+        (_isShowCrossCurve && !_isOnHorizontalDragStart))) {
+      return false;
+    }
+
+    _resetCrossCurve(null);
+    // 恢复默认最后一根k线的数据
+    if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
+      _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
+    }
+    _hideCandlestickOverlay();
+
+    return true;
   }
 
   /// 重置十字线位置
