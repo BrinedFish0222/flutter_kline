@@ -100,7 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
           [ExampleRmoData.barChartData..barWidth = 4],
           ExampleMacdData.macd,
           [
-            ExampleEssData.barChartData..barWidth = 2,
+            ExampleEssData.barChartData
+              ..barWidth = 2
+              ..minValue = 0,
             ExampleEssData.lineChartA,
             ExampleEssData.lineChartB
           ],

@@ -9,6 +9,7 @@ abstract class BaseChartVo {
   String? name;
 
   /// 最小值
+  /// 柱图如果不支持负数，设置成0。
   double? minValue;
 
   BaseChartVo({this.id, this.name, this.minValue});

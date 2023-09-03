@@ -182,7 +182,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                 for (int i = 0; i < _showSubChartData.length; ++i)
                   SubChartWidget(
                     size: _subChartSize,
-                    name: 'VOL',
+                    name: _showSubChartData[i].first.name ?? '',
                     chartData: _showSubChartData[i],
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
