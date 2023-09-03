@@ -1,5 +1,4 @@
 import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/vo/bar_chart_vo.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 

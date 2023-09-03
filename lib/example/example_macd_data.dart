@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';

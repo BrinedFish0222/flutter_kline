@@ -27,8 +27,6 @@ class BarChartPainter extends CustomPainter {
         (size.width - (barHeightData.length - 1) * pointGap) /
             barHeightData.length;
 
-    // 柱体最大值
-    final maxDataValue = barData.getMaxMinData().left;
     // 数据最低值
     final minDataValue = heightRange?.right ?? barData.getMaxMinData().right;
     // 数据份额

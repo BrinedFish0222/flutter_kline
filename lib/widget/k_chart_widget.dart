@@ -54,10 +54,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 副图size
   late Size _subChartSize;
 
-  /// 十字线选中的xy轴
-  /// TODO DELETE
-  // Pair<double?, double?>? _crossCurveXY;
-
   /// 十字线流。索引0是主图，其它均是副图。
   late List<StreamController<Pair<double?, double?>>> _crossCurveStreamList;
 

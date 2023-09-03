@@ -15,36 +15,6 @@ class CandlestickChartVo extends BaseChartVo {
     getMaxMinData();
   }
 
-  /// TODO: DELETE
-  /* static Pair<double, double> getHeightRange(
-      List<CandlestickChartVo?> candlestickCharData) {
-    Pair<double, double> result =
-        Pair(left: -double.maxFinite, right: double.maxFinite);
-
-    for (var candlestickData in candlestickCharData) {
-      if (candlestickData == null) {
-        continue;
-      }
-
-      var maxMinValue = KlineNumUtil.maxMinValue([
-        candlestickData.open,
-        candlestickData.close,
-        candlestickData.high,
-        candlestickData.low
-      ]);
-
-      result.left = result.left < maxMinValue!.left
-          ? maxMinValue.left.toDouble()
-          : result.left;
-
-      result.right = result.right > maxMinValue.right
-          ? maxMinValue.right.toDouble()
-          : result.right;
-    }
-
-    return result;
-  } */
-
   @override
   Pair<double, double> getMaxMinData() {
     if (_maxMinData != null) {
