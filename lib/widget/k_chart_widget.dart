@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_date_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
+import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
 import '../common/pair.dart';
@@ -270,17 +272,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         left: left,
         child: Material(
           color: Colors.transparent,
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 50,
-            color: Colors.grey,
-            child: Center(
-              child: Text(
-                'time ${vo.dateTime}, open ${vo.open.toStringAsFixed(2)}, close ${vo.close.toStringAsFixed(2)}, high ${vo.high.toStringAsFixed(2)}, low ${vo.low.toStringAsFixed(2)}',
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-          ),
+          child: CandlestickShowDataWidget(vo: vo),
         ),
       ),
     );
@@ -391,9 +383,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
-    debugPrint(
-        "_onHorizontalDragUpdate execute, _isShowCrossCurve: $_isShowCrossCurve, dx: ${details.localPosition.dx}, dy: ${details.localPosition.dy}");
-
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
       _resetCrossCurve(Pair(

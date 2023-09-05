@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ExampleEssData.barChartData
               ..barWidth = 2
               ..minValue = 0,
-            ExampleEssData.lineChartA,
+            // ExampleEssData.lineChartA.subData(start: 0, end: 600),
             ExampleEssData.lineChartB
           ],
         ],

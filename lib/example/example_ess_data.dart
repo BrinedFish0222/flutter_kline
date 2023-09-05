@@ -823,14 +823,14 @@ class ExampleEssData {
   static LineChartVo get lineChartA {
     return LineChartVo(
         name: 'A',
-        color: Colors.blue,
+        color: KlineConfig.kLineColors[0],
         dataList: List.generate(800, (index) => LineChartData(value: 30)));
   }
 
   static LineChartVo get lineChartB {
     return LineChartVo(
         name: "B",
-        color: Colors.yellow,
+        color: KlineConfig.kLineColors[1],
         dataList: List.generate(800, (index) => LineChartData(value: 70)));
   }
 }
