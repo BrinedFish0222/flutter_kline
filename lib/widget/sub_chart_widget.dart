@@ -6,6 +6,8 @@ import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
+import 'package:flutter_kline/vo/mask_layer.dart';
+import 'package:flutter_kline/widget/mask_layer_widget.dart';
 
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';
@@ -20,6 +22,7 @@ class SubChartWidget extends StatefulWidget {
       required this.chartData,
       this.pointWidth,
       this.pointGap,
+      this.maskLayer,
       this.crossCurveStream,
       this.selectedChartDataIndexStream});
 
@@ -28,6 +31,7 @@ class SubChartWidget extends StatefulWidget {
   final List<BaseChartVo> chartData;
   final double? pointWidth;
   final double? pointGap;
+  final MaskLayer? maskLayer;
 
   /// 十字线流
   final StreamController<Pair<double?, double?>>? crossCurveStream;
@@ -122,7 +126,19 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                           selectedHorizontalValue: selectedHorizontalValue),
                     );
                   }),
-            )
+            ),
+
+            /// 遮罩层
+            if (widget.maskLayer != null && widget.maskLayer?.percent != 0)
+              Align(
+                alignment: Alignment.centerRight,
+                child: MaskLayerWidget(
+                  width: MediaQuery.of(context).size.width *
+                      widget.maskLayer!.percent,
+                  height: widget.size.height,
+                  onTap: widget.maskLayer?.onTap,
+                ),
+              )
           ],
         ),
       ],

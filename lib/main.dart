@@ -7,6 +7,7 @@ import 'package:flutter_kline/example/example_macd_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
+import 'package:flutter_kline/vo/mask_layer.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
 
 import 'example/example_ess_data.dart';
@@ -115,6 +116,11 @@ class _MyHomePageState extends State<MyHomePage> {
             // ExampleEssData.lineChartA.subData(start: 0, end: 600),
             ExampleEssData.lineChartB
           ],
+        ],
+        subChartMaskList: [
+          null,
+          MaskLayer(percent: 0.3),
+          MaskLayer(percent: 0.4)
         ],
       ),
     );

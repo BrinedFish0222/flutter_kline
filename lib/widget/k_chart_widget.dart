@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_date_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
@@ -13,6 +12,7 @@ import '../common/pair.dart';
 import '../vo/candlestick_chart_vo.dart';
 import '../vo/chart_show_data_item_vo.dart';
 import '../vo/line_chart_vo.dart';
+import '../vo/mask_layer.dart';
 import 'main_chart_widget.dart';
 
 /// k线图手势操作组件
@@ -23,6 +23,7 @@ class KChartWidget extends StatefulWidget {
       required this.candlestickChartData,
       this.lineChartData,
       required this.subChartData,
+      this.subChartMaskList,
       this.showDataNum = 60,
       this.margin,
       this.onTapIndicator,
@@ -32,7 +33,12 @@ class KChartWidget extends StatefulWidget {
   final Size size;
   final CandlestickChartVo candlestickChartData;
   final List<LineChartVo?>? lineChartData;
+
+  /// 副图数据
   final List<List<BaseChartVo>> subChartData;
+
+  /// 副图遮罩
+  final List<MaskLayer?>? subChartMaskList;
   final EdgeInsets? margin;
   final int showDataNum;
 
@@ -100,8 +106,13 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 蜡烛选中数据悬浮层
   OverlayEntry? _candlestickOverlayEntry;
 
+  /// 副图遮罩
+  List<MaskLayer?> _subChartMaskList = [];
+
   @override
   void initState() {
+    _initSubChartMaskList();
+
     _initCrossCurveStream();
     _showDataNum = widget.showDataNum;
     _showDataStartIndex =
@@ -133,6 +144,15 @@ class _KChartWidgetState extends State<KChartWidget> {
     });
 
     super.initState();
+  }
+
+  /// 初始化副图遮罩列表
+  void _initSubChartMaskList() {
+    if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
+      _subChartMaskList = widget.subChartMaskList!;
+    }
+
+    _subChartMaskList.length = widget.subChartData.length;
   }
 
   /// 初始化十字线 StreamController
@@ -189,6 +209,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     chartData: _showSubChartData[i],
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
+                    maskLayer: _subChartMaskList[i],
                     crossCurveStream: _crossCurveStreamList[i + 1],
                     selectedChartDataIndexStream:
                         _selectedLineChartDataIndexStream,
