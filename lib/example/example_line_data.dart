@@ -1,4 +1,5 @@
 import 'package:flutter_kline/common/kline_config.dart';
+import 'package:flutter_kline/vo/base_chart_vo.dart';
 
 import '../vo/line_chart_vo.dart';
 
@@ -2412,7 +2413,7 @@ class ExampleLineData {
     12.80729166666664
   ];
 
-  static List<LineChartVo?>? getLineChartMA13({int dataIndex = 799}) {
+  static List<BaseChartVo> getLineChartMA13({int dataIndex = 799}) {
     return [
       LineChartVo(
           name: 'MA13',

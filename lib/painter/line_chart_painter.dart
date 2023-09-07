@@ -39,9 +39,11 @@ class LineChartPainter extends CustomPainter {
 
     _initMaxMinValue();
 
+    var maxMinLength = KlineNumUtil.maxMinValue(
+        lineChartData.map((e) => e?.dataList?.length ?? 0).toList());
     if (lineChartData.isNotEmpty) {
-      _pointWidth = (pointWidth ??
-          size.width / (lineChartData.first!.dataList!.length - 1));
+      _pointWidth =
+          (pointWidth ?? size.width / (maxMinLength?.left ?? 2));
     }
   }
 
@@ -98,11 +100,13 @@ class LineChartPainter extends CustomPainter {
           continue;
         }
 
-        lastX ??= computeX(index: j, pointWidth: _pointWidth, pointGap: pointGap);
+        lastX ??=
+            computeX(index: j, pointWidth: _pointWidth, pointGap: pointGap);
         lastY ??= data;
 
-        // x轴 =  
-        double x = computeX(index: j, pointWidth: _pointWidth, pointGap: pointGap);
+        // x轴 =
+        double x =
+            computeX(index: j, pointWidth: _pointWidth, pointGap: pointGap);
         double y = data;
 
         _canvas.drawLine(Offset(lastX, lastY), Offset(x, y), _painter);
@@ -113,7 +117,10 @@ class LineChartPainter extends CustomPainter {
   }
 
   /// 计算画图x轴位置
-  double computeX({required int index, required double pointWidth, required double pointGap}) {
+  double computeX(
+      {required int index,
+      required double pointWidth,
+      required double pointGap}) {
     return index * pointWidth + index * pointGap + pointWidth / 2;
   }
 

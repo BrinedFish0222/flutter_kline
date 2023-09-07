@@ -9,7 +9,7 @@ import '../utils/kline_util.dart';
 import '../vo/candlestick_chart_vo.dart';
 import '../vo/chart_show_data_item_vo.dart';
 import '../vo/line_chart_vo.dart';
-import '../vo/selected_chart_data_stream_vo.dart';
+import '../vo/main_chart_selected_data_vo.dart';
 import 'main_chart_show_data_widget.dart';
 
 class MainChartWidget extends StatefulWidget {

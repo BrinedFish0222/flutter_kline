@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/candlestick_chart_painter.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
@@ -65,7 +66,8 @@ class MainChartRenderer extends CustomPainter {
             maxValue: maxMinValue.left,
             minValue: maxMinValue.right,
             isDrawVerticalLine: true,
-            textStyle: const TextStyle(color: Colors.grey, fontSize: 8))
+            textStyle: const TextStyle(
+                color: Colors.grey, fontSize: KlineConfig.rectFontSize))
         .paint(canvas, size);
 
     // 画蜡烛图

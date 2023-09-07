@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/bar_chart_painter.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
@@ -15,11 +16,16 @@ class SubChartRenderer extends CustomPainter {
   final double? pointGap;
   final Pair<double, double>? heightRange;
 
-  const SubChartRenderer(
-      {required this.chartData,
-      this.pointWidth,
-      this.pointGap,
-      this.heightRange});
+  /// 是否画矩形
+  final bool isDrawRect;
+
+  const SubChartRenderer({
+    required this.chartData,
+    this.pointWidth,
+    this.pointGap,
+    this.heightRange,
+    this.isDrawRect = true,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -30,14 +36,17 @@ class SubChartRenderer extends CustomPainter {
     var lineChartData = chartData.whereType<LineChartVo>().toList();
 
     // 画矩形
-    RectPainter(
-            size: size,
-            transverseLineNum: 0,
-            maxValue: heightRange.left,
-            minValue: heightRange.right,
-            isDrawVerticalLine: true,
-            textStyle: const TextStyle(color: Colors.grey, fontSize: 8))
-        .paint(canvas, size);
+    if (isDrawRect) {
+      RectPainter(
+              size: size,
+              transverseLineNum: 0,
+              maxValue: heightRange.left,
+              minValue: heightRange.right,
+              isDrawVerticalLine: true,
+              textStyle: const TextStyle(
+                  color: Colors.grey, fontSize: KlineConfig.rectFontSize))
+          .paint(canvas, size);
+    }
 
     for (var data in chartData) {
       // 线图无需再画

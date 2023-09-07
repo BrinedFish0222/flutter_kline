@@ -128,7 +128,7 @@ class KlineUtil {
 
     /// 画布长 / (数据数组长度 * 数据宽度和空间间隔比 + 数据数组长度 - 1)
     /// 示例：800 / (50 * 3 + 50 - 1);
-    var s = width / (gapRatio * dataLength + dataLength - 1);
+    var s = width / (dataLength * gapRatio  + dataLength - 1);
     return s * gapRatio;
   }
 

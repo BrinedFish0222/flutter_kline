@@ -1,3 +1,4 @@
+import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
@@ -11,8 +12,23 @@ class CandlestickChartVo extends BaseChartVo {
   Pair<double, double>? _maxMinData;
 
   CandlestickChartVo(
-      {super.id, super.name, super.minValue, required this.dataList}) {
+      {super.id,
+      super.name,
+      super.maxValue,
+      super.minValue,
+      required this.dataList}) {
     getMaxMinData();
+  }
+
+  @override
+  BaseChartVo copy() {
+    return CandlestickChartVo(
+        id: id,
+        name: name,
+        maxValue: maxValue,
+        minValue: minValue,
+        dataList:
+            KlineCollectionUtil.sublist(list: dataList, startIndex: 0) ?? []);
   }
 
   @override
@@ -32,6 +48,10 @@ class CandlestickChartVo extends BaseChartVo {
       _maxMinData?.right = minValue!;
     }
 
+    if (maxValue != null) {
+      _maxMinData?.left = maxValue!;
+    }
+
     return _maxMinData!;
   }
 
@@ -46,8 +66,11 @@ class CandlestickChartVo extends BaseChartVo {
     return CandlestickChartVo(
         id: id,
         name: name,
+        maxValue: maxValue,
         minValue: minValue,
-        dataList: dataList.sublist(start, end));
+        dataList: KlineCollectionUtil.sublist(
+                list: dataList, startIndex: start, endIndex: end) ??
+            []);
   }
 }
 

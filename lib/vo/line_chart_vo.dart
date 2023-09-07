@@ -16,15 +16,23 @@ class LineChartVo extends BaseChartVo {
   LineChartVo(
       {super.id,
       super.name,
+      super.maxValue,
       super.minValue,
       required this.dataList,
       this.color = Colors.black}) {
     getSelectedShowData();
   }
 
-  LineChartVo copy() {
+  @override
+  BaseChartVo copy() {
     var newDataList = dataList?.map((e) => e).toList();
-    return LineChartVo(dataList: newDataList, id: id, name: name, color: color);
+    return LineChartVo(
+        dataList: newDataList,
+        id: id,
+        name: name,
+        color: color,
+        minValue: minValue,
+        maxValue: maxValue);
   }
 
   /// result: left maxValue; right minValue
@@ -75,9 +83,8 @@ class LineChartVo extends BaseChartVo {
           : result.right;
     });
 
-    if (minValue != null) {
-      result.right = minValue!;
-    }
+    result.right = minValue ?? result.right;
+    result.left = maxValue ?? result.left;
 
     return result;
   }
@@ -87,8 +94,10 @@ class LineChartVo extends BaseChartVo {
     return LineChartVo(
         id: id,
         name: name,
+        maxValue: maxValue,
         minValue: minValue,
-        dataList: dataList?.sublist(start, end),
+        dataList: KlineCollectionUtil.sublist(
+            list: dataList, startIndex: start, endIndex: end),
         color: color);
   }
 }

@@ -4,11 +4,14 @@ import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
 import 'package:flutter_kline/example/example_macd_data.dart';
+import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
+import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/vo/mask_layer.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
+import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
 
 import 'example/example_ess_data.dart';
 import 'example/example_vol_data.dart';
@@ -53,12 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      initialIndex: 1,
+      initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: ListView(
+        body: Column(
           children: [
             const TabBar(tabs: [
               Tab(
@@ -74,9 +77,46 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ]),
-            Center(
-              child: _buildCustomPaint(),
-            ),
+            Expanded(
+              child: TabBarView(children: [
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Center(
+                    child: ListView(
+                      children: [
+                        KMinuteChartWidget(
+                          size: Size(MediaQuery.of(context).size.width - 20,
+                              MediaQuery.of(context).size.height * 0.6),
+                          minuteChartData: ExampleMinuteData.lineData2,
+                          minuteChartSubjoinData:
+                              ExampleMinuteData.generateLineData(),
+                          middleNum: 11.39,
+                          differenceNumbers: const [11.48, 11.30],
+                          subChartData: [
+                            [ExampleRmoData.barChartData..barWidth = 4],
+                            ExampleMacdData.macd,
+                          ],
+                        ),
+                        ...List.generate(
+                            5,
+                            (index) => Padding(
+                                  padding: const EdgeInsets.only(top: 15),
+                                  child: Container(
+                                    color: index % 2 == 0
+                                        ? Colors.red
+                                        : Colors.green,
+                                    height: 100,
+                                  ),
+                                )).toList(),
+                      ],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: _buildCustomPaint(),
+                ),
+              ]),
+            )
           ],
         ),
       ),
@@ -93,34 +133,48 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Padding(
       padding: const EdgeInsets.all(15),
-      child: KChartWidget(
-        showDataNum: 30,
-        size: size,
-        lineChartData: ExampleLineData.getLineChartMA13(),
-        candlestickChartData: ExampleCandlestickData.getCandlestickData(),
-        onTapIndicator: (index) {
-          KlineUtil.showToast(context: context, text: '点击指标索引：$index');
-        },
-        margin: const EdgeInsets.all(5),
-        subChartData: [
-          [
-            ExampleVolData.barChartData..minValue = 0,
-            ...ExampleVolData.lineChartData
-          ],
-          [ExampleRmoData.barChartData..barWidth = 4],
-          ExampleMacdData.macd,
-          [
-            ExampleEssData.barChartData
-              ..barWidth = 2
-              ..minValue = 0,
-            // ExampleEssData.lineChartA.subData(start: 0, end: 600),
-            ExampleEssData.lineChartB
-          ],
-        ],
-        subChartMaskList: [
-          null,
-          MaskLayer(percent: 0.3),
-          MaskLayer(percent: 0.4)
+      child: ListView(
+        children: [
+          KChartWidget(
+            showDataNum: 30,
+            size: size,
+            lineChartData:
+                ExampleLineData.getLineChartMA13().cast<LineChartVo>(),
+            candlestickChartData: ExampleCandlestickData.getCandlestickData(),
+            onTapIndicator: (index) {
+              KlineUtil.showToast(context: context, text: '点击指标索引：$index');
+            },
+            margin: const EdgeInsets.all(5),
+            subChartData: [
+              [
+                ExampleVolData.barChartData..minValue = 0,
+                ...ExampleVolData.lineChartData
+              ],
+              [ExampleRmoData.barChartData..barWidth = 4],
+              ExampleMacdData.macd,
+              [
+                ExampleEssData.barChartData
+                  ..barWidth = 2
+                  ..minValue = 0,
+                // ExampleEssData.lineChartA.subData(start: 0, end: 600),
+                ExampleEssData.lineChartB
+              ],
+            ],
+            subChartMaskList: [
+              null,
+              MaskLayer(percent: 0.3),
+              // MaskLayer(percent: 0.4)
+            ],
+          ),
+          ...List.generate(
+              5,
+              (index) => Padding(
+                    padding: const EdgeInsets.only(top: 15),
+                    child: Container(
+                      color: index % 2 == 0 ? Colors.red : Colors.green,
+                      height: 100,
+                    ),
+                  )).toList(),
         ],
       ),
     );

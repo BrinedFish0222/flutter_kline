@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../common/kline_config.dart';
-import '../vo/selected_chart_data_stream_vo.dart';
+import '../vo/main_chart_selected_data_vo.dart';
 
 /// 主图信息栏
 class MainChartShowDataWidget extends StatelessWidget {

@@ -1,6 +1,26 @@
 import 'package:flutter_kline/common/pair.dart';
 
 class KlineNumUtil {
+  /// 找出和 [target] 相差最多的数
+  static double findNumberWithMaxDifference(List<double?> dataList, double target) {
+    // 初始化最大差值为负数，确保第一个元素肯定会大于该值
+    double maxDifference = -1;
+    double result = target;
+
+    for (double? number in dataList) {
+      if (number == null) {
+        continue;
+      }
+      double difference = (number - target).abs();
+      if (difference > maxDifference) {
+        maxDifference = difference;
+        result = number;
+      }
+    }
+
+    return result;
+  }
+
   /// 提取最大最小值。
   /// @return Pair left 是最大值；Pair right 是最小值。
   static Pair<num, num>? maxMinValue(List<num?>? dataList) {

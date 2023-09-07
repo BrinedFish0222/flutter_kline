@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/selected_chart_data_stream_vo.dart';
+import 'package:flutter_kline/vo/main_chart_selected_data_vo.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
@@ -72,7 +72,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   late double _pointGap;
 
   /// 十字线选中数据索引流。
-  StreamController<int>? _selectedLineChartDataIndexStream;
+  StreamController<int>? _selectedIndexStream;
 
   /// 十字线是否显示
   bool _isShowCrossCurve = false;
@@ -119,15 +119,8 @@ class _KChartWidgetState extends State<KChartWidget> {
         (widget.candlestickChartData.dataList.length - _showDataNum - 1)
             .clamp(0, widget.candlestickChartData.dataList.length - 1);
     _resetShowData();
-    _initSelectedLineChartDataIndexStream();
+    _initSelectedIndexStream();
 
-    _selectedLineChartDataIndexStream?.stream.listen((index) {
-      if (index == -1) {
-        _hideCandlestickOverlay();
-        return;
-      }
-      _candlestickChartVoStream.add(_showCandlestickChartData?.dataList[index]);
-    });
 
     _candlestickChartVoStream.stream.listen((event) {
       if (event == null) {
@@ -166,7 +159,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   void dispose() {
-    _selectedLineChartDataIndexStream?.close();
+    _selectedIndexStream?.close();
     _candlestickChartVoStream.close();
     _selectedLineChartDataStream.close();
     super.dispose();
@@ -199,7 +192,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     pointGap: _pointGap,
                     crossCurveStream: _crossCurveStreamList[0],
                     selectedChartDataIndexStream:
-                        _selectedLineChartDataIndexStream,
+                        _selectedIndexStream,
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
@@ -212,7 +205,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     maskLayer: _subChartMaskList[i],
                     crossCurveStream: _crossCurveStreamList[i + 1],
                     selectedChartDataIndexStream:
-                        _selectedLineChartDataIndexStream,
+                        _selectedIndexStream,
                   ),
               ],
             ),
@@ -307,17 +300,27 @@ class _KChartWidgetState extends State<KChartWidget> {
     debugPrint("hide overlay execute ... ");
   }
 
-  _initSelectedLineChartDataIndexStream() {
+  _initSelectedIndexStream() {
     if (KlineCollectionUtil.isEmpty(_showLineChartData)) {
       return;
     }
 
-    _selectedLineChartDataIndexStream = StreamController<int>.broadcast();
-    _selectedLineChartDataIndexStream!.stream
-        .listen(_selectedLineChartDataIndexStreamListen);
+    _selectedIndexStream = StreamController<int>.broadcast();
+    _selectedIndexStream!.stream
+        .listen(_selectedIndexStreamListen);
+
+
+        
+    _selectedIndexStream?.stream.listen((index) {
+      if (index == -1) {
+        _hideCandlestickOverlay();
+        return;
+      }
+      _candlestickChartVoStream.add(_showCandlestickChartData?.dataList[index]);
+    });
   }
 
-  _selectedLineChartDataIndexStreamListen(int index) {
+  _selectedIndexStreamListen(int index) {
     if (KlineCollectionUtil.isEmpty(_showLineChartData)) {
       return;
     }
@@ -371,7 +374,7 @@ class _KChartWidgetState extends State<KChartWidget> {
           continue;
         }
 
-        var newVo = element.copy();
+        var newVo = element.copy() as LineChartVo;
         newVo.dataList =
             element.dataList?.sublist(_showDataStartIndex, endIndex);
         _showLineChartData?.add(newVo);
@@ -445,7 +448,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _resetCrossCurve(null);
     // 恢复默认最后一根k线的数据
     if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
-      _selectedLineChartDataIndexStreamListen(_showLineChartData!.length - 1);
+      _selectedIndexStreamListen(_showLineChartData!.length - 1);
     }
     _hideCandlestickOverlay();
 

@@ -25,4 +25,7 @@ class KlineConfig {
 
   /// 显示数据 - 图标大小
   static const double showDataIconSize = 12;
+
+  /// 矩形数字大小
+  static const double rectFontSize = 8;
 }

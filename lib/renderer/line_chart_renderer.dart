@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 
 import '../painter/line_chart_painter.dart';
 import '../painter/rect_painter.dart';
@@ -21,7 +22,8 @@ class LineChartRenderer extends CustomPainter {
             maxValue: heightRange.left,
             minValue: heightRange.right,
             isDrawVerticalLine: true,
-            textStyle: const TextStyle(color: Colors.grey, fontSize: 8))
+            textStyle: const TextStyle(
+                color: Colors.grey, fontSize: KlineConfig.rectFontSize))
         .paint(canvas, size);
     LineChartPainter(lineChartData: chartData).paint(canvas, size);
   }

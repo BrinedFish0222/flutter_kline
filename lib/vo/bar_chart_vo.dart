@@ -14,10 +14,22 @@ class BarChartVo extends BaseChartVo {
   BarChartVo(
       {super.id,
       super.name,
+      super.maxValue,
       super.minValue,
       this.barWidth,
       required this.data}) {
     getSelectedShowData();
+  }
+
+  @override
+  BaseChartVo copy() {
+    return BarChartVo(
+        id: id,
+        name: name,
+        maxValue: maxValue,
+        minValue: minValue,
+        barWidth: barWidth,
+        data: KlineCollectionUtil.sublist(list: data, startIndex: 0) ?? []);
   }
 
   @override
@@ -38,9 +50,10 @@ class BarChartVo extends BaseChartVo {
       return _maxMinData!;
     }
 
-    double max = data
-        .map((e) => e.value)
-        .reduce((value, element) => value > element ? value : element);
+    double max = maxValue ??
+        data
+            .map((e) => e.value)
+            .reduce((value, element) => value > element ? value : element);
     double min = minValue ??
         data
             .map((e) => e.value)
@@ -56,8 +69,11 @@ class BarChartVo extends BaseChartVo {
         id: id,
         name: name,
         barWidth: barWidth,
+        maxValue: maxValue,
         minValue: minValue,
-        data: data.sublist(start, end));
+        data: KlineCollectionUtil.sublist(
+                list: data, startIndex: start, endIndex: end) ??
+            []);
   }
 }
 
