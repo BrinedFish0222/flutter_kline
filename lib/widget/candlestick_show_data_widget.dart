@@ -48,6 +48,7 @@ class CandlestickShowDataWidget extends StatelessWidget {
           ),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('高 ${vo.high.toStringAsFixed(2)}',
                     style: const TextStyle(
