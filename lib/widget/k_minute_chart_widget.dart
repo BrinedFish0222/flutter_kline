@@ -163,7 +163,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
-      onTapDown: _allChartOnTapDown,
       child: LayoutBuilder(builder: (context, constraints) {
         _computeLayout(constraints);
         return Stack(
@@ -192,15 +191,18 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
-                  SubChartWidget(
-                    size: _subChartSize,
-                    name: _showSubChartData[i].first.name ?? '',
-                    chartData: _showSubChartData[i],
-                    pointWidth: _pointWidth,
-                    pointGap: _pointGap,
-                    maskLayer: _subChartMaskList[i],
-                    crossCurveStream: _crossCurveStreamList[i + 1],
-                    selectedChartDataIndexStream: _selectedIndexStream,
+                  GestureDetector(
+                    onTapDown: (details) => _cancelCrossCurve(),
+                    child: SubChartWidget(
+                      size: _subChartSize,
+                      name: _showSubChartData[i].first.name ?? '',
+                      chartData: _showSubChartData[i],
+                      pointWidth: _pointWidth,
+                      pointGap: _pointGap,
+                      maskLayer: _subChartMaskList[i],
+                      crossCurveStream: _crossCurveStreamList[i + 1],
+                      selectedChartDataIndexStream: _selectedIndexStream,
+                    ),
                   ),
               ],
             ),
@@ -208,11 +210,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
         );
       }),
     );
-  }
-
-  /// 所有图的点击事件
-  void _allChartOnTapDown(details) {
-    _cancelCrossCurve();
   }
 
   void _onHorizontalDragStart(details) {
@@ -307,9 +304,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   /// 长按移动事件
   _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
-    debugPrint(
-        "_onLongPressMoveUpdate, dx: ${details.localPosition.dx}, dy ${details.localPosition.dy}");
-
     _resetCrossCurve(Pair(
         left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
@@ -326,7 +320,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   _onTapDown(TapDownDetails detail) {
     // 取消十字线
-    if (_cancelCrossCurve()) {
+    bool isCancel = _cancelCrossCurve();
+    if (isCancel) {
       return;
     }
 
