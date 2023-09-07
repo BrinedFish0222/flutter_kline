@@ -121,7 +121,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     _resetShowData();
     _initSelectedIndexStream();
 
-
     _candlestickChartVoStream.stream.listen((event) {
       if (event == null) {
         _hideCandlestickOverlay();
@@ -169,7 +168,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
-      onTapDown: _allChartOnTapDown,
       child: LayoutBuilder(builder: (context, constraints) {
         _computeLayout(constraints);
         return Stack(
@@ -191,21 +189,22 @@ class _KChartWidgetState extends State<KChartWidget> {
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
                     crossCurveStream: _crossCurveStreamList[0],
-                    selectedChartDataIndexStream:
-                        _selectedIndexStream,
+                    selectedChartDataIndexStream: _selectedIndexStream,
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
-                  SubChartWidget(
-                    size: _subChartSize,
-                    name: _showSubChartData[i].first.name ?? '',
-                    chartData: _showSubChartData[i],
-                    pointWidth: _pointWidth,
-                    pointGap: _pointGap,
-                    maskLayer: _subChartMaskList[i],
-                    crossCurveStream: _crossCurveStreamList[i + 1],
-                    selectedChartDataIndexStream:
-                        _selectedIndexStream,
+                  GestureDetector(
+                    onTapDown: (details) => _cancelCrossCurve(),
+                    child: SubChartWidget(
+                      size: _subChartSize,
+                      name: _showSubChartData[i].first.name ?? '',
+                      chartData: _showSubChartData[i],
+                      pointWidth: _pointWidth,
+                      pointGap: _pointGap,
+                      maskLayer: _subChartMaskList[i],
+                      crossCurveStream: _crossCurveStreamList[i + 1],
+                      selectedChartDataIndexStream: _selectedIndexStream,
+                    ),
                   ),
               ],
             ),
@@ -213,11 +212,6 @@ class _KChartWidgetState extends State<KChartWidget> {
         );
       }),
     );
-  }
-
-  /// 所有图的点击事件
-  void _allChartOnTapDown(details) {
-    _cancelCrossCurve();
   }
 
   void _onHorizontalDragStart(details) {
@@ -306,11 +300,8 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     _selectedIndexStream = StreamController<int>.broadcast();
-    _selectedIndexStream!.stream
-        .listen(_selectedIndexStreamListen);
+    _selectedIndexStream!.stream.listen(_selectedIndexStreamListen);
 
-
-        
     _selectedIndexStream?.stream.listen((index) {
       if (index == -1) {
         _hideCandlestickOverlay();
