@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_date_util.dart';
 import 'package:flutter_kline/utils/kline_random_util.dart';
@@ -721,7 +718,6 @@ class ExampleMinuteData {
           }),
           color: KlineConfig.kLineColors[i + 1]));
     }
-    var genJson = jsonEncode(genDataList);
     return result;
   }
 }

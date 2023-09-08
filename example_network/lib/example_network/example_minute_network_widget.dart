@@ -4,7 +4,6 @@ import 'package:example_network/main.dart';
 import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/example/example_macd_data.dart';
-import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_minute_chart_widget.dart';

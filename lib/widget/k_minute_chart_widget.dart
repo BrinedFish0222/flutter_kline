@@ -105,7 +105,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   void initState() {
-    debugPrint("分时图组件 initState");
     _minuteChartData = widget.minuteChartData.copy() as LineChartVo;
     _initSubChartMaskList();
     _initSubChartData();
@@ -168,7 +167,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("分时图 build");
     return GestureDetector(
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: LayoutBuilder(builder: (context, constraints) {
@@ -179,13 +177,11 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
               children: [
                 GestureDetector(
                   onTapDown: _onTapDown,
-                  onHorizontalDragStart:
-                      _isShowCrossCurve ? _onHorizontalDragStart : null,
-                  onHorizontalDragUpdate:
-                      _isShowCrossCurve ? _onHorizontalDragUpdate : null,
-                  onHorizontalDragEnd: _isShowCrossCurve
-                      ? (details) => _isOnHorizontalDragStart = false
-                      : null,
+                  onHorizontalDragStart: (details) =>
+                      _isOnHorizontalDragStart = true,
+                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                  onHorizontalDragEnd: (details) =>
+                      _isOnHorizontalDragStart = false,
                   child: MinuteChartWidget(
                     size: _mainChartSize,
                     minuteChartData: _minuteChartData,
@@ -220,11 +216,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
         );
       }),
     );
-  }
-
-  void _onHorizontalDragStart(details) {
-    debugPrint("GestureDetector onHorizontalDragStart");
-    _isOnHorizontalDragStart = true;
   }
 
   /// 重算布局
@@ -309,7 +300,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   void _hideCandlestickOverlay() {
     _candlestickOverlayEntry?.remove();
     _candlestickOverlayEntry = null;
-    debugPrint("hide overlay execute ... ");
   }
 
   /// 长按移动事件
@@ -320,12 +310,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
-    // 如果十字线显示的状态，则拖动操作是移动十字线。
-    if (_isShowCrossCurve) {
-      _resetCrossCurve(Pair(
-          left: details.globalPosition.dx, right: details.globalPosition.dy));
-      return;
-    }
+    // 拖动十字线
+    _resetCrossCurve(Pair(
+        left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 
   _onTapDown(TapDownDetails detail) {
