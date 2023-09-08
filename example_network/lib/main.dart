@@ -1,3 +1,4 @@
+import 'package:example_network/example_network/example_minute_network_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
@@ -5,7 +6,6 @@ import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_ess_data.dart';
 import 'package:flutter_kline/example/example_line_data.dart';
 import 'package:flutter_kline/example/example_macd_data.dart';
-import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/example/example_vol_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
@@ -13,13 +13,17 @@ import 'package:flutter_kline/vo/bar_chart_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/vo/mask_layer.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
-import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
-
-
+late WebSocketChannel webSocketChannel;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   ExampleCandlestickData.getCandlestickData();
+
+  webSocketChannel = WebSocketChannel.connect(
+    Uri.parse("ws://192.168.101.14:8080/websocket/123"),
+  );
+
   // 设置应用程序的方向为竖屏（只允许竖屏显示）
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
@@ -54,6 +58,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  void dispose() {
+    webSocketChannel.sink.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
@@ -85,19 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Center(
                     child: ListView(
                       children: [
-                        KMinuteChartWidget(
-                          size: Size(MediaQuery.of(context).size.width - 20,
-                              MediaQuery.of(context).size.height * 0.6),
-                          minuteChartData: ExampleMinuteData.lineData2,
-                          minuteChartSubjoinData:
-                              ExampleMinuteData.generateLineData(),
-                          middleNum: 11.39,
-                          differenceNumbers: const [11.48, 11.30],
-                          subChartData: [
-                            [ExampleRmoData.barChartData..barWidth = 4],
-                            ExampleMacdData.macd,
-                          ],
-                        ),
+                        const ExampleMinuteNetworkWidget(),
                         ...List.generate(
                             5,
                             (index) => Padding(

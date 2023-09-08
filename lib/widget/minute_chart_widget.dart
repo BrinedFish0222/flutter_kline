@@ -9,6 +9,7 @@ import 'package:flutter_kline/vo/line_chart_vo.dart';
 import '../common/kline_config.dart';
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';
+import '../utils/kline_num_util.dart';
 import '../utils/kline_util.dart';
 import '../vo/chart_show_data_item_vo.dart';
 import '../vo/minute_chart_selected_data_vo.dart';
@@ -97,7 +98,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var maxMinValue = widget.minuteChartData.getMaxMinData();
+    var maxMinValue = _computeMaxMinValue();
 
     return Column(
       children: [
@@ -163,10 +164,12 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
                 key: _chartKey,
                 size: widget.size,
                 painter: MinuteChartRenderer(
-                    minuteChartVo: widget.minuteChartData,
-                    minuteChartSubjoinData: widget.minuteChartSubjoinData,
-                    middleNum: widget.middleNum,
-                    differenceNumbers: widget.differenceNumbers),
+                  minuteChartVo: widget.minuteChartData,
+                  minuteChartSubjoinData: widget.minuteChartSubjoinData,
+                  middleNum: widget.middleNum,
+                  differenceNumbers: widget.differenceNumbers,
+                  maxMinValue: maxMinValue,
+                ),
               ),
             ),
             RepaintBoundary(
@@ -211,5 +214,27 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
         ),
       ],
     );
+  }
+
+  Pair<double, double> _computeMaxMinValue() {
+    var minuteChartVo = widget.minuteChartData;
+    var minuteChartSubjoinData = widget.minuteChartSubjoinData;
+    var middleNum = widget.middleNum;
+    var differenceNumbers = widget.differenceNumbers;
+    // 统计所有数据的最大最小值
+    Pair<double, double> maxMinValue = Pair.getMaxMinValue([
+      minuteChartVo.getMaxMinData(),
+      ...minuteChartSubjoinData?.map((e) => e.getMaxMinData()).toList() ?? []
+    ], defaultMaxValue: middleNum + 0.1, defaultMinValue: middleNum - 0.1);
+    // 找出最大差值
+    var maxDifference = KlineNumUtil.findNumberWithMaxDifference(
+        [maxMinValue.left, maxMinValue.right, ...differenceNumbers ?? []],
+        middleNum);
+    double differenceValue = (maxDifference - middleNum).abs();
+
+    maxMinValue.left = middleNum + differenceValue;
+    maxMinValue.right = middleNum - differenceValue;
+
+    return maxMinValue;
   }
 }

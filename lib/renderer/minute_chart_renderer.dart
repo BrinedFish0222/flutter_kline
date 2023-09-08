@@ -27,30 +27,22 @@ class MinuteChartRenderer extends CustomPainter {
   /// 数据点，一天默认有240个时间点
   final int dataNum;
 
+  final Pair<double, double>? maxMinValue;
+
   const MinuteChartRenderer({
     required this.minuteChartVo,
     this.minuteChartSubjoinData,
     required this.middleNum,
     this.differenceNumbers,
     this.dataNum = 240,
+    this.maxMinValue,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     _initData();
     // 统计所有数据的最大最小值
-    Pair<double, double> maxMinValue = Pair.getMaxMinValue([
-      minuteChartVo.getMaxMinData(),
-      ...minuteChartSubjoinData?.map((e) => e.getMaxMinData()).toList() ?? []
-    ]);
-    // 找出最大差值
-    var maxDifference = KlineNumUtil.findNumberWithMaxDifference(
-        [maxMinValue.left, maxMinValue.right, ...differenceNumbers ?? []],
-        middleNum);
-    double differenceValue = (maxDifference - middleNum).abs();
-
-    maxMinValue.left = middleNum + differenceValue;
-    maxMinValue.right = middleNum - differenceValue;
+    Pair<double, double> maxMinValue = _computeMaxMinValue();
 
     // 画矩形
     RectPainter(
@@ -91,5 +83,27 @@ class MinuteChartRenderer extends CustomPainter {
     for (int i = 0; i < (dataNum - minuteChartVo.dataList!.length); ++i) {
       minuteChartVo.dataList!.add(LineChartData());
     }
+  }
+
+  /// 计算最大最小值
+  Pair<double, double> _computeMaxMinValue() {
+    if (this.maxMinValue != null) {
+      return this.maxMinValue!;
+    }
+
+    Pair<double, double> maxMinValue = Pair.getMaxMinValue([
+      minuteChartVo.getMaxMinData(),
+      ...minuteChartSubjoinData?.map((e) => e.getMaxMinData()).toList() ?? []
+    ], defaultMaxValue: middleNum + 0.1, defaultMinValue: middleNum - 0.1);
+    // 找出最大差值
+    var maxDifference = KlineNumUtil.findNumberWithMaxDifference(
+        [maxMinValue.left, maxMinValue.right, ...differenceNumbers ?? []],
+        middleNum);
+    double differenceValue = (maxDifference - middleNum).abs();
+
+    maxMinValue.left = middleNum + differenceValue;
+    maxMinValue.right = middleNum - differenceValue;
+
+    return maxMinValue;
   }
 }

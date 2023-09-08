@@ -9,7 +9,9 @@ class Pair<L, R> {
   }
 
   static Pair<double, double> getMaxMinValue(
-      List<Pair<double, double>?> dataList) {
+      List<Pair<double, double>?> dataList,
+      {double? defaultMaxValue,
+      double? defaultMinValue}) {
     Pair<double, double> maxMinValue =
         Pair(left: -double.maxFinite, right: double.maxFinite);
     for (Pair<double, double>? data in dataList) {
@@ -22,6 +24,15 @@ class Pair<L, R> {
         }
       }
     }
+
+    if (defaultMaxValue != null && maxMinValue.left == -double.maxFinite) {
+      maxMinValue.left = defaultMaxValue;
+    }
+
+     if (defaultMinValue != null && maxMinValue.right == double.maxFinite) {
+      maxMinValue.right = defaultMinValue;
+    }
+
     return maxMinValue;
   }
 }
