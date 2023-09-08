@@ -158,6 +158,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   void dispose() {
+    _hideCandlestickOverlay();
     _selectedIndexStream?.close();
     _candlestickChartVoStream.close();
     _selectedLineChartDataStream.close();
