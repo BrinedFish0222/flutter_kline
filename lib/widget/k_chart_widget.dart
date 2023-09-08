@@ -185,6 +185,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     candlestickChartData: _showCandlestickChartData,
                     size: _mainChartSize,
                     lineChartData: _showLineChartData,
+                    lineChartName: _showLineChartData?.first.name,
                     margin: widget.margin,
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
@@ -366,8 +367,10 @@ class _KChartWidgetState extends State<KChartWidget> {
         }
 
         var newVo = element.copy() as LineChartVo;
-        newVo.dataList =
-            element.dataList?.sublist(_showDataStartIndex, endIndex);
+        newVo.dataList = KlineCollectionUtil.sublist(
+            list: element.dataList,
+            startIndex: _showDataStartIndex,
+            endIndex: endIndex);
         _showLineChartData?.add(newVo);
       }
     }

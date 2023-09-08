@@ -91,7 +91,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
           initData: MainChartSelectedDataVo.getLastShowData(
               candlestickChartVo: widget.candlestickChartData,
               lineChartVoList: widget.lineChartData),
-          name: widget.lineChartName ?? 'MA',
+          name: widget.lineChartName ?? '',
           mainChartSelectedDataStream: _mainChartSelectedDataStream,
         ),
         Stack(

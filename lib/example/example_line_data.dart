@@ -2416,6 +2416,10 @@ class ExampleLineData {
   static List<BaseChartVo> getLineChartMA13({int dataIndex = 799}) {
     return [
       LineChartVo(
+          name: 'MA',
+          dataList: [],
+          color: KlineConfig.kLineColors[0]),
+      LineChartVo(
           name: 'MA13',
           dataList: ExampleLineData.ma13
               .sublist(0, dataIndex)

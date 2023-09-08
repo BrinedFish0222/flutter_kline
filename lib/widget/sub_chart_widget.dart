@@ -81,7 +81,8 @@ class _SubChartWidgetState extends State<SubChartWidget> {
         SubChartShowDataWidget(
             initData: BaseChartVo.getLastShowData(widget.chartData),
             name: widget.name,
-            onTapName: () => debugPrint("副图点击"),
+            onTapName: () =>
+                KlineUtil.showToast(context: context, text: widget.name),
             chartShowDataItemsStream: _chartShowDataItemsStream),
         Stack(
           children: [

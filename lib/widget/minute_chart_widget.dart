@@ -117,7 +117,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
           height: KlineConfig.showDataSpaceSize,
           child: Row(children: [
             InkWell(
-              onTap: () => debugPrint("主图信息栏点击"),
+              onTap: () => KlineUtil.showToast(context: context, text: '分时图点击'),
               child: Row(
                 children: [
                   Text(
