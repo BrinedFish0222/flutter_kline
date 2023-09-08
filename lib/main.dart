@@ -88,8 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           size: Size(MediaQuery.of(context).size.width - 20,
                               MediaQuery.of(context).size.height * 0.6),
                           minuteChartData: ExampleMinuteData.lineData2,
-                          minuteChartSubjoinData:
-                              ExampleMinuteData.generateLineData(),
+                          minuteChartSubjoinData: ExampleMinuteData.subData(),
                           middleNum: 11.39,
                           differenceNumbers: const [11.48, 11.30],
                           subChartData: [

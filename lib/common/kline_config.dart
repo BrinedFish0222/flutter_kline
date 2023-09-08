@@ -28,4 +28,7 @@ class KlineConfig {
 
   /// 矩形数字大小
   static const double rectFontSize = 8;
+
+  /// 分时图一天数据点
+  static const int minuteDataNum = 240;
 }

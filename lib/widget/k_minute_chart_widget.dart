@@ -21,9 +21,10 @@ class KMinuteChartWidget extends StatefulWidget {
       required this.size,
       required this.minuteChartData,
       this.minuteChartSubjoinData,
+      this.minuteChartDataAddStream,
       required this.middleNum,
       this.differenceNumbers,
-      this.dataNum = 240,
+      this.dataNum = KlineConfig.minuteDataNum,
       required this.subChartData,
       this.subChartMaskList,
       this.subChartRatio = 0.5,
@@ -31,9 +32,13 @@ class KMinuteChartWidget extends StatefulWidget {
 
   final Size size;
 
+  /// 分时数据
   final LineChartVo minuteChartData;
 
   final List<BaseChartVo>? minuteChartSubjoinData;
+
+  /// [minuteChartData] 追加数据流
+  final StreamController<LineChartData>? minuteChartDataAddStream;
 
   /// 中间值
   final double middleNum;
@@ -100,6 +105,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   void initState() {
+    debugPrint("分时图组件 initState");
     _minuteChartData = widget.minuteChartData.copy() as LineChartVo;
     _initSubChartMaskList();
     _initSubChartData();
@@ -161,6 +167,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("分时图 build");
     return GestureDetector(
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: LayoutBuilder(builder: (context, constraints) {
@@ -182,12 +189,14 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                     size: _mainChartSize,
                     minuteChartData: _minuteChartData,
                     minuteChartSubjoinData: widget.minuteChartSubjoinData,
+                    minuteChartDataAddStream: widget.minuteChartDataAddStream,
                     middleNum: widget.middleNum,
                     differenceNumbers: widget.differenceNumbers,
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
                     crossCurveStream: _crossCurveStreamList[0],
                     selectedChartDataIndexStream: _selectedIndexStream,
+                    dataNum: widget.dataNum,
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)

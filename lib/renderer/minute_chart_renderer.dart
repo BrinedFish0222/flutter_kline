@@ -34,13 +34,13 @@ class MinuteChartRenderer extends CustomPainter {
     this.minuteChartSubjoinData,
     required this.middleNum,
     this.differenceNumbers,
-    this.dataNum = 240,
+    this.dataNum = KlineConfig.minuteDataNum,
     this.maxMinValue,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    _initData();
+    LineChartVo minuteChartVo = _initData();
     // 统计所有数据的最大最小值
     Pair<double, double> maxMinValue = _computeMaxMinValue();
 
@@ -74,15 +74,20 @@ class MinuteChartRenderer extends CustomPainter {
     return true;
   }
 
-  void _initData() {
+  LineChartVo _initData() {
+    LineChartVo minuteChartVo = this.minuteChartVo.copy() as LineChartVo;
     minuteChartVo.dataList ??= [];
     if (dataNum <= minuteChartVo.dataList!.length) {
-      return;
+      minuteChartVo.dataList =
+          KlineCollectionUtil.lastN(minuteChartVo.dataList, dataNum);
+      return minuteChartVo;
     }
 
     for (int i = 0; i < (dataNum - minuteChartVo.dataList!.length); ++i) {
       minuteChartVo.dataList!.add(LineChartData());
     }
+
+    return minuteChartVo;
   }
 
   /// 计算最大最小值

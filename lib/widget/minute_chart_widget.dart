@@ -21,12 +21,14 @@ class MinuteChartWidget extends StatefulWidget {
     required this.size,
     required this.minuteChartData,
     this.minuteChartSubjoinData,
+    this.minuteChartDataAddStream,
     required this.middleNum,
     this.differenceNumbers,
     this.pointWidth,
     this.pointGap,
     this.crossCurveStream,
     this.selectedChartDataIndexStream,
+    this.dataNum = KlineConfig.minuteDataNum
   });
 
   final Size size;
@@ -37,6 +39,9 @@ class MinuteChartWidget extends StatefulWidget {
   /// 分时图数据 - 附加数据
   final List<BaseChartVo>? minuteChartSubjoinData;
 
+  /// [minuteChartData] 追加数据流
+  final StreamController<LineChartData>? minuteChartDataAddStream;
+
   /// 中间值
   final double middleNum;
 
@@ -46,6 +51,10 @@ class MinuteChartWidget extends StatefulWidget {
 
   final double? pointWidth;
   final double? pointGap;
+
+  /// 数据点
+  final int dataNum;
+
 
   /// 十字线流
   final StreamController<Pair<double?, double?>>? crossCurveStream;
@@ -80,6 +89,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
   _initSelectedChartData() {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
       debugPrint("分时选中数据索引：$index");
+
       if (index == -1) {
         List<ChartShowDataItemVo>? showData =
             BaseChartVo.getLastShowData(widget.minuteChartSubjoinData);
@@ -160,17 +170,26 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
         Stack(
           children: [
             RepaintBoundary(
-              child: CustomPaint(
-                key: _chartKey,
-                size: widget.size,
-                painter: MinuteChartRenderer(
-                  minuteChartVo: widget.minuteChartData,
-                  minuteChartSubjoinData: widget.minuteChartSubjoinData,
-                  middleNum: widget.middleNum,
-                  differenceNumbers: widget.differenceNumbers,
-                  maxMinValue: maxMinValue,
-                ),
-              ),
+              child: StreamBuilder<LineChartData>(
+                  stream: widget.minuteChartDataAddStream?.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.data != null) {
+                      widget.minuteChartData.dataList ??= [];
+                      widget.minuteChartData.dataList?.add(snapshot.data!);
+                    }
+            
+                    return CustomPaint(
+                      key: _chartKey,
+                      size: widget.size,
+                      painter: MinuteChartRenderer(
+                        minuteChartVo: widget.minuteChartData,
+                        minuteChartSubjoinData: widget.minuteChartSubjoinData,
+                        middleNum: widget.middleNum,
+                        differenceNumbers: widget.differenceNumbers,
+                        // maxMinValue: maxMinValue,
+                      ),
+                    );
+                  }),
             ),
             RepaintBoundary(
               child: StreamBuilder(
@@ -197,7 +216,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
                             maxMinValue: maxMinValue,
                             height: widget.size.height,
                             selectedY: selectedXY.right);
-
+                    debugPrint("分时图 十字线：分时图");
                     return CustomPaint(
                       size: widget.size,
                       painter: CrossCurvePainter(

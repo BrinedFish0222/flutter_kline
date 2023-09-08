@@ -35,6 +35,7 @@ class CrossCurvePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    debugPrint("分时图 十字线 paint");
     // x轴空或超出范围，不画
     if (selectedXY == null ||
         (selectedXY!.left != null && selectedXY!.left! > size.width) ||
