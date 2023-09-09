@@ -109,6 +109,8 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 副图遮罩
   List<MaskLayer?> _subChartMaskList = [];
 
+  Offset? onTapGlobalPointer;
+
   @override
   void initState() {
     _initSubChartMaskList();
@@ -175,23 +177,28 @@ class _KChartWidgetState extends State<KChartWidget> {
           children: [
             Column(
               children: [
-                GestureDetector(
-                  onTapDown: _onTapDown,
-                  onHorizontalDragStart: _onHorizontalDragStart,
-                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                  onHorizontalDragEnd: (details) =>
-                      _isOnHorizontalDragStart = false,
-                  onVerticalDragUpdate: _onVerticalDragUpdate,
-                  child: MainChartWidget(
-                    candlestickChartData: _showCandlestickChartData,
-                    size: _mainChartSize,
-                    lineChartData: _showLineChartData,
-                    lineChartName: _showLineChartData?.first.name,
-                    margin: widget.margin,
-                    pointWidth: _pointWidth,
-                    pointGap: _pointGap,
-                    crossCurveStream: _crossCurveStreamList[0],
-                    selectedChartDataIndexStream: _selectedIndexStream,
+                Listener(
+                  // 记录点击的位置
+                  onPointerDown: (event) => onTapGlobalPointer =
+                      Offset(event.position.dx, event.position.dy),
+                  child: GestureDetector(
+                    onTap: _onTap,
+                    onHorizontalDragStart: _onHorizontalDragStart,
+                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                    onHorizontalDragEnd: (details) =>
+                        _isOnHorizontalDragStart = false,
+                    onVerticalDragUpdate: _onVerticalDragUpdate,
+                    child: MainChartWidget(
+                      candlestickChartData: _showCandlestickChartData,
+                      size: _mainChartSize,
+                      lineChartData: _showLineChartData,
+                      lineChartName: _showLineChartData?.first.name,
+                      margin: widget.margin,
+                      pointWidth: _pointWidth,
+                      pointGap: _pointGap,
+                      crossCurveStream: _crossCurveStreamList[0],
+                      selectedChartDataIndexStream: _selectedIndexStream,
+                    ),
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
@@ -214,6 +221,16 @@ class _KChartWidgetState extends State<KChartWidget> {
         );
       }),
     );
+  }
+
+  void _onTap() {
+    // 取消选中的十字线
+    if (_cancelCrossCurve()) {
+      return;
+    }
+
+    _resetCrossCurve(
+        Pair(left: onTapGlobalPointer?.dx, right: onTapGlobalPointer?.dy));
   }
 
   void _onHorizontalDragStart(details) {
