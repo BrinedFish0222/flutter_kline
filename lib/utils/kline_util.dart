@@ -7,11 +7,6 @@ import '../vo/candlestick_chart_vo.dart';
 
 class KlineUtil {
   /// TODO 直接改成一个painter
-  static Widget noWidget() {
-    return const SizedBox();
-  }
-
-  /// TODO 直接改成一个painter
   /// 画蜡烛
   static void drawCandlestick(
       {required Canvas canvas,
@@ -128,7 +123,7 @@ class KlineUtil {
 
     /// 画布长 / (数据数组长度 * 数据宽度和空间间隔比 + 数据数组长度 - 1)
     /// 示例：800 / (50 * 3 + 50 - 1);
-    var s = width / (dataLength * gapRatio  + dataLength - 1);
+    var s = width / (dataLength * gapRatio + dataLength - 1);
     return s * gapRatio;
   }
 

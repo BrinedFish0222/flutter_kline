@@ -5,6 +5,7 @@ import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/example/example_macd_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
 
@@ -62,7 +63,7 @@ class _ExampleMinuteNetworkWidgetState
         ExampleMacdData.macd,
       ],
       onTapIndicator: (int index) {
-        
+        KlineUtil.showToast(context: context, text: '点击指标索引：$index');
       },
     );
   }
