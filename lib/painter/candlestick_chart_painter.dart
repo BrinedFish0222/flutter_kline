@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
+import 'package:flutter_kline/painter/candlestick_painter.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 
 /// 蜡烛图
@@ -31,11 +31,6 @@ class CandlestickChartPainter extends CustomPainter {
     List<CandlestickChartData?> chartData =
         convertDataToChartData(canvasMaxHeight: size.height);
 
-    Paint paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = Colors.black
-      ..strokeWidth = 1;
-
     int index = 0;
     double x = 0;
     for (var element in chartData) {
@@ -46,14 +41,13 @@ class CandlestickChartPainter extends CustomPainter {
       bool isUp = data.dataList[index]!.open > data.dataList[index]!.close
           ? false
           : true;
-      KlineUtil.drawCandlestick(
-          canvas: canvas,
-          rect: Rect.fromLTRB(x, element.open, x + pointWidth, element.close),
-          paint: paint,
-          top: element.high,
-          bottom: element.low,
-          lineColor: isUp ? Colors.red : Colors.green,
-          rectFillColor: isUp ? null : Colors.green);
+      CandlestickPainter(
+        rect: Rect.fromLTRB(x, element.open, x + pointWidth, element.close),
+        top: element.high,
+        bottom: element.low,
+        lineColor: isUp ? Colors.red : Colors.green,
+        rectFillColor: isUp ? null : Colors.green,
+      ).paint(canvas, size);
 
       index += 1;
       x = x + pointWidth + pointGap;
