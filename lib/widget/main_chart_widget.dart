@@ -84,74 +84,77 @@ class _MainChartWidgetState extends State<MainChartWidget> {
         candlestickCharVo: widget.candlestickChartData,
         chartDataList: widget.lineChartData);
 
-    return Column(
-      children: [
-        // 信息栏
-        MainChartShowDataWidget(
-          initData: MainChartSelectedDataVo.getLastShowData(
-              candlestickChartVo: widget.candlestickChartData,
-              lineChartVoList: widget.lineChartData),
-          name: widget.lineChartName ?? '',
-          mainChartSelectedDataStream: _mainChartSelectedDataStream,
-        ),
-        Stack(
-          children: [
-            RepaintBoundary(
-              child: CustomPaint(
-                key: _chartKey,
-                size: widget.size,
-                painter: MainChartRenderer(
-                    candlestickCharData: widget.candlestickChartData!,
-                    lineChartData: widget.lineChartData,
-                    margin: widget.margin,
-                    pointWidth: widget.pointWidth,
-                    pointGap: widget.pointGap,
-                    maxMinValue: maxMinValue,
-                    candlestickGapRatio: widget.candlestickGapRatio ?? 3),
+    return SizedBox(
+      width: widget.size.width,
+      child: Column(
+        children: [
+          // 信息栏
+          MainChartShowDataWidget(
+            initData: MainChartSelectedDataVo.getLastShowData(
+                candlestickChartVo: widget.candlestickChartData,
+                lineChartVoList: widget.lineChartData),
+            name: widget.lineChartName ?? '',
+            mainChartSelectedDataStream: _mainChartSelectedDataStream,
+          ),
+          Stack(
+            children: [
+              RepaintBoundary(
+                child: CustomPaint(
+                  key: _chartKey,
+                  size: widget.size,
+                  painter: MainChartRenderer(
+                      candlestickCharData: widget.candlestickChartData!,
+                      lineChartData: widget.lineChartData,
+                      margin: widget.margin,
+                      pointWidth: widget.pointWidth,
+                      pointGap: widget.pointGap,
+                      maxMinValue: maxMinValue,
+                      candlestickGapRatio: widget.candlestickGapRatio ?? 3),
+                ),
               ),
-            ),
-            RepaintBoundary(
-              child: StreamBuilder(
-                  stream: widget.crossCurveStream?.stream,
-                  builder: (context, snapshot) {
-                    Pair<double?, double?> selectedXY =
-                        Pair(left: null, right: null);
-                    if (snapshot.data != null && !snapshot.data!.isNull()) {
-                      RenderBox renderBox = _chartKey.currentContext!
-                          .findRenderObject() as RenderBox;
-
-                      Offset? selectedOffset =
-                          snapshot.data == null || snapshot.data!.isNull()
-                              ? null
-                              : renderBox.globalToLocal(Offset(
-                                  snapshot.data?.left ?? 0,
-                                  snapshot.data?.right ?? 0));
-                      selectedXY.left = selectedOffset?.dx;
-                      selectedXY.right = selectedOffset?.dy;
-                    }
-
-                    double? selectedHorizontalValue =
-                        KlineUtil.computeSelectedHorizontalValue(
-                            maxMinValue: maxMinValue,
-                            height: widget.size.height,
-                            selectedY: selectedXY.right);
-
-                    return CustomPaint(
-                      size: widget.size,
-                      painter: CrossCurvePainter(
-                          selectedXY: selectedXY,
-                          margin: widget.margin,
-                          selectedHorizontalValue: selectedHorizontalValue,
-                          selectedDataIndexStream:
-                              widget.selectedChartDataIndexStream,
-                          pointWidth: widget.pointWidth,
-                          pointGap: widget.pointGap),
-                    );
-                  }),
-            )
-          ],
-        ),
-      ],
+              RepaintBoundary(
+                child: StreamBuilder(
+                    stream: widget.crossCurveStream?.stream,
+                    builder: (context, snapshot) {
+                      Pair<double?, double?> selectedXY =
+                          Pair(left: null, right: null);
+                      if (snapshot.data != null && !snapshot.data!.isNull()) {
+                        RenderBox renderBox = _chartKey.currentContext!
+                            .findRenderObject() as RenderBox;
+    
+                        Offset? selectedOffset =
+                            snapshot.data == null || snapshot.data!.isNull()
+                                ? null
+                                : renderBox.globalToLocal(Offset(
+                                    snapshot.data?.left ?? 0,
+                                    snapshot.data?.right ?? 0));
+                        selectedXY.left = selectedOffset?.dx;
+                        selectedXY.right = selectedOffset?.dy;
+                      }
+    
+                      double? selectedHorizontalValue =
+                          KlineUtil.computeSelectedHorizontalValue(
+                              maxMinValue: maxMinValue,
+                              height: widget.size.height,
+                              selectedY: selectedXY.right);
+    
+                      return CustomPaint(
+                        size: widget.size,
+                        painter: CrossCurvePainter(
+                            selectedXY: selectedXY,
+                            margin: widget.margin,
+                            selectedHorizontalValue: selectedHorizontalValue,
+                            selectedDataIndexStream:
+                                widget.selectedChartDataIndexStream,
+                            pointWidth: widget.pointWidth,
+                            pointGap: widget.pointGap),
+                      );
+                    }),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -13,6 +13,8 @@ import '../vo/candlestick_chart_vo.dart';
 import '../vo/chart_show_data_item_vo.dart';
 import '../vo/line_chart_vo.dart';
 import '../vo/mask_layer.dart';
+import '../vo/pointer_info.dart';
+import 'kline_gesture_detector.dart';
 import 'main_chart_widget.dart';
 
 /// k线图手势操作组件
@@ -177,28 +179,30 @@ class _KChartWidgetState extends State<KChartWidget> {
           children: [
             Column(
               children: [
-                Listener(
-                  // 记录点击的位置
-                  onPointerDown: (event) => onTapGlobalPointer =
-                      Offset(event.position.dx, event.position.dy),
-                  child: GestureDetector(
-                    onTap: _onTap,
-                    onHorizontalDragStart: _onHorizontalDragStart,
-                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                    onHorizontalDragEnd: (details) =>
-                        _isOnHorizontalDragStart = false,
-                    onVerticalDragUpdate: _onVerticalDragUpdate,
-                    child: MainChartWidget(
-                      candlestickChartData: _showCandlestickChartData,
-                      size: _mainChartSize,
-                      lineChartData: _showLineChartData,
-                      lineChartName: _showLineChartData?.first.name,
-                      margin: widget.margin,
-                      pointWidth: _pointWidth,
-                      pointGap: _pointGap,
-                      crossCurveStream: _crossCurveStreamList[0],
-                      selectedChartDataIndexStream: _selectedIndexStream,
-                    ),
+                KlineGestureDetector(
+                  onTap: _onTap,
+                  onHorizontalDragStart: _onHorizontalDragStart,
+                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                  onHorizontalDragEnd: (details) =>
+                      _isOnHorizontalDragStart = false,
+                  onZoomIn: () {
+                    _showDataNum = (_showDataNum - 1).clamp(10, 90);
+                    _resetShowData(startIndex: _showDataStartIndex);
+                  },
+                  onZoomOut: () {
+                    _showDataNum = (_showDataNum + 1).clamp(10, 90);
+                    _resetShowData(startIndex: _showDataStartIndex);
+                  },
+                  child: MainChartWidget(
+                    candlestickChartData: _showCandlestickChartData,
+                    size: _mainChartSize,
+                    lineChartData: _showLineChartData,
+                    lineChartName: _showLineChartData?.first.name,
+                    margin: widget.margin,
+                    pointWidth: _pointWidth,
+                    pointGap: _pointGap,
+                    crossCurveStream: _crossCurveStreamList[0],
+                    selectedChartDataIndexStream: _selectedIndexStream,
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
@@ -223,31 +227,22 @@ class _KChartWidgetState extends State<KChartWidget> {
     );
   }
 
-  void _onTap() {
+  void _onTap(PointerInfo pointerInfo) {
+    debugPrint("k_chart_widget _onTap");
     // 取消选中的十字线
     if (_cancelCrossCurve()) {
       return;
     }
 
-    _resetCrossCurve(
-        Pair(left: onTapGlobalPointer?.dx, right: onTapGlobalPointer?.dy));
+    _resetCrossCurve(Pair(
+        left: pointerInfo.globalPosition.dx,
+        right: pointerInfo.globalPosition.dy));
   }
 
   void _onHorizontalDragStart(details) {
     debugPrint("GestureDetector onHorizontalDragStart");
     _sameTimeLastHorizontalDragX = details.localPosition.dx;
     _isOnHorizontalDragStart = true;
-  }
-
-  void _onVerticalDragUpdate(details) {
-    var delta = details.delta;
-    debugPrint("垂直拉动: $delta");
-    if (delta.dy < 0) {
-      _showDataNum = (_showDataNum - 1).clamp(10, 90);
-    } else {
-      _showDataNum = (_showDataNum + 1).clamp(10, 90);
-    }
-    _resetShowData(startIndex: _showDataStartIndex);
   }
 
   /// 重算布局

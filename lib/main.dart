@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
             subChartMaskList: [
               null,
               MaskLayer(percent: 0.3),
-              // MaskLayer(percent: 0.4)
+              // MaskLayer(percent: 0.8)
             ],
           ),
           ...List.generate(
