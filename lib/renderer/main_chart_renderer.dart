@@ -61,14 +61,13 @@ class MainChartRenderer extends CustomPainter {
 
     // 画矩形
     RectPainter(
-            size: size,
-            transverseLineNum: rectTransverseLineNum,
-            maxValue: maxMinValue.left,
-            minValue: maxMinValue.right,
-            isDrawVerticalLine: true,
-            textStyle: const TextStyle(
-                color: Colors.grey, fontSize: KlineConfig.rectFontSize))
-        .paint(canvas, size);
+      transverseLineNum: rectTransverseLineNum,
+      maxValue: maxMinValue.left,
+      minValue: maxMinValue.right,
+      isDrawVerticalLine: true,
+      textStyle: const TextStyle(
+          color: Colors.grey, fontSize: KlineConfig.rectFontSize),
+    ).paint(canvas, size);
 
     // 画蜡烛图
     CandlestickChartPainter(

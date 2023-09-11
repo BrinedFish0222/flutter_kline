@@ -247,8 +247,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   /// 重算布局
   void _computeLayout(BoxConstraints constraints) {
     double width = widget.size.width > constraints.maxWidth
-        ? constraints.maxWidth
-        : widget.size.width;
+        ? constraints.maxWidth - 1
+        : widget.size.width - 1;
 
     Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
         totalHeight: widget.size.height,
@@ -342,17 +342,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
           left: details.globalPosition.dx, right: details.globalPosition.dy));
       return;
     }
-  }
-
-  _onTapDown(TapDownDetails detail) {
-    // 取消十字线
-    bool isCancel = _cancelCrossCurve();
-    if (isCancel) {
-      return;
-    }
-
-    _resetCrossCurve(
-        Pair(left: detail.globalPosition.dx, right: detail.globalPosition.dy));
   }
 
   /// 取消十字线

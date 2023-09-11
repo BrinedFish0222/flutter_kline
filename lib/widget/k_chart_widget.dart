@@ -248,8 +248,8 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 重算布局
   void _computeLayout(BoxConstraints constraints) {
     double width = widget.size.width > constraints.maxWidth
-        ? constraints.maxWidth
-        : widget.size.width;
+        ? constraints.maxWidth - 1
+        : widget.size.width - 1;
 
     Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
         totalHeight: widget.size.height,
@@ -430,19 +430,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     _sameTimeLastHorizontalDragX = dx;
-  }
-
-  _onTapDown(TapDownDetails detail) {
-    debugPrint(
-        "_onTapDown 点击x：${detail.localPosition.dx}, 点击y：${detail.localPosition.dy}");
-
-    // 取消选中的十字线
-    if (_cancelCrossCurve()) {
-      return;
-    }
-
-    _resetCrossCurve(
-        Pair(left: detail.globalPosition.dx, right: detail.globalPosition.dy));
   }
 
   /// 取消十字线

@@ -46,15 +46,14 @@ class MinuteChartRenderer extends CustomPainter {
 
     // 画矩形
     RectPainter(
-            size: size,
-            transverseLineNum: 3,
-            transverseLineConfigList: [null, LineConfig(type: LineType.dotted)],
-            maxValue: maxMinValue.left,
-            minValue: maxMinValue.right,
-            isDrawVerticalLine: true,
-            textStyle: const TextStyle(
-                color: Colors.grey, fontSize: KlineConfig.rectFontSize))
-        .paint(canvas, size);
+      transverseLineNum: 3,
+      transverseLineConfigList: [null, LineConfig(type: LineType.dotted)],
+      maxValue: maxMinValue.left,
+      minValue: maxMinValue.right,
+      isDrawVerticalLine: true,
+      textStyle: const TextStyle(
+          color: Colors.grey, fontSize: KlineConfig.rectFontSize),
+    ).paint(canvas, size);
 
     LineChartPainter(
       lineChartData: [minuteChartVo],

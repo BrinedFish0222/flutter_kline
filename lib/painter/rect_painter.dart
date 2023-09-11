@@ -8,8 +8,6 @@ import 'package:flutter_kline/vo/line_config.dart';
 
 /// 矩形背景图
 class RectPainter extends CustomPainter {
-  final Size size;
-
   /// 中间的横线数量
   final int transverseLineNum;
 
@@ -28,7 +26,6 @@ class RectPainter extends CustomPainter {
   final bool showMinValueText;
 
   RectPainter({
-    required this.size,
     this.transverseLineNum = 2,
     this.transverseLineConfigList,
     this.isDrawVerticalLine = false,
@@ -88,15 +85,16 @@ class RectPainter extends CustomPainter {
     List<LineConfig> transverseLineConfigList = _initTransverseLineConfig();
 
     // 绘制矩形边框
-    Rect rect = Offset.zero & this.size;
+    Rect rect = Offset.zero & size;
     canvas.drawRect(rect, _painter);
 
-    _drawVerticalLine();
-    _drawTransverseLine(transverseLineConfigList: transverseLineConfigList);
+    _drawVerticalLine(size: size);
+    _drawTransverseLine(
+        transverseLineConfigList: transverseLineConfigList, size: size);
   }
 
   /// 绘制竖线
-  void _drawVerticalLine() {
+  void _drawVerticalLine({required Size size}) {
     if (!isDrawVerticalLine) {
       return;
     }
@@ -109,8 +107,10 @@ class RectPainter extends CustomPainter {
   }
 
   // 绘制横线和文本数字
-  void _drawTransverseLine(
-      {required List<LineConfig> transverseLineConfigList}) {
+  void _drawTransverseLine({
+    required List<LineConfig> transverseLineConfigList,
+    required Size size,
+  }) {
     double leftPadding = 2;
     TextStyle fontTextStyle = textStyle ??
         TextStyle(color: lineColor, fontSize: KlineConfig.rectFontSize);

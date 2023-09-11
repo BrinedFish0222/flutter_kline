@@ -17,14 +17,13 @@ class LineChartRenderer extends CustomPainter {
 
     // 画矩形
     RectPainter(
-            size: size,
-            transverseLineNum: 0,
-            maxValue: heightRange.left,
-            minValue: heightRange.right,
-            isDrawVerticalLine: true,
-            textStyle: const TextStyle(
-                color: Colors.grey, fontSize: KlineConfig.rectFontSize))
-        .paint(canvas, size);
+      transverseLineNum: 0,
+      maxValue: heightRange.left,
+      minValue: heightRange.right,
+      isDrawVerticalLine: true,
+      textStyle: const TextStyle(
+          color: Colors.grey, fontSize: KlineConfig.rectFontSize),
+    ).paint(canvas, size);
     LineChartPainter(lineChartData: chartData).paint(canvas, size);
   }
 
