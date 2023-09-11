@@ -61,6 +61,9 @@ class _ExampleMinuteNetworkWidgetState
         [ExampleRmoData.barChartData..barWidth = 4],
         ExampleMacdData.macd,
       ],
+      onTapIndicator: (int index) {
+        
+      },
     );
   }
 }

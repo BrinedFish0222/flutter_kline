@@ -28,7 +28,7 @@ class KChartWidget extends StatefulWidget {
       this.subChartMaskList,
       this.showDataNum = 60,
       this.margin,
-      this.onTapIndicator,
+      required this.onTapIndicator,
       this.dataGapRatio = 3,
       this.subChartRatio = 0.5});
 
@@ -51,7 +51,7 @@ class KChartWidget extends StatefulWidget {
   final double subChartRatio;
 
   /// 点击股票指标事件
-  final void Function(int index)? onTapIndicator;
+  final void Function(int index) onTapIndicator;
 
   @override
   State<KChartWidget> createState() => _KChartWidgetState();
@@ -203,6 +203,9 @@ class _KChartWidgetState extends State<KChartWidget> {
                     pointGap: _pointGap,
                     crossCurveStream: _crossCurveStreamList[0],
                     selectedChartDataIndexStream: _selectedIndexStream,
+                    onTapIndicator: () {
+                      widget.onTapIndicator(0);
+                    },
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
@@ -217,6 +220,9 @@ class _KChartWidgetState extends State<KChartWidget> {
                       maskLayer: _subChartMaskList[i],
                       crossCurveStream: _crossCurveStreamList[i + 1],
                       selectedChartDataIndexStream: _selectedIndexStream,
+                      onTapIndicator: () {
+                        widget.onTapIndicator(i + 1);
+                      },
                     ),
                   ),
               ],

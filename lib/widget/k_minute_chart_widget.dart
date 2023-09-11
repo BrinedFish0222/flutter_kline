@@ -16,19 +16,20 @@ import '../vo/mask_layer.dart';
 
 /// k线分时图
 class KMinuteChartWidget extends StatefulWidget {
-  const KMinuteChartWidget(
-      {super.key,
-      required this.size,
-      required this.minuteChartData,
-      this.minuteChartSubjoinData,
-      this.minuteChartDataAddStream,
-      required this.middleNum,
-      this.differenceNumbers,
-      this.dataNum = KlineConfig.minuteDataNum,
-      required this.subChartData,
-      this.subChartMaskList,
-      this.subChartRatio = 0.5,
-      this.onTapIndicator});
+  const KMinuteChartWidget({
+    super.key,
+    required this.size,
+    required this.minuteChartData,
+    this.minuteChartSubjoinData,
+    this.minuteChartDataAddStream,
+    required this.middleNum,
+    this.differenceNumbers,
+    this.dataNum = KlineConfig.minuteDataNum,
+    required this.subChartData,
+    this.subChartMaskList,
+    this.subChartRatio = 0.5,
+    required this.onTapIndicator,
+  });
 
   final Size size;
 
@@ -60,7 +61,7 @@ class KMinuteChartWidget extends StatefulWidget {
   final double subChartRatio;
 
   /// 点击股票指标事件
-  final void Function(int index)? onTapIndicator;
+  final void Function(int index) onTapIndicator;
 
   @override
   State<KMinuteChartWidget> createState() => _KMinuteChartWidgetState();
@@ -204,6 +205,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                       crossCurveStream: _crossCurveStreamList[0],
                       selectedChartDataIndexStream: _selectedIndexStream,
                       dataNum: widget.dataNum,
+                      onTapIndicator: () {
+                        widget.onTapIndicator(0);
+                      },
                     ),
                   ),
                 ),
@@ -219,6 +223,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                       maskLayer: _subChartMaskList[i],
                       crossCurveStream: _crossCurveStreamList[i + 1],
                       selectedChartDataIndexStream: _selectedIndexStream,
+                      onTapIndicator: () {
+                        widget.onTapIndicator(i + 1);
+                      },
                     ),
                   ),
               ],

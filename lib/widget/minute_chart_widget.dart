@@ -28,7 +28,8 @@ class MinuteChartWidget extends StatefulWidget {
     this.pointGap,
     this.crossCurveStream,
     this.selectedChartDataIndexStream,
-    this.dataNum = KlineConfig.minuteDataNum
+    this.dataNum = KlineConfig.minuteDataNum,
+    required this.onTapIndicator,
   });
 
   final Size size;
@@ -55,12 +56,14 @@ class MinuteChartWidget extends StatefulWidget {
   /// 数据点
   final int dataNum;
 
-
   /// 十字线流
   final StreamController<Pair<double?, double?>>? crossCurveStream;
 
   /// 十字线选中数据索引流
   final StreamController<int>? selectedChartDataIndexStream;
+
+  /// 点击股票指标事件
+  final void Function() onTapIndicator;
 
   @override
   State<MinuteChartWidget> createState() => _MinuteChartWidgetState();
@@ -117,7 +120,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
           height: KlineConfig.showDataSpaceSize,
           child: Row(children: [
             InkWell(
-              onTap: () => KlineUtil.showToast(context: context, text: '分时图点击'),
+              onTap: widget.onTapIndicator,
               child: Row(
                 children: [
                   Text(
@@ -177,7 +180,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
                       widget.minuteChartData.dataList ??= [];
                       widget.minuteChartData.dataList?.add(snapshot.data!);
                     }
-            
+
                     return CustomPaint(
                       key: _chartKey,
                       size: widget.size,

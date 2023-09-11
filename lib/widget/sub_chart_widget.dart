@@ -15,16 +15,18 @@ import 'sub_chart_show_data_widget.dart';
 
 /// 副图组件
 class SubChartWidget extends StatefulWidget {
-  const SubChartWidget(
-      {super.key,
-      required this.size,
-      required this.name,
-      required this.chartData,
-      this.pointWidth,
-      this.pointGap,
-      this.maskLayer,
-      this.crossCurveStream,
-      this.selectedChartDataIndexStream});
+  const SubChartWidget({
+    super.key,
+    required this.size,
+    required this.name,
+    required this.chartData,
+    this.pointWidth,
+    this.pointGap,
+    this.maskLayer,
+    this.crossCurveStream,
+    this.selectedChartDataIndexStream,
+    required this.onTapIndicator,
+  });
 
   final Size size;
   final String name;
@@ -37,6 +39,9 @@ class SubChartWidget extends StatefulWidget {
   final StreamController<Pair<double?, double?>>? crossCurveStream;
 
   final StreamController<int>? selectedChartDataIndexStream;
+
+  /// 点击股票指标事件
+  final void Function() onTapIndicator;
 
   @override
   State<SubChartWidget> createState() => _SubChartWidgetState();
@@ -81,11 +86,11 @@ class _SubChartWidgetState extends State<SubChartWidget> {
         children: [
           // 信息栏
           SubChartShowDataWidget(
-              initData: BaseChartVo.getLastShowData(widget.chartData),
-              name: widget.name,
-              onTapName: () =>
-                  KlineUtil.showToast(context: context, text: widget.name),
-              chartShowDataItemsStream: _chartShowDataItemsStream),
+            initData: BaseChartVo.getLastShowData(widget.chartData),
+            name: widget.name,
+            onTapName: widget.onTapIndicator,
+            chartShowDataItemsStream: _chartShowDataItemsStream,
+          ),
           Stack(
             children: [
               RepaintBoundary(

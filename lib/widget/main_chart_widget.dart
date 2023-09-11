@@ -13,18 +13,20 @@ import '../vo/main_chart_selected_data_vo.dart';
 import 'main_chart_show_data_widget.dart';
 
 class MainChartWidget extends StatefulWidget {
-  const MainChartWidget(
-      {super.key,
-      required this.size,
-      this.margin,
-      required this.candlestickChartData,
-      this.lineChartData,
-      this.lineChartName,
-      this.crossCurveStream,
-      this.selectedChartDataIndexStream,
-      this.pointWidth,
-      this.pointGap,
-      this.candlestickGapRatio});
+  const MainChartWidget({
+    super.key,
+    required this.size,
+    this.margin,
+    required this.candlestickChartData,
+    this.lineChartData,
+    this.lineChartName,
+    this.crossCurveStream,
+    this.selectedChartDataIndexStream,
+    this.pointWidth,
+    this.pointGap,
+    this.candlestickGapRatio,
+    required this.onTapIndicator,
+  });
 
   final Size size;
   final EdgeInsets? margin;
@@ -41,6 +43,9 @@ class MainChartWidget extends StatefulWidget {
 
   /// 十字线选中数据索引流
   final StreamController<int>? selectedChartDataIndexStream;
+
+  /// 点击股票指标事件
+  final void Function() onTapIndicator;
 
   @override
   State<MainChartWidget> createState() => _MainChartWidgetState();
@@ -95,6 +100,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                 lineChartVoList: widget.lineChartData),
             name: widget.lineChartName ?? '',
             mainChartSelectedDataStream: _mainChartSelectedDataStream,
+            onTap: widget.onTapIndicator,
           ),
           Stack(
             children: [
@@ -121,7 +127,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                       if (snapshot.data != null && !snapshot.data!.isNull()) {
                         RenderBox renderBox = _chartKey.currentContext!
                             .findRenderObject() as RenderBox;
-    
+
                         Offset? selectedOffset =
                             snapshot.data == null || snapshot.data!.isNull()
                                 ? null
@@ -131,13 +137,13 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                         selectedXY.left = selectedOffset?.dx;
                         selectedXY.right = selectedOffset?.dy;
                       }
-    
+
                       double? selectedHorizontalValue =
                           KlineUtil.computeSelectedHorizontalValue(
                               maxMinValue: maxMinValue,
                               height: widget.size.height,
                               selectedY: selectedXY.right);
-    
+
                       return CustomPaint(
                         size: widget.size,
                         painter: CrossCurvePainter(

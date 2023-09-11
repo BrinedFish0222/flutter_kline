@@ -95,6 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             [ExampleRmoData.barChartData..barWidth = 4],
                             ExampleMacdData.macd,
                           ],
+                          onTapIndicator: (int index) {
+                            KlineUtil.showToast(
+                                context: context, text: '点击指标索引：$index');
+                          },
                         ),
                         ...List.generate(
                             5,

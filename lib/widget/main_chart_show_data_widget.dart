@@ -14,11 +14,13 @@ class MainChartShowDataWidget extends StatelessWidget {
     required StreamController<MainChartSelectedDataVo>
         mainChartSelectedDataStream,
     this.initData,
+    required this.onTap,
   }) : _mainChartSelectedDataStream = mainChartSelectedDataStream;
 
   final String name;
   final StreamController<MainChartSelectedDataVo> _mainChartSelectedDataStream;
   final MainChartSelectedDataVo? initData;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class MainChartShowDataWidget extends StatelessWidget {
       height: KlineConfig.showDataSpaceSize,
       child: Row(children: [
         InkWell(
-          onTap: () => KlineUtil.showToast(context: context, text: name),
+          onTap: onTap,
           child: Row(
             children: [
               Text(
