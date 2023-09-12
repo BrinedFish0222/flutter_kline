@@ -13,11 +13,15 @@ import 'example_rmo_data.dart';
 import 'example_vol_data.dart';
 
 class ExampleDayWidget extends StatelessWidget {
-  const ExampleDayWidget({super.key});
+  const ExampleDayWidget({
+    super.key,
+    required this.overlayEntryLocationKey,
+  });
+  final GlobalKey overlayEntryLocationKey;
 
   @override
   Widget build(BuildContext context) {
-        var size = Size(MediaQuery.of(context).size.width - 20,
+    var size = Size(MediaQuery.of(context).size.width - 20,
         MediaQuery.of(context).size.height * 0.6);
     BarChartVo barChartVo = ExampleVolData.barChartData..barWidth = 2;
     for (var element in barChartVo.data) {
@@ -58,6 +62,7 @@ class ExampleDayWidget extends StatelessWidget {
               MaskLayer(percent: 0.3),
               // MaskLayer(percent: 0.8)
             ],
+            overlayEntryLocationKey: overlayEntryLocationKey,
           ),
           ...List.generate(
               5,

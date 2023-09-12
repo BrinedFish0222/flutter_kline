@@ -47,6 +47,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final GlobalKey _globalKey = GlobalKey();
+
   @override
   void dispose() {
     webSocketChannel.sink.close();
@@ -57,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: _globalKey,
         title: Text(widget.title),
       ),
       body: Column(
@@ -67,7 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: ListView(
                   children: [
-                    const ExampleMinuteNetworkWidget(),
+                    ExampleMinuteNetworkWidget(
+                      candlestickOverlayEntryLocationKey: _globalKey,
+                    ),
                     ...List.generate(
                         5,
                         (index) => Padding(

@@ -41,6 +41,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final GlobalKey _globalKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -50,9 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: const Column(
+        body: Column(
           children: [
-            TabBar(tabs: [
+            TabBar(key: _globalKey, tabs: const [
               Tab(
                 child: Text(
                   '分时',
@@ -67,8 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ]),
             Expanded(
-              child: TabBarView(
-                  children: [ExampleMinuteWidget(), ExampleDayWidget()]),
+              child: TabBarView(children: [
+                ExampleMinuteWidget(
+                  overlayEntryLocationKey: _globalKey,
+                ),
+                ExampleDayWidget(
+                  overlayEntryLocationKey: _globalKey,
+                )
+              ]),
             )
           ],
         ),

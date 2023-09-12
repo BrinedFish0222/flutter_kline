@@ -10,7 +10,9 @@ import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
 
 class ExampleMinuteNetworkWidget extends StatefulWidget {
-  const ExampleMinuteNetworkWidget({super.key});
+  const ExampleMinuteNetworkWidget(
+      {super.key, required this.candlestickOverlayEntryLocationKey});
+  final GlobalKey candlestickOverlayEntryLocationKey;
 
   @override
   State<ExampleMinuteNetworkWidget> createState() =>
@@ -65,6 +67,7 @@ class _ExampleMinuteNetworkWidgetState
       onTapIndicator: (int index) {
         KlineUtil.showToast(context: context, text: '点击指标索引：$index');
       },
+      overlayEntryLocationKey: widget.candlestickOverlayEntryLocationKey,
     );
   }
 }

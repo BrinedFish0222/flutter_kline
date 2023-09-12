@@ -7,7 +7,8 @@ import 'example_minute_data.dart';
 import 'example_rmo_data.dart';
 
 class ExampleMinuteWidget extends StatelessWidget {
-  const ExampleMinuteWidget({super.key});
+  const ExampleMinuteWidget({super.key, required this.overlayEntryLocationKey});
+  final GlobalKey overlayEntryLocationKey;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class ExampleMinuteWidget extends StatelessWidget {
               onTapIndicator: (int index) {
                 KlineUtil.showToast(context: context, text: '点击指标索引：$index');
               },
+              overlayEntryLocationKey: overlayEntryLocationKey,
             ),
             ...List.generate(
                 5,

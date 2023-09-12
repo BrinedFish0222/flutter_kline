@@ -17,18 +17,20 @@ import 'main_chart_widget.dart';
 
 /// k线图手势操作组件
 class KChartWidget extends StatefulWidget {
-  const KChartWidget(
-      {super.key,
-      required this.size,
-      required this.candlestickChartData,
-      this.lineChartData,
-      required this.subChartData,
-      this.subChartMaskList,
-      this.showDataNum = 60,
-      this.margin,
-      required this.onTapIndicator,
-      this.dataGapRatio = 3,
-      this.subChartRatio = 0.5});
+  const KChartWidget({
+    super.key,
+    required this.size,
+    required this.candlestickChartData,
+    this.lineChartData,
+    required this.subChartData,
+    this.subChartMaskList,
+    this.showDataNum = 60,
+    this.margin,
+    required this.onTapIndicator,
+    this.dataGapRatio = 3,
+    this.subChartRatio = 0.5,
+    required this.overlayEntryLocationKey,
+  });
 
   final Size size;
   final CandlestickChartVo candlestickChartData;
@@ -50,6 +52,9 @@ class KChartWidget extends StatefulWidget {
 
   /// 点击股票指标事件
   final void Function(int index) onTapIndicator;
+
+  /// 悬浮层位置Key
+  final GlobalKey overlayEntryLocationKey;
 
   @override
   State<KChartWidget> createState() => _KChartWidgetState();
@@ -245,7 +250,8 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 获取蜡烛浮层地址
   Pair<double, double> _getCandlestickOverlayLocation() {
-    RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+    RenderBox? renderBox = widget.overlayEntryLocationKey.currentContext
+        ?.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       // 获取组件在页面中的位置信息
       Offset offset = renderBox.localToGlobal(Offset.zero);
@@ -304,7 +310,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       }
       var overlayLocation = _getCandlestickOverlayLocation();
       _showCandlestickOverlay(
-          context: context, left: 0, top: overlayLocation.right - 50, vo: vo);
+          context: context, left: 0, top: overlayLocation.right, vo: vo);
     });
   }
 
@@ -385,7 +391,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       _resetShowData(startIndex: _showDataStartIndex - 1);
     }
 
-    _sameTimeLastHorizontalDragX = dx;  
+    _sameTimeLastHorizontalDragX = dx;
   }
 
   /// 取消十字线
