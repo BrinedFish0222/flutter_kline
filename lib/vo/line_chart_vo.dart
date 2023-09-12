@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
@@ -12,6 +13,7 @@ class LineChartVo extends BaseChartVo {
   Color color;
 
   List<ChartShowDataItemVo?>? _selectedShowData;
+  Pair<double, double>? _maxMinData;
 
   LineChartVo(
       {super.id,
@@ -68,25 +70,22 @@ class LineChartVo extends BaseChartVo {
 
   @override
   Pair<double, double> getMaxMinData() {
-    Pair<double, double> result =
-        Pair(left: -double.maxFinite, right: double.maxFinite);
-    if (KlineCollectionUtil.isEmpty(dataList)) {
-      return result;
+    if (_maxMinData != null) {
+      return _maxMinData!;
     }
 
-    dataList?.forEach((data) {
-      result.left = (data.value ?? -double.maxFinite) > result.left
-          ? data.value!
-          : result.left;
-      result.right = (data.value ?? double.maxFinite) < result.right
-          ? data.value!
-          : result.right;
-    });
+    if (minValue != null && maxValue != null) {
+      _maxMinData = Pair(left: maxValue!, right: minValue!);
+      return _maxMinData!;
+    }
 
-    result.right = minValue ?? result.right;
-    result.left = maxValue ?? result.left;
+    _maxMinData =
+        KlineNumUtil.maxMinValueDouble(dataList?.map((e) => e.value).toList());
 
-    return result;
+    _maxMinData!.right = minValue ?? _maxMinData!.right;
+    _maxMinData!.left = maxValue ?? _maxMinData!.left;
+
+    return _maxMinData!;
   }
 
   @override

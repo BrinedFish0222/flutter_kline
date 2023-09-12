@@ -37,20 +37,19 @@ class CandlestickChartVo extends BaseChartVo {
       return _maxMinData!;
     }
 
+    if (minValue != null && maxValue != null) {
+      _maxMinData = Pair(left: maxValue!, right: minValue!);
+      return _maxMinData!;
+    }
+
     var pairList = dataList
         .where((element) => element != null)
         .map((e) =>
             KlineNumUtil.maxMinValueDouble([e!.open, e.close, e.high, e.low]))
         .toList();
     _maxMinData = Pair.getMaxMinValue(pairList);
-
-    if (minValue != null) {
-      _maxMinData?.right = minValue!;
-    }
-
-    if (maxValue != null) {
-      _maxMinData?.left = maxValue!;
-    }
+    _maxMinData?.right = minValue ?? _maxMinData!.right;
+    _maxMinData?.left = maxValue ?? _maxMinData!.left;
 
     return _maxMinData!;
   }

@@ -2427,14 +2427,11 @@ class ExampleVolData {
 
     List<BarChartData> dataList = [];
     for (int i = 0; i < _volume.length; ++i) {
-      Color color =
-          (candlestickData.dataList[i]?.close ?? 0) < (candlestickData.dataList[i]?.open ?? 0)
-              ? KlineConfig.green
-              : KlineConfig.red;
-      bool isFill =
-          (candlestickData.dataList[i]?.close ?? 0) < (candlestickData.dataList[i]?.open ?? 0)
-              ? true
-              : false;
+      var data = KlineCollectionUtil.getByIndex(candlestickData.dataList, i);
+      Color color = (data?.close ?? 0) < (data?.open ?? 0)
+          ? KlineConfig.green
+          : KlineConfig.red;
+      bool isFill = (data?.close ?? 0) < (data?.open ?? 0) ? true : false;
       dataList.add(
           BarChartData(value: _volume[i] ?? 0, color: color, isFill: isFill));
     }

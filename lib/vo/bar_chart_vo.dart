@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
@@ -50,14 +51,16 @@ class BarChartVo extends BaseChartVo {
       return _maxMinData!;
     }
 
-    double max = maxValue ??
-        data
-            .map((e) => e.value)
-            .reduce((value, element) => value > element ? value : element);
-    double min = minValue ??
-        data
-            .map((e) => e.value)
-            .reduce((value, element) => value < element ? value : element);
+    if (minValue != null && maxValue != null) {
+      _maxMinData = Pair(left: maxValue!, right: minValue!);
+      return _maxMinData!;
+    }
+
+    Pair<double, double> maxMinValue =
+        KlineNumUtil.maxMinValueDouble(data.map((e) => e.value).toList());
+
+    double max = maxValue ?? maxMinValue.left;
+    double min = minValue ?? maxMinValue.right;
 
     _maxMinData = Pair<double, double>(left: max, right: min);
     return _maxMinData!;

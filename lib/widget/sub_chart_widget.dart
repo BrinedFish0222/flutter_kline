@@ -61,9 +61,12 @@ class _SubChartWidgetState extends State<SubChartWidget> {
       List<ChartShowDataItemVo> showDataList = [];
 
       for (var data in widget.chartData) {
+        var selectedShowData = data.getSelectedShowData();
         var showData = KlineCollectionUtil.getByIndex(
-            data.getSelectedShowData(), index,
-            indexMinZeroValue: data.getSelectedShowData()?.last);
+          selectedShowData,
+          index,
+          indexMinZeroValue: KlineCollectionUtil.last(selectedShowData),
+        );
         if (showData == null) {
           continue;
         }

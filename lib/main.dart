@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const DoubleBackExitAppWidget(
-          child: MyHomePage(title: 'Flutter Demo Home Page')),
+          child: MyHomePage(title: 'Flutter Kline')),
     );
   }
 }
@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      initialIndex: 0,
+      initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),

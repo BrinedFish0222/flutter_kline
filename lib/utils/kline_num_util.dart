@@ -50,7 +50,7 @@ class KlineNumUtil {
     return result;
   }
 
-  static Pair<double, double>? maxMinValueDouble(List<num?>? dataList) {
+  static Pair<double, double> maxMinValueDouble(List<num?>? dataList) {
     var value = maxMinValue(dataList);
     return Pair(
         left: value?.left.toDouble() ?? -double.maxFinite,
