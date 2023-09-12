@@ -1,11 +1,11 @@
 # flutter_kline
 <img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/k_minute_chart_gif.gif" width="300" />&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/k_chart_gif.gif" width="300" />
 
-从事了半年的app开发，之前在一家公司负责股票软件的开发，发现 flutter 关于股票K线图这方面的参考资源都是很老旧的项目，拿来使用的过程中也发现了一些需要进行改善的地方，所以有了这个开源项目，**flutter_kline 只是给你提供一个实现接近通达信K线图级别的思路，它只能接近，无法完全媲美**。
+之前在一家公司负责股票软件的开发，发现 flutter 关于股票K线图这方面的资源都是很老旧的项目，拿来使用的过程中也发现了一些需要进行改善的地方，所以有了这个开源项目，**flutter_kline 只是给你提供一个实现接近通达信K线图级别的思路，它只能接近，无法完全媲美**。
 
 :warning:我只有半年的app开发经验，是一个萌新，请容忍我的烂代码:sweat_smile::sweat_smile::sweat_smile:。
 
-:warning: 目前 flutter_kline 是一个画K线图的思路，不是完整的 websocket 版本可以直接商业使用的版本。
+:warning: 目前 flutter_kline 更多是一个画K线图的思路，不是完整可以直接商业使用的版本。
 
 如果这个项目对你有启发，请一定要给个:star::star::star:。
 
@@ -17,7 +17,7 @@
 
 :four_leaf_clover: 如果你使用的K线图是主图和副图是一张图的，那你或许有点击K线图信息栏更换指标识别精准度问题，flutter_kline 的拆分思想解决了这个问题，一切都是由散件组合而成，你能精准的点击到它，更换你的指标。
 
-:frog: flutter_kline 解决了其它老项目没兼容在K线图外层套具备滑动组件（例如：ListView）引发的手势冲突问题。
+:frog: flutter_kline 解决了其它老项目在K线图外层套滑动组件（例如：ListView）引发的手势冲突问题。
 
 :blue_heart: 你可以增加任意数量的副图。
 
