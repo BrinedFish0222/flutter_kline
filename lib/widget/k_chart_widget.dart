@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/main_chart_selected_data_vo.dart';
@@ -97,21 +98,11 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 同一时间上一个拖动的x轴坐标
   late double _sameTimeLastHorizontalDragX;
 
-  // 选中的折线数据
-  final StreamController<MainChartSelectedDataVo> _selectedLineChartDataStream =
-      StreamController();
-
-  /// 蜡烛数据流
-  final StreamController<CandlestickChartData?> _candlestickChartVoStream =
-      StreamController();
-
   /// 蜡烛选中数据悬浮层
   OverlayEntry? _candlestickOverlayEntry;
 
   /// 副图遮罩
   List<MaskLayer?> _subChartMaskList = [];
-
-  Offset? onTapGlobalPointer;
 
   @override
   void initState() {
@@ -124,20 +115,6 @@ class _KChartWidgetState extends State<KChartWidget> {
             .clamp(0, widget.candlestickChartData.dataList.length - 1);
     _resetShowData();
     _initSelectedIndexStream();
-
-    _candlestickChartVoStream.stream.listen((event) {
-      if (event == null) {
-        _hideCandlestickOverlay();
-        return;
-      }
-
-      var overlayLocation = _getCandlestickOverlayLocation();
-      _showCandlestickOverlay(
-          context: context,
-          left: 0,
-          top: overlayLocation.right - 50,
-          vo: event);
-    });
 
     super.initState();
   }
@@ -164,8 +141,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   void dispose() {
     _hideCandlestickOverlay();
     _selectedIndexStream?.close();
-    _candlestickChartVoStream.close();
-    _selectedLineChartDataStream.close();
     super.dispose();
   }
 
@@ -311,7 +286,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   void _hideCandlestickOverlay() {
     _candlestickOverlayEntry?.remove();
     _candlestickOverlayEntry = null;
-    debugPrint("hide overlay execute ... ");
   }
 
   _initSelectedIndexStream() {
@@ -320,14 +294,22 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     _selectedIndexStream = StreamController<int>.broadcast();
+    // 处理指数显示的数据
     _selectedIndexStream!.stream.listen(_selectedIndexStreamListen);
-
+    // 处理悬浮层。
     _selectedIndexStream?.stream.listen((index) {
       if (index == -1) {
         _hideCandlestickOverlay();
         return;
       }
-      _candlestickChartVoStream.add(_showCandlestickChartData?.dataList[index]);
+      var vo = _showCandlestickChartData?.dataList[index];
+      if (vo == null) {
+        _hideCandlestickOverlay();
+        return;
+      }
+      var overlayLocation = _getCandlestickOverlayLocation();
+      _showCandlestickOverlay(
+          context: context, left: 0, top: overlayLocation.right - 50, vo: vo);
     });
   }
 
@@ -337,7 +319,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     if (index <= -1) {
-      _selectedLineChartDataStream.add(MainChartSelectedDataVo());
       return;
     }
 
@@ -355,7 +336,6 @@ class _KChartWidgetState extends State<KChartWidget> {
           name: lineData.name ?? '',
           value: indexData.value));
     }
-    _selectedLineChartDataStream.add(vo);
   }
 
   /// 重置显示的数据。
@@ -448,10 +428,14 @@ class _KChartWidgetState extends State<KChartWidget> {
     _resetCrossCurve(null);
     // 恢复默认最后一根k线的数据
     if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
-      _selectedIndexStreamListen(_showLineChartData!.length - 1);
+      var lengthList =
+          _showLineChartData!.map((e) => e.dataList?.length ?? 0).toList();
+      var maxMinLength = KlineNumUtil.maxMinValue(lengthList);
+      _selectedIndexStreamListen((maxMinLength?.left.toInt() ?? 0) - 1);
     }
     _hideCandlestickOverlay();
 
+    _selectedIndexStream?.add(-1);
     return true;
   }
 

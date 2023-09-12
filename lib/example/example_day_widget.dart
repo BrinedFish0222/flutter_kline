@@ -49,7 +49,7 @@ class ExampleDayWidget extends StatelessWidget {
                 ExampleEssData.barChartData
                   ..barWidth = 2
                   ..minValue = 0,
-                // ExampleEssData.lineChartA.subData(start: 0, end: 600),
+                ExampleEssData.lineChartA,
                 ExampleEssData.lineChartB
               ],
             ],
