@@ -87,7 +87,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   StreamController<int>? _selectedIndexStream;
 
   /// 十字线是否显示
-  bool _isShowCrossCurve = false;
+  final ValueNotifier<bool> _isShowCrossCurve = ValueNotifier(false);
+
   bool _isOnHorizontalDragStart = true;
 
   final List<List<BaseChartVo>> _showSubChartData = [];
@@ -183,33 +184,38 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                   // 记录点击的位置
                   onPointerDown: (event) => onTapGlobalPointer =
                       Offset(event.position.dx, event.position.dy),
-                  child: GestureDetector(
-                    onTap: _onTap,
-                    // onTapDown: _onTapDown,
-                    onHorizontalDragStart:
-                        _isShowCrossCurve ? _onHorizontalDragStart : null,
-                    onHorizontalDragUpdate:
-                        _isShowCrossCurve ? _onHorizontalDragUpdate : null,
-                    onHorizontalDragEnd: _isShowCrossCurve
-                        ? (details) => _isOnHorizontalDragStart = false
-                        : null,
-                    child: MinuteChartWidget(
-                      size: _mainChartSize,
-                      minuteChartData: _minuteChartData,
-                      minuteChartSubjoinData: widget.minuteChartSubjoinData,
-                      minuteChartDataAddStream: widget.minuteChartDataAddStream,
-                      middleNum: widget.middleNum,
-                      differenceNumbers: widget.differenceNumbers,
-                      pointWidth: _pointWidth,
-                      pointGap: _pointGap,
-                      crossCurveStream: _crossCurveStreamList[0],
-                      selectedChartDataIndexStream: _selectedIndexStream,
-                      dataNum: widget.dataNum,
-                      onTapIndicator: () {
-                        widget.onTapIndicator(0);
-                      },
-                    ),
-                  ),
+                  child: ValueListenableBuilder(
+                      valueListenable: _isShowCrossCurve,
+                      builder: (context, data, _) {
+                        return GestureDetector(
+                          onTap: _onTap,
+                          onHorizontalDragStart:
+                              data ? _onHorizontalDragStart : null,
+                          onHorizontalDragUpdate:
+                              data ? _onHorizontalDragUpdate : null,
+                          onHorizontalDragEnd: data
+                              ? (details) => _isOnHorizontalDragStart = false
+                              : null,
+                          child: MinuteChartWidget(
+                            size: _mainChartSize,
+                            minuteChartData: _minuteChartData,
+                            minuteChartSubjoinData:
+                                widget.minuteChartSubjoinData,
+                            minuteChartDataAddStream:
+                                widget.minuteChartDataAddStream,
+                            middleNum: widget.middleNum,
+                            differenceNumbers: widget.differenceNumbers,
+                            pointWidth: _pointWidth,
+                            pointGap: _pointGap,
+                            crossCurveStream: _crossCurveStreamList[0],
+                            selectedChartDataIndexStream: _selectedIndexStream,
+                            dataNum: widget.dataNum,
+                            onTapIndicator: () {
+                              widget.onTapIndicator(0);
+                            },
+                          ),
+                        );
+                      }),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
                   GestureDetector(
@@ -344,7 +350,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
     // 如果十字线显示的状态，则拖动操作是移动十字线。
-    if (_isShowCrossCurve) {
+    if (_isShowCrossCurve.value) {
       _resetCrossCurve(Pair(
           left: details.globalPosition.dx, right: details.globalPosition.dy));
       return;
@@ -353,8 +359,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   /// 取消十字线
   bool _cancelCrossCurve() {
-    if (!(_isShowCrossCurve ||
-        (_isShowCrossCurve && !_isOnHorizontalDragStart))) {
+    if (!(_isShowCrossCurve.value ||
+        (_isShowCrossCurve.value && !_isOnHorizontalDragStart))) {
       setState(() {});
       return false;
     }
@@ -368,7 +374,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
-    _isShowCrossCurve = crossCurveXY != null;
+    _isShowCrossCurve.value = crossCurveXY != null;
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    _isShowCrossCurve.notifyListeners();
 
     for (var element in _crossCurveStreamList) {
       element.add(crossCurveXY ?? Pair(left: null, right: null));
