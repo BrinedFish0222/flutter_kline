@@ -88,6 +88,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
     var maxMinValue = KlineUtil.getMaxMinValue(
         candlestickCharVo: widget.candlestickChartData,
         chartDataList: widget.lineChartData);
+    widget.selectedChartDataIndexStream?.add(-1);
 
     return SizedBox(
       width: widget.size.width,

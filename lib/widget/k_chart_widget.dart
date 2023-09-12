@@ -385,7 +385,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       _resetShowData(startIndex: _showDataStartIndex - 1);
     }
 
-    _sameTimeLastHorizontalDragX = dx;
+    _sameTimeLastHorizontalDragX = dx;  
   }
 
   /// 取消十字线
