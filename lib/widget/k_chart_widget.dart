@@ -2,16 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/main_chart_selected_data_vo.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
 import '../common/pair.dart';
 import '../vo/candlestick_chart_vo.dart';
-import '../vo/chart_show_data_item_vo.dart';
 import '../vo/line_chart_vo.dart';
 import '../vo/mask_layer.dart';
 import '../vo/pointer_info.dart';
@@ -294,8 +291,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     _selectedIndexStream = StreamController<int>.broadcast();
-    // 处理指数显示的数据
-    _selectedIndexStream!.stream.listen(_selectedIndexStreamListen);
     // 处理悬浮层。
     _selectedIndexStream?.stream.listen((index) {
       if (index == -1) {
@@ -311,31 +306,6 @@ class _KChartWidgetState extends State<KChartWidget> {
       _showCandlestickOverlay(
           context: context, left: 0, top: overlayLocation.right - 50, vo: vo);
     });
-  }
-
-  _selectedIndexStreamListen(int index) {
-    if (KlineCollectionUtil.isEmpty(_showLineChartData)) {
-      return;
-    }
-
-    if (index <= -1) {
-      return;
-    }
-
-    MainChartSelectedDataVo vo = MainChartSelectedDataVo(lineChartList: []);
-    vo.candlestickChartData = KlineCollectionUtil.getByIndex(
-        _showCandlestickChartData?.dataList, index);
-    for (var lineData in _showLineChartData!) {
-      LineChartData? indexData =
-          KlineCollectionUtil.getByIndex(lineData.dataList, index);
-      if (indexData == null) {
-        continue;
-      }
-      vo.lineChartList!.add(ChartShowDataItemVo(
-          color: lineData.color,
-          name: lineData.name ?? '',
-          value: indexData.value));
-    }
   }
 
   /// 重置显示的数据。
@@ -426,13 +396,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     _resetCrossCurve(null);
-    // 恢复默认最后一根k线的数据
-    if (KlineCollectionUtil.isNotEmpty(_showLineChartData)) {
-      var lengthList =
-          _showLineChartData!.map((e) => e.dataList?.length ?? 0).toList();
-      var maxMinLength = KlineNumUtil.maxMinValue(lengthList);
-      _selectedIndexStreamListen((maxMinLength?.left.toInt() ?? 0) - 1);
-    }
     _hideCandlestickOverlay();
 
     _selectedIndexStream?.add(-1);
