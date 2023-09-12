@@ -63,18 +63,28 @@ class RectPainter extends CustomPainter {
 
   /// 初始化：横线文本值。
   void _initTransverseLineTextValues() {
-    if (maxValue == null) {
+    if (this.maxValue == null) {
       return;
     }
 
-    double value = (maxValue! - minValue!) / (transverseLineNum + 1);
-
-    _transverseLineTextValues.add(minValue!);
-    for (int i = 0; i < transverseLineNum; ++i) {
-      _transverseLineTextValues.add(minValue! + value * (i + 1));
+    // 定义最大最小值，默认是最小是0，最大是1。
+    double minValue = this.minValue ?? double.maxFinite;
+    double maxValue = this.maxValue ?? -double.maxFinite;
+    if (maxValue == -double.maxFinite) {
+      maxValue = minValue == double.maxFinite ? 1 : minValue + 1;
+    }
+    if (minValue == double.maxFinite) {
+      minValue = maxValue - 1;
     }
 
-    _transverseLineTextValues.add(maxValue!);
+    double value = (maxValue - minValue) / (transverseLineNum + 1);
+
+    _transverseLineTextValues.add(minValue);
+    for (int i = 0; i < transverseLineNum; ++i) {
+      _transverseLineTextValues.add(minValue + value * (i + 1));
+    }
+
+    _transverseLineTextValues.add(maxValue);
     _transverseLineTextValues = _transverseLineTextValues.reversed.toList();
   }
 
