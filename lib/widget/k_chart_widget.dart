@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
@@ -86,6 +87,9 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// [widget.showDataNum]
   late int _showDataNum;
 
+  /// 等于：widget.candlestickChartData.dataList.length - 1
+  late int _originCandlestickDataMaxIndex;
+
   /// 显示的蜡烛数据
   CandlestickChartVo? _showCandlestickChartData;
 
@@ -108,13 +112,14 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   void initState() {
+    _originCandlestickDataMaxIndex =
+        widget.candlestickChartData.dataList.length - 1;
     _initSubChartMaskList();
 
     _initCrossCurveStream();
     _showDataNum = widget.showDataNum;
-    _showDataStartIndex =
-        (widget.candlestickChartData.dataList.length - _showDataNum - 1)
-            .clamp(0, widget.candlestickChartData.dataList.length - 1);
+    _showDataStartIndex = (_originCandlestickDataMaxIndex - _showDataNum)
+        .clamp(0, _originCandlestickDataMaxIndex);
     _resetShowData();
     _initSelectedIndexStream();
 
@@ -163,12 +168,14 @@ class _KChartWidgetState extends State<KChartWidget> {
                   onHorizontalDragEnd: (details) =>
                       _isOnHorizontalDragStart = false,
                   onZoomIn: () {
-                    _showDataNum = (_showDataNum - 1).clamp(10, 90);
-                    _resetShowData(startIndex: _showDataStartIndex);
+                    int endIndex = (_showDataStartIndex + _showDataNum)
+                        .clamp(0, _originCandlestickDataMaxIndex);
+                    _onZoom(endIndex: endIndex, zoomIn: true);
                   },
                   onZoomOut: () {
-                    _showDataNum = (_showDataNum + 1).clamp(10, 90);
-                    _resetShowData(startIndex: _showDataStartIndex);
+                    int endIndex = (_showDataStartIndex + _showDataNum)
+                        .clamp(0, _originCandlestickDataMaxIndex);
+                    _onZoom(endIndex: endIndex, zoomIn: false);
                   },
                   child: MainChartWidget(
                     candlestickChartData: _showCandlestickChartData,
@@ -314,25 +321,45 @@ class _KChartWidgetState extends State<KChartWidget> {
     });
   }
 
+  /// 放大缩小
+  /// [endIndex] 结束索引位置
+  /// [zoomIn] 是否放大
+  _onZoom({required int endIndex, required bool zoomIn}) {
+    if (_showDataNum == KlineConfig.showDataMinLength && zoomIn) {
+      return;
+    }
+
+    if (_showDataNum == KlineConfig.showDataMaxLength && !zoomIn) {
+      return;
+    }
+
+    int addVal = zoomIn ? -1 : 1;
+    _showDataNum = (_showDataNum + addVal)
+        .clamp(KlineConfig.showDataMinLength, KlineConfig.showDataMaxLength);
+    int startIndex =
+        (endIndex - _showDataNum).clamp(0, _originCandlestickDataMaxIndex);
+    debugPrint("最后的数据索引： _onZoom to _resetShowData");
+    _resetShowData(startIndex: startIndex);
+  }
+
   /// 重置显示的数据。
   /// 自动适配
   _resetShowData({int? startIndex}) {
     if (startIndex == null) {
-      _showDataStartIndex =
-          (widget.candlestickChartData.dataList.length - _showDataNum - 1)
-              .clamp(0, widget.candlestickChartData.dataList.length - 1);
+      _showDataStartIndex = (_originCandlestickDataMaxIndex - _showDataNum)
+          .clamp(0, _originCandlestickDataMaxIndex);
     } else {
       _showDataStartIndex = startIndex;
     }
 
     int endIndex = (_showDataStartIndex + _showDataNum)
-        .clamp(0, widget.candlestickChartData.dataList.length - 1);
-
-    _showDataStartIndex = (endIndex - _showDataNum)
-        .clamp(0, widget.candlestickChartData.dataList.length);
+        .clamp(0, _originCandlestickDataMaxIndex);
+    debugPrint("最后的数据索引：$endIndex");
+    _showDataStartIndex =
+        (endIndex - _showDataNum).clamp(0, _originCandlestickDataMaxIndex);
 
     _showCandlestickChartData = widget.candlestickChartData.subData(
-        start: _showDataStartIndex, end: endIndex) as CandlestickChartVo;
+        start: _showDataStartIndex, end: endIndex + 1) as CandlestickChartVo;
 
     if (KlineCollectionUtil.isNotEmpty(widget.lineChartData)) {
       _showLineChartData = [];
@@ -341,11 +368,8 @@ class _KChartWidgetState extends State<KChartWidget> {
           continue;
         }
 
-        var newVo = element.copy() as LineChartVo;
-        newVo.dataList = KlineCollectionUtil.sublist(
-            list: element.dataList,
-            startIndex: _showDataStartIndex,
-            endIndex: endIndex);
+        var newVo = element.subData(
+            start: _showDataStartIndex, end: endIndex + 1) as LineChartVo;
         _showLineChartData?.add(newVo);
       }
     }
@@ -356,7 +380,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         List<BaseChartVo> newDataList = [];
         for (BaseChartVo data in dataList) {
           newDataList
-              .add(data.subData(start: _showDataStartIndex, end: endIndex));
+              .add(data.subData(start: _showDataStartIndex, end: endIndex + 1));
         }
         _showSubChartData.add(newDataList);
       }
@@ -376,6 +400,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
+    debugPrint("k线图横向滑动");
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
       _resetCrossCurve(Pair(

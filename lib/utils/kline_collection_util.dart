@@ -88,14 +88,14 @@ class KlineCollectionUtil {
   }
 
   static List<E>? sublist<E>(
-      {required List<E>? list, required int startIndex, int? endIndex}) {
+      {required List<E>? list, required int start, int? end}) {
     if (KlineCollectionUtil.isEmpty(list)) {
       return null;
     }
-    endIndex ??= list!.length - 1;
-    startIndex = startIndex.clamp(0, list!.length);
-    endIndex = endIndex.clamp(0, list.length);
-    return list.sublist(startIndex, endIndex);
+    end ??= list!.length - 1;
+    start = start.clamp(0, list!.length);
+    end = end.clamp(0, list.length);
+    return list.sublist(start, end);
   }
 
   static E? first<E>(List<E>? list) {

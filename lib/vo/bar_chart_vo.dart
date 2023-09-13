@@ -30,7 +30,7 @@ class BarChartVo extends BaseChartVo {
         maxValue: maxValue,
         minValue: minValue,
         barWidth: barWidth,
-        data: KlineCollectionUtil.sublist(list: data, startIndex: 0) ?? []);
+        data: KlineCollectionUtil.sublist(list: data, start: 0) ?? []);
   }
 
   @override
@@ -75,7 +75,7 @@ class BarChartVo extends BaseChartVo {
         maxValue: maxValue,
         minValue: minValue,
         data: KlineCollectionUtil.sublist(
-                list: data, startIndex: start, endIndex: end) ??
+                list: data, start: start, end: end) ??
             []);
   }
 }

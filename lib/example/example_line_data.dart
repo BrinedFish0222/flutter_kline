@@ -2413,7 +2413,7 @@ class ExampleLineData {
     12.80729166666664
   ];
 
-  static List<BaseChartVo> getLineChartMA13({int dataIndex = 799}) {
+  static List<BaseChartVo> getLineChartMA13({int end = 800}) {
     return [
       LineChartVo(
           name: 'MA',
@@ -2422,21 +2422,21 @@ class ExampleLineData {
       LineChartVo(
           name: 'MA13',
           dataList: ExampleLineData.ma13
-              .sublist(0, dataIndex)
+              .sublist(0, end)
               .map((e) => LineChartData(value: e))
               .toList(),
           color: KlineConfig.kLineColors[0]),
       LineChartVo(
           name: 'MA34',
           dataList: ExampleLineData.ma34
-              .sublist(0, dataIndex)
+              .sublist(0, end)
               .map((e) => LineChartData(value: e))
               .toList(),
           color: KlineConfig.kLineColors[1]),
       LineChartVo(
           name: 'MA144',
           dataList: ExampleLineData.ma144
-              .sublist(0, dataIndex)
+              .sublist(0, end)
               .map((e) => LineChartData(value: e))
               .toList(),
           color: KlineConfig.kLineColors[2]),
