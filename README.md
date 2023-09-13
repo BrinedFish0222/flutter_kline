@@ -25,7 +25,7 @@
 
 flutter version 3.10.5
 
-直接[下载 apk 体验](https://objects.githubusercontent.com/github-production-release-asset-2e65be/655184959/bed0d454-8de0-4d6c-b8ef-27fcdcf75e41?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230913%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230913T072704Z&X-Amz-Expires=300&X-Amz-Signature=355a16c11f7d74413dc88fd7a3a1bc443abaffecdec957b1dcf1f1486f6f3b85&X-Amz-SignedHeaders=host&actor_id=75007756&key_id=0&repo_id=655184959&response-content-disposition=attachment%3B%20filename%3Dflutter_kline.apk&response-content-type=application%2Fvnd.android.package-archive)。
+直接[下载 apk 体验](https://github.com/BrinedFish0222/flutter_kline/releases)。
 
 `lib/main.dart` 启动即可。
 
