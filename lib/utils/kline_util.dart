@@ -7,9 +7,7 @@ import '../vo/candlestick_chart_vo.dart';
 
 class KlineUtil {
   /// 转换数据为图数据。
-  static List<double?> convertDataToChartData(
-      List<double?> data, double canvasMaxHeight,
-      {Pair<num, num>? maxMinValue}) {
+  static List<double?> convertDataToChartData(List<double?> data, double canvasMaxHeight, {Pair<num, num>? maxMinValue}) {
     if (data.isEmpty) {
       return [];
     }
@@ -18,15 +16,10 @@ class KlineUtil {
     maxMinValue ??= KlineNumUtil.maxMinValue(data);
 
     // 计算数据在 maxHeight 范围内的高度比例
-    double scaleFactor =
-        canvasMaxHeight / (maxMinValue!.left - maxMinValue.right);
+    double scaleFactor = canvasMaxHeight / (maxMinValue!.left - maxMinValue.right);
 
     // 遍历数据数组，将每个数据值转换成对应的高度值，
-    List<double?> heights = data
-        .map((value) => value != null
-            ? ((value - maxMinValue!.right) * scaleFactor).toDouble()
-            : null)
-        .map((e) {
+    List<double?> heights = data.map((value) => value != null ? ((value - maxMinValue!.right) * scaleFactor).toDouble() : null).map((e) {
       if (e == null) {
         return null;
       }
@@ -59,25 +52,18 @@ class KlineUtil {
   /// [subChartRatio] 副图相对于主图的比例
   /// [subChartNum] 副图数量
   /// 返回结果：左边 主图高度；右边 单个副图高度。
-  static Pair<double, double> autoAllotChartHeight(
-      {required double totalHeight,
-      required double subChartRatio,
-      required int subChartNum}) {
+  static Pair<double, double> autoAllotChartHeight({required double totalHeight, required double subChartRatio, required int subChartNum}) {
     double totalRatio = 1 + subChartRatio * subChartNum;
     double singleHeight = totalHeight / totalRatio;
 
-    return Pair<double, double>(
-        left: singleHeight * 1, right: singleHeight * subChartRatio);
+    return Pair<double, double>(left: singleHeight * 1, right: singleHeight * subChartRatio);
   }
 
   /// 获取点宽度，公式：画布长 / (数据数组长度 * 数据宽度和空间间隔比 + 数据数组长度 - 1) * 数据宽度和空间间隔比
   /// [width] 画布长
   /// [dataLength] 数据数组长度
   /// [gapRatio] 数据宽度和空间间隔比
-  static double getPointWidth(
-      {required double width,
-      required int dataLength,
-      required double gapRatio}) {
+  static double getPointWidth({required double width, required int dataLength, required double gapRatio}) {
     if (dataLength == 0) {
       return 0;
     }
@@ -91,26 +77,29 @@ class KlineUtil {
   /// 计算y轴值：最大最小值范围差 / 高度 * 选中的y轴高度 + 底数
   /// [maxMinValue] 最大最小值
   /// [selectedY] 选中的y轴
-  static double? computeSelectedHorizontalValue(
-      {required Pair<double, double> maxMinValue,
-      required double height,
-      required double? selectedY}) {
+  static double? computeSelectedHorizontalValue({required Pair<double, double> maxMinValue, required double height, required double? selectedY}) {
     if (selectedY == null) {
       return null;
     }
 
-    return (maxMinValue.left - maxMinValue.right) /
-            height *
-            (height - selectedY) +
-        maxMinValue.right;
+    return (maxMinValue.left - maxMinValue.right) / height * (height - selectedY) + maxMinValue.right;
+  }
+
+  /// 计算y轴值：高度 - 高度 / 最大最小值范围差  * 值
+  /// [maxMinValue] 最大最小值
+  /// [height] 高度
+  /// [value] 值
+  static double computeHeightValue({
+    required Pair<double, double> maxMinValue,
+    required double height,
+    required double value,
+  }) {
+    return height -  height / (maxMinValue.left - maxMinValue.right) * (value - maxMinValue.right);
   }
 
   /// 计算最大最小值
-  static Pair<double, double> getMaxMinValue(
-      {CandlestickChartVo? candlestickCharVo,
-      List<BaseChartVo?>? chartDataList}) {
-    Pair<double, double> result = candlestickCharVo?.getMaxMinData() ??
-        Pair(left: -double.maxFinite, right: double.maxFinite);
+  static Pair<double, double> getMaxMinValue({CandlestickChartVo? candlestickCharVo, List<BaseChartVo?>? chartDataList}) {
+    Pair<double, double> result = candlestickCharVo?.getMaxMinData() ?? Pair(left: -double.maxFinite, right: double.maxFinite);
 
     chartDataList?.forEach((element) {
       if (element == null) {
@@ -118,10 +107,8 @@ class KlineUtil {
       }
 
       var maxMinData = element.getMaxMinData();
-      result.left =
-          maxMinData.left > result.left ? maxMinData.left : result.left;
-      result.right =
-          maxMinData.right < result.right ? maxMinData.right : result.right;
+      result.left = maxMinData.left > result.left ? maxMinData.left : result.left;
+      result.right = maxMinData.right < result.right ? maxMinData.right : result.right;
     });
 
     return result;

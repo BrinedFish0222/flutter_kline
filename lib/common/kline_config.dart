@@ -17,6 +17,10 @@ class KlineConfig {
   static const Color red = Colors.red;
   static const Color green = Colors.green;
 
+  /// 实时价格线颜色
+  static const Color realTimeLineColor = Color(0xFFE1AC45);
+  static const Color realTimeLineColor2 = Color(0xFF666666);
+
   /// 显示数据 - 空间大小
   static const double showDataSpaceSize = 22;
 

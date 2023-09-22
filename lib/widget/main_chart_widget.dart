@@ -26,6 +26,7 @@ class MainChartWidget extends StatefulWidget {
     this.pointGap,
     this.candlestickGapRatio,
     required this.onTapIndicator,
+    this.realTimePrice,
   });
 
   final Size size;
@@ -46,6 +47,9 @@ class MainChartWidget extends StatefulWidget {
 
   /// 点击股票指标事件
   final void Function() onTapIndicator;
+
+  /// 实时价格
+  final double? realTimePrice;
 
   @override
   State<MainChartWidget> createState() => _MainChartWidgetState();
@@ -110,13 +114,15 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                   key: _chartKey,
                   size: widget.size,
                   painter: MainChartRenderer(
-                      candlestickCharData: widget.candlestickChartData!,
-                      lineChartData: widget.lineChartData,
-                      margin: widget.margin,
-                      pointWidth: widget.pointWidth,
-                      pointGap: widget.pointGap,
-                      maxMinValue: maxMinValue,
-                      candlestickGapRatio: widget.candlestickGapRatio ?? 3),
+                    candlestickCharData: widget.candlestickChartData!,
+                    lineChartData: widget.lineChartData,
+                    margin: widget.margin,
+                    pointWidth: widget.pointWidth,
+                    pointGap: widget.pointGap,
+                    maxMinValue: maxMinValue,
+                    candlestickGapRatio: widget.candlestickGapRatio ?? 3,
+                    realTimePrice: widget.realTimePrice,
+                  ),
                 ),
               ),
               RepaintBoundary(

@@ -28,6 +28,8 @@ class ExampleDayWidget extends StatelessWidget {
       element.isFill = true;
     }
 
+    var candlestickData = ExampleCandlestickData.getCandlestickData();
+
     return Padding(
       padding: const EdgeInsets.all(15),
       child: ListView(
@@ -37,7 +39,9 @@ class ExampleDayWidget extends StatelessWidget {
             size: size,
             lineChartData:
                 ExampleLineData.getLineChartMA13().cast<LineChartVo>(),
-            candlestickChartData: ExampleCandlestickData.getCandlestickData(),
+            candlestickChartData: candlestickData,
+            realTimePrice: candlestickData.dataList.last?.close,
+            // realTimePrice: 11.89,
             onTapIndicator: (index) {
               KlineUtil.showToast(context: context, text: '点击指标索引：$index');
             },

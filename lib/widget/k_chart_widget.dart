@@ -31,6 +31,7 @@ class KChartWidget extends StatefulWidget {
     this.dataGapRatio = 3,
     this.subChartRatio = 0.5,
     required this.overlayEntryLocationKey,
+    this.realTimePrice,
   });
 
   final Size size;
@@ -56,6 +57,9 @@ class KChartWidget extends StatefulWidget {
 
   /// 悬浮层位置Key
   final GlobalKey overlayEntryLocationKey;
+
+  /// 实时价格
+  final double? realTimePrice;
 
   @override
   State<KChartWidget> createState() => _KChartWidgetState();
@@ -190,6 +194,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     onTapIndicator: () {
                       widget.onTapIndicator(0);
                     },
+                    realTimePrice: widget.realTimePrice,
                   ),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)

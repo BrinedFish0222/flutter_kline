@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/candlestick_chart_painter.dart';
+import 'package:flutter_kline/painter/price_line_painter.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 
@@ -31,6 +32,9 @@ class MainChartRenderer extends CustomPainter {
 
   final Pair<double, double>? maxMinValue;
 
+  /// 实时价格
+  final double? realTimePrice;
+
   const MainChartRenderer({
     required this.candlestickCharData,
     this.lineChartData,
@@ -40,6 +44,7 @@ class MainChartRenderer extends CustomPainter {
     this.pointWidth,
     this.pointGap,
     this.maxMinValue,
+    this.realTimePrice,
   });
 
   @override
@@ -85,6 +90,20 @@ class MainChartRenderer extends CustomPainter {
               pointWidth: pointWidth,
               pointGap: pointGap)
           .paint(canvas, marginSize);
+    }
+
+    // 实时价格线
+    if (realTimePrice != null) {
+      bool isRealTime =
+          candlestickCharData.dataList.last?.close == realTimePrice;
+      PriceLinePainter(
+        price: realTimePrice!,
+        maxMinValue: maxMinValue,
+        style: isRealTime
+            ? const PriceLinePainterStyle()
+            : const PriceLinePainterStyle(
+                color: KlineConfig.realTimeLineColor2),
+      ).paint(canvas, size);
     }
   }
 
