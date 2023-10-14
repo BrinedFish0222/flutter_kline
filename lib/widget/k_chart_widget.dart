@@ -118,6 +118,9 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 副图遮罩
   List<MaskLayer?> _subChartMaskList = [];
 
+  /// 横向拖动阈值
+  int _horizontalDragThreshold = KlineConfig.horizontalDragThreshold;
+
   @override
   void initState() {
     _originCandlestickDataMaxIndex =
@@ -125,7 +128,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _initSubChartMaskList();
 
     _initCrossCurveStream();
-    _showDataNum = widget.showDataNum;
+    _updateShowDataNum(widget.showDataNum);
     _showDataStartIndex = (_originCandlestickDataMaxIndex - _showDataNum)
         .clamp(0, _originCandlestickDataMaxIndex);
     _resetShowData();
@@ -161,6 +164,8 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("k_chart_widget, _showDataNum: $_showDataNum, _horizontalDragThreshold: $_horizontalDragThreshold");
+    
     return GestureDetector(
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: LayoutBuilder(builder: (context, constraints) {
@@ -171,13 +176,10 @@ class _KChartWidgetState extends State<KChartWidget> {
               children: [
                 KlineGestureDetector(
                   onTap: _onTap,
-                  horizontalDragThreshold: KlineUtil.computeHorizontalDragThreshold(_showDataNum),
+                  horizontalDragThreshold: _horizontalDragThreshold,
                   onHorizontalDragStart: _onHorizontalDragStart,
                   onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                  onHorizontalDragEnd: (details) {
-                    debugPrint("KlineGestureDetector onHorizontalDragEnd");
-                    _isOnHorizontalDragStart = false;
-                  },
+                  onHorizontalDragEnd: (details) => _isOnHorizontalDragStart = false,
                   onZoomIn: () {
                     int endIndex = (_showDataStartIndex + _showDataNum)
                         .clamp(0, _originCandlestickDataMaxIndex);
@@ -227,6 +229,13 @@ class _KChartWidgetState extends State<KChartWidget> {
         );
       }),
     );
+  }
+
+  /// 更新显示的数据数量
+  /// 同步：[_horizontalDragThreshold] 横向拖动阈值
+  void _updateShowDataNum(int showDataNum) {
+    _showDataNum = showDataNum;
+    _horizontalDragThreshold = KlineUtil.computeHorizontalDragThreshold(_showDataNum);
   }
 
   void _onTap(PointerInfo pointerInfo) {
@@ -346,8 +355,8 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     int addVal = zoomIn ? -1 : 1;
-    _showDataNum = (_showDataNum + addVal)
-        .clamp(KlineConfig.showDataMinLength, KlineConfig.showDataMaxLength);
+    _updateShowDataNum((_showDataNum + addVal)
+        .clamp(KlineConfig.showDataMinLength, KlineConfig.showDataMaxLength));
     int startIndex =
         (endIndex - _showDataNum).clamp(0, _originCandlestickDataMaxIndex);
     debugPrint("最后的数据索引： _onZoom to _resetShowData");

@@ -16,7 +16,7 @@ class KlineUtil {
     if (input >= KlineConfig.showDataMinLength && input <= KlineConfig.showDataMinLength * 2) {
       result = KlineConfig.horizontalDragThresholdMin * 4;
     } else if (input >= KlineConfig.showDataMinLength * 2 && input <= KlineConfig.showDataMinLength * 3) {
-      result = KlineConfig.horizontalDragThresholdMin * 2 + 1;
+      result = KlineConfig.horizontalDragThresholdMin * 2;
     } else if (input >= KlineConfig.showDataMinLength * 3 && input <= KlineConfig.showDataMinLength * 5) {
       result = KlineConfig.horizontalDragThresholdMin * 1;
     } else if (input >= KlineConfig.showDataMinLength * 5 && input <= KlineConfig.showDataMinLength * 7) {
