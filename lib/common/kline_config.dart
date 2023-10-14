@@ -41,4 +41,9 @@ class KlineConfig {
 
   /// 分时图一天数据点
   static const int minuteDataNum = 240;
+
+  /// 横向拖动阈值
+  static const int horizontalDragThreshold = 5;
+  /// 横向拖动阈值 - 最低
+  static const int horizontalDragThresholdMin = 2;
 }

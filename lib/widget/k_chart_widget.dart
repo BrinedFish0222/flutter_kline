@@ -44,6 +44,9 @@ class KChartWidget extends StatefulWidget {
   /// 副图遮罩
   final List<MaskLayer?>? subChartMaskList;
   final EdgeInsets? margin;
+
+  /// 显示数据数量
+  /// 默认范围：[KlineConfig.showDataMinLength], [KlineConfig.showDataMaxLength]
   final int showDataNum;
 
   /// 数据宽度和空间间隔比
@@ -89,6 +92,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   bool _isOnHorizontalDragStart = true;
 
   /// [widget.showDataNum]
+  /// 默认范围：[KlineConfig.showDataMinLength], [KlineConfig.showDataMaxLength]
   late int _showDataNum;
 
   /// 等于：widget.candlestickChartData.dataList.length - 1
@@ -167,10 +171,13 @@ class _KChartWidgetState extends State<KChartWidget> {
               children: [
                 KlineGestureDetector(
                   onTap: _onTap,
+                  horizontalDragThreshold: KlineUtil.computeHorizontalDragThreshold(_showDataNum),
                   onHorizontalDragStart: _onHorizontalDragStart,
                   onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                  onHorizontalDragEnd: (details) =>
-                      _isOnHorizontalDragStart = false,
+                  onHorizontalDragEnd: (details) {
+                    debugPrint("KlineGestureDetector onHorizontalDragEnd");
+                    _isOnHorizontalDragStart = false;
+                  },
                   onZoomIn: () {
                     int endIndex = (_showDataStartIndex + _showDataNum)
                         .clamp(0, _originCandlestickDataMaxIndex);
