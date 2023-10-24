@@ -4,6 +4,7 @@ import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_day_widget.dart';
 import 'package:flutter_kline/example/example_minute_widget.dart';
+import 'package:flutter_kline/example/example_volume_profile_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,8 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
-      initialIndex: 1,
+      length: 3,
+      initialIndex: 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -67,6 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(color: Colors.black),
                 ),
               ),
+              Tab(
+                child: Text(
+                  '筹码峰',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
             ]),
             Expanded(
               child: TabBarView(children: [
@@ -75,7 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 ExampleDayWidget(
                   overlayEntryLocationKey: _globalKey,
-                )
+                ),
+                const ExampleVolumeProfileWidget(),
               ]),
             )
           ],
