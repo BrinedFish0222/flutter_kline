@@ -4,6 +4,10 @@ class Pair<L, R> {
 
   Pair({required this.left, required this.right});
 
+  static Pair<double, double> get defaultMaxMinValue {
+    return Pair(left: -double.maxFinite, right: double.maxFinite);
+  }
+
   bool isNull() {
     return left == null && right == null;
   }
@@ -29,7 +33,7 @@ class Pair<L, R> {
       maxMinValue.left = defaultMaxValue;
     }
 
-     if (defaultMinValue != null && maxMinValue.right == double.maxFinite) {
+    if (defaultMinValue != null && maxMinValue.right == double.maxFinite) {
       maxMinValue.right = defaultMinValue;
     }
 

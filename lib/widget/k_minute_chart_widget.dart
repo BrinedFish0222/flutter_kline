@@ -221,20 +221,23 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                       }),
                 ),
                 for (int i = 0; i < _showSubChartData.length; ++i)
-                  GestureDetector(
-                    onTapDown: (details) => _cancelCrossCurve(),
-                    child: SubChartWidget(
-                      size: _subChartSize,
-                      name: _showSubChartData[i].first.name ?? '',
-                      chartData: _showSubChartData[i],
-                      pointWidth: _pointWidth,
-                      pointGap: _pointGap,
-                      maskLayer: _subChartMaskList[i],
-                      crossCurveStream: _crossCurveStreamList[i + 1],
-                      selectedChartDataIndexStream: _selectedIndexStream,
-                      onTapIndicator: () {
-                        widget.onTapIndicator(i + 1);
-                      },
+                  SizedBox.fromSize(
+                    size: _subChartSize,
+                    child: GestureDetector(
+                      onTapDown: (details) => _cancelCrossCurve(),
+                      child: SubChartWidget(
+                        size: _subChartSize,
+                        name: _showSubChartData[i].first.name ?? '',
+                        chartData: _showSubChartData[i],
+                        pointWidth: _pointWidth,
+                        pointGap: _pointGap,
+                        maskLayer: _subChartMaskList[i],
+                        crossCurveStream: _crossCurveStreamList[i + 1],
+                        selectedChartDataIndexStream: _selectedIndexStream,
+                        onTapIndicator: () {
+                          widget.onTapIndicator(i + 1);
+                        },
+                      ),
                     ),
                   ),
               ],

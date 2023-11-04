@@ -95,9 +95,21 @@ class LineChartVo extends BaseChartVo {
         name: name,
         maxValue: maxValue,
         minValue: minValue,
-        dataList: KlineCollectionUtil.sublist(
-            list: dataList, start: start, end: end),
+        dataList:
+            KlineCollectionUtil.sublist(list: dataList, start: start, end: end),
         color: color);
+  }
+
+  @override
+  int get dataLength => dataList?.length ?? 0;
+
+  @override
+  double? getDataMaxValueByIndex(int index) {
+    if (index >= dataLength) {
+      return null;
+    }
+
+    return dataList![index].value;
   }
 }
 

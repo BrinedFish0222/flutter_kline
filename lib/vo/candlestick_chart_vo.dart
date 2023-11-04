@@ -27,8 +27,7 @@ class CandlestickChartVo extends BaseChartVo {
         name: name,
         maxValue: maxValue,
         minValue: minValue,
-        dataList:
-            KlineCollectionUtil.sublist(list: dataList, start: 0) ?? []);
+        dataList: KlineCollectionUtil.sublist(list: dataList, start: 0) ?? []);
   }
 
   @override
@@ -70,6 +69,26 @@ class CandlestickChartVo extends BaseChartVo {
         dataList: KlineCollectionUtil.sublist(
                 list: dataList, start: start, end: end) ??
             []);
+  }
+
+  @override
+  int get dataLength => dataList.length;
+
+  @override
+  double? getDataMaxValueByIndex(int index) {
+    if (index >= dataLength) {
+      return null;
+    }
+
+    var data = dataList[index];
+    var maxMinValue = KlineNumUtil.maxMinValueDouble([
+      data?.close,
+      data?.open,
+      data?.low,
+      data?.high,
+    ]);
+
+    return maxMinValue.left;
   }
 }
 

@@ -30,6 +30,11 @@ abstract class BaseChartVo {
   /// 复制
   BaseChartVo copy();
 
+  int get dataLength;
+
+  /// 根据index获取数据值
+  double? getDataMaxValueByIndex(int index);
+
   /// 获取最后一根显示的数据
   static List<ChartShowDataItemVo>? getLastShowData(List<BaseChartVo>? voList) {
     if (KlineCollectionUtil.isEmpty(voList)) {

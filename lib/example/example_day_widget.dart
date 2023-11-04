@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/example/example_badge_data.dart';
 
 import '../utils/kline_util.dart';
 import '../vo/bar_chart_vo.dart';
@@ -49,7 +50,8 @@ class ExampleDayWidget extends StatelessWidget {
             subChartData: [
               [
                 ExampleVolData.barChartData..minValue = 0,
-                ...ExampleVolData.lineChartData
+                ...ExampleVolData.lineChartData,
+                ExampleBadgeData.badgeChartVo,
               ],
               [ExampleRmoData.barChartData..barWidth = 4],
               ExampleMacdData.macd,

@@ -56,11 +56,11 @@ class SubChartRenderer extends CustomPainter {
       // 画柱图
       if (data is BarChartVo) {
         BarChartPainter(
-                barData: data,
-                pointWidth: pointWidth,
-                pointGap: pointGap ?? 5,
-                heightRange: heightRange)
-            .paint(canvas, size);
+          barData: data,
+          pointWidth: pointWidth,
+          pointGap: pointGap ?? 5,
+          heightRange: heightRange,
+        ).paint(canvas, size);
         continue;
       }
     }
@@ -68,11 +68,11 @@ class SubChartRenderer extends CustomPainter {
     // 统一画线图
     if (lineChartData.isNotEmpty) {
       LineChartPainter(
-              lineChartData: lineChartData,
-              maxMinValue: heightRange,
-              pointWidth: pointWidth,
-              pointGap: pointGap ?? 0)
-          .paint(canvas, size);
+        lineChartData: lineChartData,
+        maxMinValue: heightRange,
+        pointWidth: pointWidth,
+        pointGap: pointGap ?? 0,
+      ).paint(canvas, size);
     }
   }
 
