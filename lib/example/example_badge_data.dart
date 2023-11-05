@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/vo/badge_chart_vo.dart';
 
 class ExampleBadgeData {
-  static const double _size = 30;
 
   static BadgeChartVo badgeChartVo = BadgeChartVo(
       data: []

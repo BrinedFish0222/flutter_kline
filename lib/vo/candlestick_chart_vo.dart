@@ -90,6 +90,11 @@ class CandlestickChartVo extends BaseChartVo {
 
     return maxMinValue.left;
   }
+  
+  @override
+  bool isSelectedShowData() {
+    return false;
+  }
 }
 
 class CandlestickChartData {

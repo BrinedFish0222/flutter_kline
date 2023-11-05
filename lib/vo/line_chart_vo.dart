@@ -111,6 +111,11 @@ class LineChartVo extends BaseChartVo {
 
     return dataList![index].value;
   }
+
+  @override
+  bool isSelectedShowData() {
+    return true;
+  }
 }
 
 class LineChartData {

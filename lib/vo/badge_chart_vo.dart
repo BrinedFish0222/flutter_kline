@@ -95,6 +95,11 @@ class BadgeChartVo extends BaseChartVo {
     }
     return data[index]?.value;
   }
+
+  @override
+  bool isSelectedShowData() {
+    return false;
+  }
 }
 
 class BadgeChartData {

@@ -1,15 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/vo/badge_chart_vo.dart';
 
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';
-import '../renderer/main_chart_renderer.dart';
+import '../renderer/chart_renderer.dart';
 import '../utils/kline_util.dart';
-import '../vo/candlestick_chart_vo.dart';
+import '../vo/base_chart_vo.dart';
 import '../vo/chart_show_data_item_vo.dart';
 import '../vo/line_chart_vo.dart';
 import '../vo/main_chart_selected_data_vo.dart';
+import 'badge_widget.dart';
 import 'main_chart_show_data_widget.dart';
 
 class MainChartWidget extends StatefulWidget {
@@ -17,9 +19,8 @@ class MainChartWidget extends StatefulWidget {
     super.key,
     required this.size,
     this.margin,
-    required this.candlestickChartData,
-    this.lineChartData,
-    this.lineChartName,
+    required this.chartData,
+    this.infoBarName,
     this.crossCurveStream,
     this.selectedChartDataIndexStream,
     this.pointWidth,
@@ -31,9 +32,11 @@ class MainChartWidget extends StatefulWidget {
 
   final Size size;
   final EdgeInsets? margin;
-  final CandlestickChartVo? candlestickChartData;
-  final String? lineChartName;
-  final List<LineChartVo>? lineChartData;
+
+  /// 信息栏名称
+  final String? infoBarName;
+
+  final List<BaseChartVo> chartData;
 
   final double? pointWidth;
   final double? pointGap;
@@ -61,8 +64,11 @@ class _MainChartWidgetState extends State<MainChartWidget> {
 
   final GlobalKey _chartKey = GlobalKey();
 
+  List<BadgeChartVo> _badgeList = [];
+
   @override
   void initState() {
+    BadgeChartVo.initDataValue(widget.chartData);
     _initSelectedChartData();
     super.initState();
   }
@@ -70,18 +76,14 @@ class _MainChartWidgetState extends State<MainChartWidget> {
   /// 初始化选中数据
   _initSelectedChartData() {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
-      if (index == -1) {
-        List<ChartShowDataItemVo?>? lineShowData = widget.lineChartData
-            ?.map((e) => e.getSelectedShowData()?.last)
-            .toList();
-
-        return _mainChartSelectedDataStream.add(MainChartSelectedDataVo(
-            candlestickChartData: null, lineChartList: lineShowData));
-      }
-
-      List<ChartShowDataItemVo?>? lineShowData = widget.lineChartData
-          ?.map((e) => e.getSelectedShowData()?[index])
+      bool isLast = index == -1;
+      List<ChartShowDataItemVo?>? lineShowData = widget.chartData
+          .where((element) => element.isSelectedShowData())
+          .map((e) => isLast
+              ? e.getSelectedShowData()?.last
+              : e.getSelectedShowData()?[index])
           .toList();
+
       _mainChartSelectedDataStream.add(MainChartSelectedDataVo(
           candlestickChartData: null, lineChartList: lineShowData));
     });
@@ -89,82 +91,96 @@ class _MainChartWidgetState extends State<MainChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var maxMinValue = KlineUtil.getMaxMinValue(
-        candlestickCharVo: widget.candlestickChartData,
-        chartDataList: widget.lineChartData);
+    var maxMinValue = BaseChartVo.maxMinValue(widget.chartData);
     widget.selectedChartDataIndexStream?.add(-1);
+
+    _badgeList = widget.chartData.whereType<BadgeChartVo>().toList();
 
     return SizedBox(
       width: widget.size.width,
+      height: widget.size.height,
       child: Column(
         children: [
           // 信息栏
           MainChartShowDataWidget(
             initData: MainChartSelectedDataVo.getLastShowData(
-                candlestickChartVo: widget.candlestickChartData,
-                lineChartVoList: widget.lineChartData),
-            name: widget.lineChartName ?? '',
+              candlestickChartVo:
+                  BaseChartVo.getCandlestickChartVo(widget.chartData),
+              lineChartVoList:
+                  widget.chartData.whereType<LineChartVo>().toList(),
+            ),
+            name: widget.infoBarName ?? '',
             mainChartSelectedDataStream: _mainChartSelectedDataStream,
             onTap: widget.onTapIndicator,
           ),
-          Stack(
-            children: [
-              RepaintBoundary(
-                child: CustomPaint(
-                  key: _chartKey,
-                  size: widget.size,
-                  painter: MainChartRenderer(
-                    candlestickCharData: widget.candlestickChartData!,
-                    lineChartData: widget.lineChartData,
-                    margin: widget.margin,
-                    pointWidth: widget.pointWidth,
-                    pointGap: widget.pointGap,
-                    maxMinValue: maxMinValue,
-                    candlestickGapRatio: widget.candlestickGapRatio ?? 3,
-                    realTimePrice: widget.realTimePrice,
+          Expanded(
+            child: Stack(
+              children: [
+                RepaintBoundary(
+                  child: CustomPaint(
+                    key: _chartKey,
+                    size: widget.size,
+                    painter: ChartRenderer(
+                      chartData: widget.chartData,
+                      margin: widget.margin,
+                      pointWidth: widget.pointWidth,
+                      pointGap: widget.pointGap,
+                      maxMinValue: maxMinValue,
+                      candlestickGapRatio: widget.candlestickGapRatio ?? 3,
+                      realTimePrice: widget.realTimePrice,
+                    ),
                   ),
                 ),
-              ),
-              RepaintBoundary(
-                child: StreamBuilder(
-                    stream: widget.crossCurveStream?.stream,
-                    builder: (context, snapshot) {
-                      Pair<double?, double?> selectedXY =
-                          Pair(left: null, right: null);
-                      if (snapshot.data != null && !snapshot.data!.isNull()) {
-                        RenderBox renderBox = _chartKey.currentContext!
-                            .findRenderObject() as RenderBox;
+                RepaintBoundary(
+                  child: StreamBuilder(
+                      stream: widget.crossCurveStream?.stream,
+                      builder: (context, snapshot) {
+                        Pair<double?, double?> selectedXY =
+                            Pair(left: null, right: null);
+                        if (snapshot.data != null && !snapshot.data!.isNull()) {
+                          RenderBox renderBox = _chartKey.currentContext!
+                              .findRenderObject() as RenderBox;
 
-                        Offset? selectedOffset =
-                            snapshot.data == null || snapshot.data!.isNull()
-                                ? null
-                                : renderBox.globalToLocal(Offset(
-                                    snapshot.data?.left ?? 0,
-                                    snapshot.data?.right ?? 0));
-                        selectedXY.left = selectedOffset?.dx;
-                        selectedXY.right = selectedOffset?.dy;
-                      }
+                          Offset? selectedOffset =
+                              snapshot.data == null || snapshot.data!.isNull()
+                                  ? null
+                                  : renderBox.globalToLocal(Offset(
+                                      snapshot.data?.left ?? 0,
+                                      snapshot.data?.right ?? 0));
+                          selectedXY.left = selectedOffset?.dx;
+                          selectedXY.right = selectedOffset?.dy;
+                        }
 
-                      double? selectedHorizontalValue =
-                          KlineUtil.computeSelectedHorizontalValue(
-                              maxMinValue: maxMinValue,
-                              height: widget.size.height,
-                              selectedY: selectedXY.right);
+                        double? selectedHorizontalValue =
+                            KlineUtil.computeSelectedHorizontalValue(
+                                maxMinValue: maxMinValue,
+                                height: widget.size.height,
+                                selectedY: selectedXY.right);
 
-                      return CustomPaint(
-                        size: widget.size,
-                        painter: CrossCurvePainter(
-                            selectedXY: selectedXY,
-                            margin: widget.margin,
-                            selectedHorizontalValue: selectedHorizontalValue,
-                            selectedDataIndexStream:
-                                widget.selectedChartDataIndexStream,
-                            pointWidth: widget.pointWidth,
-                            pointGap: widget.pointGap),
-                      );
-                    }),
-              )
-            ],
+                        return CustomPaint(
+                          size: widget.size,
+                          painter: CrossCurvePainter(
+                              selectedXY: selectedXY,
+                              margin: widget.margin,
+                              selectedHorizontalValue: selectedHorizontalValue,
+                              selectedDataIndexStream:
+                                  widget.selectedChartDataIndexStream,
+                              pointWidth: widget.pointWidth,
+                              pointGap: widget.pointGap),
+                        );
+                      }),
+                ),
+
+                /// badge
+                for (BadgeChartVo vo in _badgeList)
+                  BadgeWidget(
+                    badgeChartVo: vo,
+                    pointWidth: widget.pointWidth,
+                    pointGap: widget.pointGap ?? 0,
+                    maxMinValue: maxMinValue,
+                  ),
+              ],
+            ),
           ),
         ],
       ),

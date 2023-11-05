@@ -11,7 +11,7 @@ void main() {
   ExampleCandlestickData.getCandlestickData();
 
   webSocketChannel = WebSocketChannel.connect(
-    Uri.parse("ws://192.168.101.14:8080/websocket/123"),
+    Uri.parse("ws://192.168.137.1:8080/websocket/123"),
   );
 
   // 设置应用程序的方向为竖屏（只允许竖屏显示）

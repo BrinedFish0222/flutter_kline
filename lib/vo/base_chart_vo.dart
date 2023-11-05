@@ -1,4 +1,6 @@
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/vo/bar_chart_vo.dart';
+import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
@@ -19,6 +21,9 @@ abstract class BaseChartVo {
 
   /// 获取整个图**所有**选中显示的数据集合
   List<ChartShowDataItemVo?>? getSelectedShowData();
+
+  /// 是否是可选中显示的数据
+  bool isSelectedShowData();
 
   /// 获取最大最小值。
   /// 左  最大值；右 最小值。
@@ -59,5 +64,29 @@ abstract class BaseChartVo {
         .where((element) => element != null)
         .map((e) => e!)
         .toList();
+  }
+
+  static Pair<double, double> maxMinValue(List<BaseChartVo> dataList) {
+    var hasBarChart = dataList.any((element) => element is BarChartVo);
+
+    var result =
+        Pair.getMaxMinValue(dataList.map((e) => e.getMaxMinData()).toList());
+    if (hasBarChart && result.right > 0) {
+      result.right = 0;
+    }
+
+    return result;
+  }
+
+  /// 获取蜡烛图数据
+  static CandlestickChartVo? getCandlestickChartVo(List<BaseChartVo> dataList) {
+    bool hasCandlestick =
+        dataList.any((element) => element is CandlestickChartVo);
+    if (!hasCandlestick) {
+      return null;
+    }
+
+    return dataList.firstWhere((element) => element is CandlestickChartVo)
+        as CandlestickChartVo;
   }
 }

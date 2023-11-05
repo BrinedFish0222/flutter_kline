@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
 import '../common/pair.dart';
 import '../vo/candlestick_chart_vo.dart';
-import '../vo/line_chart_vo.dart';
 import '../vo/mask_layer.dart';
 import '../vo/pointer_info.dart';
 import 'kline_gesture_detector.dart';
@@ -22,8 +20,9 @@ class KChartWidget extends StatefulWidget {
   const KChartWidget({
     super.key,
     required this.size,
-    required this.candlestickChartData,
-    this.lineChartData,
+    required this.mainChartData,
+    // required this.candlestickChartData,
+    // this.lineChartData,
     required this.subChartData,
     this.subChartMaskList,
     this.showDataNum = 60,
@@ -36,8 +35,10 @@ class KChartWidget extends StatefulWidget {
   });
 
   final Size size;
-  final CandlestickChartVo candlestickChartData;
-  final List<LineChartVo?>? lineChartData;
+
+  final List<BaseChartVo> mainChartData;
+  // final CandlestickChartVo candlestickChartData;
+  // final List<LineChartVo?>? lineChartData;
 
   /// 副图数据
   final List<List<BaseChartVo>> subChartData;
@@ -99,11 +100,14 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 等于：widget.candlestickChartData.dataList.length - 1
   late int _originCandlestickDataMaxIndex;
 
+  /// 显示的主图数据
+  List<BaseChartVo> _showMainChartData = [];
+
   /// 显示的蜡烛数据
-  CandlestickChartVo? _showCandlestickChartData;
+  // CandlestickChartVo? _showCandlestickChartData;
 
   /// 显示的折线数据
-  List<LineChartVo>? _showLineChartData;
+  // List<LineChartVo>? _showLineChartData;
 
   List<List<BaseChartVo>> _showSubChartData = [];
 
@@ -124,8 +128,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   void initState() {
-    _originCandlestickDataMaxIndex =
-        widget.candlestickChartData.dataList.length - 1;
+    _originCandlestickDataMaxIndex = widget.mainChartData.first.dataLength - 1;
     _initSubChartMaskList();
 
     _initCrossCurveStream();
@@ -194,10 +197,9 @@ class _KChartWidgetState extends State<KChartWidget> {
                     _onZoom(endIndex: endIndex, zoomIn: false);
                   },
                   child: MainChartWidget(
-                    candlestickChartData: _showCandlestickChartData,
+                    chartData: _showMainChartData,
                     size: _mainChartSize,
-                    lineChartData: _showLineChartData,
-                    lineChartName: _showLineChartData?.first.name,
+                    infoBarName: widget.mainChartData.firstWhere((element) => element.isSelectedShowData()).name,
                     margin: widget.margin,
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
@@ -278,7 +280,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
     _pointWidth = KlineUtil.getPointWidth(
         width: width - (widget.margin?.right ?? 0),
-        dataLength: _showCandlestickChartData?.dataList.length ?? 0,
+        dataLength: _showMainChartData.first.dataLength,
         gapRatio: widget.dataGapRatio);
     _pointGap = _pointWidth / widget.dataGapRatio;
   }
@@ -327,9 +329,12 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   _initSelectedIndexStream() {
-    if (KlineCollectionUtil.isEmpty(_showLineChartData)) {
+    if (_showMainChartData.isEmpty) {
       return;
     }
+
+    var candlestickChartVo =
+        BaseChartVo.getCandlestickChartVo(_showMainChartData);
 
     _selectedIndexStream = StreamController<int>.broadcast();
     // 处理悬浮层。
@@ -338,7 +343,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         _hideCandlestickOverlay();
         return;
       }
-      var vo = _showCandlestickChartData?.dataList[index];
+      var vo = candlestickChartVo?.dataList[index];
       if (vo == null) {
         _hideCandlestickOverlay();
         return;
@@ -386,20 +391,10 @@ class _KChartWidgetState extends State<KChartWidget> {
     _showDataStartIndex =
         (endIndex - _showDataNum).clamp(0, _originCandlestickDataMaxIndex);
 
-    _showCandlestickChartData = widget.candlestickChartData.subData(
-        start: _showDataStartIndex, end: endIndex + 1) as CandlestickChartVo;
-
-    if (KlineCollectionUtil.isNotEmpty(widget.lineChartData)) {
-      _showLineChartData = [];
-      for (LineChartVo? element in widget.lineChartData!) {
-        if (element == null) {
-          continue;
-        }
-
-        var newVo = element.subData(
-            start: _showDataStartIndex, end: endIndex + 1) as LineChartVo;
-        _showLineChartData?.add(newVo);
-      }
+    _showMainChartData = [];
+    for (BaseChartVo data in widget.mainChartData) {
+      var subData = data.subData(start: _showDataStartIndex, end: endIndex + 1);
+      _showMainChartData.add(subData);
     }
 
     if (KlineCollectionUtil.isNotEmpty(widget.subChartData)) {

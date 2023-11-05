@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/renderer/sub_chart_renderer.dart';
+import 'package:flutter_kline/renderer/chart_renderer.dart';
+import 'package:flutter_kline/setting/rect_setting.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/badge_chart_vo.dart';
@@ -89,7 +90,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
   @override
   Widget build(BuildContext context) {
     // 统计高度范围
-    Pair<double, double> heightRange = Pair.getMaxMinValue(
+    Pair<double, double> maxMinValue = Pair.getMaxMinValue(
         widget.chartData.map((e) => e.getMaxMinData()).toList());
 
     _badgeChartVoList = widget.chartData.whereType<BadgeChartVo>().toList();
@@ -111,11 +112,12 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                   child: CustomPaint(
                     key: _chartKey,
                     size: widget.size,
-                    painter: SubChartRenderer(
+                    painter: ChartRenderer(
                         chartData: widget.chartData,
                         pointWidth: widget.pointWidth,
                         pointGap: widget.pointGap,
-                        heightRange: heightRange),
+                        maxMinValue: maxMinValue,
+                        rectSetting: const RectSetting(transverseLineNum: 0)),
                   ),
                 ),
                 RepaintBoundary(
@@ -134,7 +136,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
 
                         double? selectedHorizontalValue =
                             KlineUtil.computeSelectedHorizontalValue(
-                                maxMinValue: heightRange,
+                                maxMinValue: maxMinValue,
                                 height: widget.size.height,
                                 selectedY: selectedXY.dy);
 
@@ -157,7 +159,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                     badgeChartVo: vo,
                     pointWidth: widget.pointWidth,
                     pointGap: widget.pointGap ?? 0,
-                    maxMinValue: heightRange,
+                    maxMinValue: maxMinValue,
                   ),
 
                 /// 遮罩层

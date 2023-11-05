@@ -89,6 +89,11 @@ class BarChartVo extends BaseChartVo {
 
     return data[index].value;
   }
+
+  @override
+  bool isSelectedShowData() {
+    return true;
+  }
 }
 
 class BarChartData {
