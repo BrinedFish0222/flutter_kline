@@ -5,20 +5,21 @@ import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
-class BarChartVo extends BaseChartVo {
+class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
   /// 柱体宽度
   double? barWidth;
-  List<BarChartData> data;
+
   List<ChartShowDataItemVo?>? _selectedShowData;
   Pair<double, double>? _maxMinData;
 
-  BarChartVo(
-      {super.id,
-      super.name,
-      super.maxValue,
-      super.minValue,
-      this.barWidth,
-      required this.data}) {
+  BarChartVo({
+    super.id,
+    super.name,
+    super.maxValue,
+    super.minValue,
+    this.barWidth,
+    required super.data,
+  }) {
     getSelectedShowData();
   }
 
@@ -87,7 +88,7 @@ class BarChartVo extends BaseChartVo {
       return null;
     }
 
-    return data[index].value;
+    return (data[index]).value;
   }
 
   @override
@@ -96,11 +97,15 @@ class BarChartVo extends BaseChartVo {
   }
 }
 
-class BarChartData {
+class BarChartData<E> extends BaseChartData<E> {
   double value;
   bool isFill;
   Color color;
 
-  BarChartData(
-      {required this.value, this.isFill = false, this.color = Colors.black});
+  BarChartData({
+    required this.value,
+    this.isFill = false,
+    this.color = Colors.black,
+    super.extrasData,
+  });
 }

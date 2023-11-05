@@ -6,7 +6,7 @@ import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 import '../common/pair.dart';
 
 /// 图数据基类
-abstract class BaseChartVo {
+abstract class BaseChartVo<T extends BaseChartData?> {
   String? id;
   String? name;
 
@@ -17,7 +17,15 @@ abstract class BaseChartVo {
   /// 柱图如果不支持负数，设置成0。
   double? minValue;
 
-  BaseChartVo({this.id, this.name, this.maxValue, this.minValue});
+  List<T> data = [];
+
+  BaseChartVo({
+    this.id,
+    this.name,
+    this.maxValue,
+    this.minValue,
+    required this.data,
+  });
 
   /// 获取整个图**所有**选中显示的数据集合
   List<ChartShowDataItemVo?>? getSelectedShowData();
@@ -89,4 +97,12 @@ abstract class BaseChartVo {
     return dataList.firstWhere((element) => element is CandlestickChartVo)
         as CandlestickChartVo;
   }
+}
+
+/// 图基础数据
+/// 使用场景：一根线上一个点的信息
+abstract class BaseChartData<T> {
+  T? extrasData;
+
+  BaseChartData({this.extrasData});
 }

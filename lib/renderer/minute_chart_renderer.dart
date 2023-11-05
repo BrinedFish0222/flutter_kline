@@ -78,15 +78,15 @@ class MinuteChartRenderer extends CustomPainter {
 
   LineChartVo _initData() {
     LineChartVo minuteChartVo = this.minuteChartVo.copy() as LineChartVo;
-    minuteChartVo.dataList ??= [];
-    if (dataNum <= minuteChartVo.dataList!.length) {
-      minuteChartVo.dataList =
-          KlineCollectionUtil.lastN(minuteChartVo.dataList, dataNum);
+    
+    if (dataNum <= minuteChartVo.data.length) {
+      minuteChartVo.data =
+          KlineCollectionUtil.lastN(minuteChartVo.data, dataNum) ?? [];
       return minuteChartVo;
     }
 
-    for (int i = 0; i < (dataNum - minuteChartVo.dataList!.length); ++i) {
-      minuteChartVo.dataList!.add(LineChartData());
+    for (int i = 0; i < (dataNum - minuteChartVo.data.length); ++i) {
+      minuteChartVo.data.add(LineChartData());
     }
 
     return minuteChartVo;

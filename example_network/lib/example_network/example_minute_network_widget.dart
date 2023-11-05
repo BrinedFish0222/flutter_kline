@@ -21,7 +21,7 @@ class ExampleMinuteNetworkWidget extends StatefulWidget {
 
 class _ExampleMinuteNetworkWidgetState
     extends State<ExampleMinuteNetworkWidget> {
-  final LineChartVo _vo = LineChartVo(dataList: []);
+  final LineChartVo _vo = LineChartVo(data: []);
 
   final StreamController<LineChartData> _minuteChartDataAddStream =
       StreamController();

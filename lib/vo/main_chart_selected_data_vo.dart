@@ -25,8 +25,8 @@ class MainChartSelectedDataVo {
 
     MainChartSelectedDataVo result = MainChartSelectedDataVo();
     if (candlestickChartVo != null &&
-        KlineCollectionUtil.isNotEmpty(candlestickChartVo.dataList)) {
-      result.candlestickChartData = candlestickChartVo.dataList.last;
+        KlineCollectionUtil.isNotEmpty(candlestickChartVo.data)) {
+      result.candlestickChartData = candlestickChartVo.data.last;
     }
     if (KlineCollectionUtil.isNotEmpty(lineChartVoList)) {
       result.lineChartList = BaseChartVo.getLastShowData(lineChartVoList);

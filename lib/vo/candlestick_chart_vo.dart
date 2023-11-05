@@ -6,28 +6,28 @@ import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 import '../common/pair.dart';
 
 /// 蜡烛图数据vo
-class CandlestickChartVo extends BaseChartVo {
-  List<CandlestickChartData?> dataList;
-
+class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>?> {
   Pair<double, double>? _maxMinData;
 
-  CandlestickChartVo(
-      {super.id,
-      super.name,
-      super.maxValue,
-      super.minValue,
-      required this.dataList}) {
+  CandlestickChartVo({
+    super.id,
+    super.name,
+    super.maxValue,
+    super.minValue,
+    required super.data,
+  }) {
     getMaxMinData();
   }
 
   @override
   BaseChartVo copy() {
     return CandlestickChartVo(
-        id: id,
-        name: name,
-        maxValue: maxValue,
-        minValue: minValue,
-        dataList: KlineCollectionUtil.sublist(list: dataList, start: 0) ?? []);
+      id: id,
+      name: name,
+      maxValue: maxValue,
+      minValue: minValue,
+      data: KlineCollectionUtil.sublist(list: data, start: 0) ?? [],
+    );
   }
 
   @override
@@ -41,7 +41,7 @@ class CandlestickChartVo extends BaseChartVo {
       return _maxMinData!;
     }
 
-    var pairList = dataList
+    var pairList = data
         .where((element) => element != null)
         .map((e) =>
             KlineNumUtil.maxMinValueDouble([e!.open, e.close, e.high, e.low]))
@@ -62,17 +62,17 @@ class CandlestickChartVo extends BaseChartVo {
   @override
   BaseChartVo subData({required int start, int? end}) {
     return CandlestickChartVo(
-        id: id,
-        name: name,
-        maxValue: maxValue,
-        minValue: minValue,
-        dataList: KlineCollectionUtil.sublist(
-                list: dataList, start: start, end: end) ??
-            []);
+      id: id,
+      name: name,
+      maxValue: maxValue,
+      minValue: minValue,
+      data:
+          KlineCollectionUtil.sublist(list: data, start: start, end: end) ?? [],
+    );
   }
 
   @override
-  int get dataLength => dataList.length;
+  int get dataLength => data.length;
 
   @override
   double? getDataMaxValueByIndex(int index) {
@@ -80,34 +80,36 @@ class CandlestickChartVo extends BaseChartVo {
       return null;
     }
 
-    var data = dataList[index];
+    var singleData = data[index];
     var maxMinValue = KlineNumUtil.maxMinValueDouble([
-      data?.close,
-      data?.open,
-      data?.low,
-      data?.high,
+      singleData?.close,
+      singleData?.open,
+      singleData?.low,
+      singleData?.high,
     ]);
 
     return maxMinValue.left;
   }
-  
+
   @override
   bool isSelectedShowData() {
     return false;
   }
 }
 
-class CandlestickChartData {
+class CandlestickChartData<E> extends BaseChartData<E> {
   DateTime dateTime;
   double open;
   double close;
   double high;
   double low;
 
-  CandlestickChartData(
-      {required this.dateTime,
-      required this.open,
-      required this.close,
-      required this.high,
-      required this.low});
+  CandlestickChartData({
+    required this.dateTime,
+    required this.open,
+    required this.close,
+    required this.high,
+    required this.low,
+    super.extrasData,
+  });
 }

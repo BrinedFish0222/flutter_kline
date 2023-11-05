@@ -177,8 +177,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
                   stream: widget.minuteChartDataAddStream?.stream,
                   builder: (context, snapshot) {
                     if (snapshot.data != null) {
-                      widget.minuteChartData.dataList ??= [];
-                      widget.minuteChartData.dataList?.add(snapshot.data!);
+                      widget.minuteChartData.data.add(snapshot.data!);
                     }
 
                     return CustomPaint(

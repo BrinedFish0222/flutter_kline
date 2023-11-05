@@ -2427,7 +2427,7 @@ class ExampleVolData {
 
     List<BarChartData> dataList = [];
     for (int i = 0; i < _volume.length; ++i) {
-      var data = KlineCollectionUtil.getByIndex(candlestickData.dataList, i);
+      var data = KlineCollectionUtil.getByIndex(candlestickData.data, i);
       Color color = (data?.close ?? 0) < (data?.open ?? 0)
           ? KlineConfig.green
           : KlineConfig.red;
@@ -2451,11 +2451,11 @@ class ExampleVolData {
     return [
       LineChartVo(
           name: 'M5',
-          dataList: _vol1.map((e) => LineChartData(value: e)).toList(),
+          data: _vol1.map((e) => LineChartData(value: e)).toList(),
           color: KlineConfig.kLineColors[0]),
       LineChartVo(
           name: 'M10',
-          dataList: _vol2.map((e) => LineChartData(value: e)).toList(),
+          data: _vol2.map((e) => LineChartData(value: e)).toList(),
           color: KlineConfig.kLineColors[2]),
     ];
   }
@@ -2463,14 +2463,16 @@ class ExampleVolData {
   static List<LineChartVo> lineChartDataLastN(int lastN) {
     return [
       LineChartVo(
-          dataList: KlineCollectionUtil.lastN(_vol1, lastN)
-              ?.map((e) => LineChartData(value: e))
-              .toList(),
+          data: KlineCollectionUtil.lastN(_vol1, lastN)
+                  ?.map((e) => LineChartData(value: e))
+                  .toList() ??
+              [],
           color: KlineConfig.kLineColors[0]),
       LineChartVo(
-          dataList: KlineCollectionUtil.lastN(_vol2, lastN)
-              ?.map((e) => LineChartData(value: e))
-              .toList(),
+          data: KlineCollectionUtil.lastN(_vol2, lastN)
+                  ?.map((e) => LineChartData(value: e))
+                  .toList() ??
+              [],
           color: KlineConfig.kLineColors[2]),
     ];
   }

@@ -822,15 +822,17 @@ class ExampleEssData {
 
   static LineChartVo get lineChartA {
     return LineChartVo(
-        name: 'A',
-        color: KlineConfig.kLineColors[0],
-        dataList: List.generate(800, (index) => LineChartData(value: 30)));
+      name: 'A',
+      color: KlineConfig.kLineColors[0],
+      data: List.generate(800, (index) => LineChartData(value: 30)),
+    );
   }
 
   static LineChartVo get lineChartB {
     return LineChartVo(
-        name: "B",
-        color: KlineConfig.kLineColors[1],
-        dataList: List.generate(800, (index) => LineChartData(value: 70)));
+      name: "B",
+      color: KlineConfig.kLineColors[1],
+      data: List.generate(800, (index) => LineChartData(value: 70)),
+    );
   }
 }

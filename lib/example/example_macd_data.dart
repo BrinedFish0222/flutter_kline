@@ -2429,13 +2429,13 @@ class ExampleMacdData {
     var dea = LineChartVo(
         name: 'DEA',
         color: KlineConfig.kLineColors[0],
-        dataList: _dea.map((e) => LineChartData(value: e)).toList());
+        data: _dea.map((e) => LineChartData(value: e)).toList());
     result.add(dea);
 
     var dif = LineChartVo(
         name: 'DIF',
         color: KlineConfig.kLineColors[1],
-        dataList: _dif.map((e) => LineChartData(value: e)).toList());
+        data: _dif.map((e) => LineChartData(value: e)).toList());
     result.add(dif);
 
     return result;

@@ -8,33 +8,34 @@ import 'base_chart_vo.dart';
 import 'candlestick_chart_vo.dart';
 
 /// 折线图数据
-class LineChartVo extends BaseChartVo {
-  List<LineChartData>? dataList;
+class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   Color color;
 
   List<ChartShowDataItemVo?>? _selectedShowData;
   Pair<double, double>? _maxMinData;
 
-  LineChartVo(
-      {super.id,
-      super.name,
-      super.maxValue,
-      super.minValue,
-      required this.dataList,
-      this.color = Colors.black}) {
+  LineChartVo({
+    super.id,
+    super.name,
+    super.maxValue,
+    super.minValue,
+    required super.data,
+    this.color = Colors.black,
+  }) {
     getSelectedShowData();
   }
 
   @override
   BaseChartVo copy() {
-    var newDataList = dataList?.map((e) => e).toList();
+    var newDataList = data.map((e) => e).toList();
     return LineChartVo(
-        dataList: newDataList,
-        id: id,
-        name: name,
-        color: color,
-        minValue: minValue,
-        maxValue: maxValue);
+      id: id,
+      name: name,
+      color: color,
+      data: newDataList,
+      minValue: minValue,
+      maxValue: maxValue,
+    );
   }
 
   /// result: left maxValue; right minValue
@@ -43,14 +44,18 @@ class LineChartVo extends BaseChartVo {
         Pair(left: -double.maxFinite, right: double.maxFinite);
 
     for (var element in lineChartData) {
-      element?.dataList?.forEach((data) {
+      if (element == null) {
+        continue;
+      }
+
+      for (var data in element.data) {
         result.left = (data.value ?? -double.maxFinite) > result.left
             ? data.value!
             : result.left;
         result.right = (data.value ?? double.maxFinite) < result.right
             ? data.value!
             : result.right;
-      });
+      }
     }
 
     return result;
@@ -62,8 +67,8 @@ class LineChartVo extends BaseChartVo {
       return _selectedShowData;
     }
 
-    return dataList
-        ?.map((e) =>
+    return data
+        .map((e) =>
             ChartShowDataItemVo(name: name ?? '', value: e.value, color: color))
         .toList();
   }
@@ -80,7 +85,7 @@ class LineChartVo extends BaseChartVo {
     }
 
     _maxMinData =
-        KlineNumUtil.maxMinValueDouble(dataList?.map((e) => e.value).toList());
+        KlineNumUtil.maxMinValueDouble(data.map((e) => e.value).toList());
 
     _maxMinData!.right = minValue ?? _maxMinData!.right;
     _maxMinData!.left = maxValue ?? _maxMinData!.left;
@@ -95,13 +100,13 @@ class LineChartVo extends BaseChartVo {
         name: name,
         maxValue: maxValue,
         minValue: minValue,
-        dataList:
-            KlineCollectionUtil.sublist(list: dataList, start: start, end: end),
+        data: KlineCollectionUtil.sublist(list: data, start: start, end: end) ??
+            [],
         color: color);
   }
 
   @override
-  int get dataLength => dataList?.length ?? 0;
+  int get dataLength => data.length;
 
   @override
   double? getDataMaxValueByIndex(int index) {
@@ -109,7 +114,7 @@ class LineChartVo extends BaseChartVo {
       return null;
     }
 
-    return dataList![index].value;
+    return data[index].value;
   }
 
   @override
@@ -118,7 +123,7 @@ class LineChartVo extends BaseChartVo {
   }
 }
 
-class LineChartData {
+class LineChartData<E> extends BaseChartData<E> {
   DateTime? dateTime;
 
   double? value;

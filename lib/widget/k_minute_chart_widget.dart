@@ -128,12 +128,12 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     // 增加对悬浮层的操作
     _selectedIndexStream?.stream.listen((index) {
       if (index == -1 ||
-          KlineCollectionUtil.isEmpty(_minuteChartData.dataList)) {
+          KlineCollectionUtil.isEmpty(_minuteChartData.data)) {
         _hideCandlestickOverlay();
         return;
       }
 
-      LineChartData data = _minuteChartData.dataList![index];
+      LineChartData data = _minuteChartData.data[index];
       _showCandlestickOverlay(context: context, data: data);
     });
   }

@@ -40,7 +40,7 @@ class LineChartPainter extends CustomPainter {
     _initMaxMinValue();
 
     var maxMinLength = KlineNumUtil.maxMinValue(
-        lineChartData.map((e) => e?.dataList?.length ?? 0).toList());
+        lineChartData.map((e) => e?.data.length ?? 0).toList());
     if (lineChartData.isNotEmpty) {
       _pointWidth =
           (pointWidth ?? size.width / (maxMinLength?.left ?? 2));
@@ -57,7 +57,7 @@ class LineChartPainter extends CustomPainter {
 
     for (var dataVo in lineChartData) {
       Pair<num, num>? maxMinValue = KlineNumUtil.maxMinValue(
-          dataVo?.dataList?.map((e) => e.value).toList());
+          dataVo?.data.map((e) => e.value).toList());
       if (maxMinValue == null) {
         continue;
       }
@@ -82,14 +82,14 @@ class LineChartPainter extends CustomPainter {
 
     for (LineChartVo? lineChartVo in lineChartData) {
       if (lineChartVo == null ||
-          KlineCollectionUtil.isEmpty(lineChartVo.dataList)) {
+          KlineCollectionUtil.isEmpty(lineChartVo.data)) {
         continue;
       }
 
       _painter.color = lineChartVo.color;
 
       var convertDataList = KlineUtil.convertDataToChartData(
-          lineChartVo.dataList!.map((e) => e.value).toList(), size.height,
+          lineChartVo.data.map((e) => e.value).toList(), size.height,
           maxMinValue: maxMinValue);
 
       double? lastX;

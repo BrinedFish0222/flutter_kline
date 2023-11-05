@@ -665,7 +665,7 @@ class ExampleMinuteData {
         .map((e) => LineChartData(
             value: e[5], dateTime: KlineDateUtil.parseIntTime(e.last.toInt())))
         .toList();
-    LineChartVo result = LineChartVo(dataList: dataList);
+    LineChartVo result = LineChartVo(data: dataList);
     result.maxValue = 11.48;
     result.minValue = 11.30;
     return result;
@@ -676,7 +676,7 @@ class ExampleMinuteData {
         .map((e) => LineChartData(
             value: e[5], dateTime: KlineDateUtil.parseIntTime(e.last.toInt())))
         .toList();
-    LineChartVo result = LineChartVo(dataList: dataList);
+    LineChartVo result = LineChartVo(data: dataList);
     result.maxValue = 11.48;
     result.minValue = 11.30;
     return result;
@@ -688,7 +688,7 @@ class ExampleMinuteData {
     for (int i = 0; i < 1; ++i) {
       result.add(LineChartVo(
           name: 'A1',
-          dataList: _a1.map((e) => LineChartData(value: e)).toList(),
+          data: _a1.map((e) => LineChartData(value: e)).toList(),
           color: KlineConfig.kLineColors[i + 1]));
     }
     return result;
@@ -704,7 +704,7 @@ class ExampleMinuteData {
     for (int i = 0; i < 1; ++i) {
       result.add(LineChartVo(
           name: 'A1',
-          dataList: List.generate(generateNum, (index) {
+          data: List.generate(generateNum, (index) {
             var generateValue = KlineRandomUtil.generateDoubleInRange(
               max: maxValue,
               min: minValue,

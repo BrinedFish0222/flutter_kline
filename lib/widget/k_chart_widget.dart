@@ -301,11 +301,12 @@ class _KChartWidgetState extends State<KChartWidget> {
     return Pair(left: 0, right: 0);
   }
 
-  void _showCandlestickOverlay(
-      {required BuildContext context,
-      required double left,
-      required double top,
-      required CandlestickChartData vo}) {
+  void _showCandlestickOverlay({
+    required BuildContext context,
+    required double left,
+    required double top,
+    required CandlestickChartData vo,
+  }) {
     if (_candlestickOverlayEntry != null) {
       _candlestickOverlayEntry?.remove();
     }
@@ -344,7 +345,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       }
       var candlestickChartVo =
           BaseChartVo.getCandlestickChartVo(_showMainChartData);
-      var vo = candlestickChartVo?.dataList[index];
+      var vo = candlestickChartVo?.data[index];
       if (vo == null) {
         _hideCandlestickOverlay();
         return;

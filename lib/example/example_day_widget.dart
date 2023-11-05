@@ -42,7 +42,7 @@ class ExampleDayWidget extends StatelessWidget {
               ...ExampleLineData.getLineChartMA13(),
               ExampleBadgeData.badgeChartVo,
             ],
-            realTimePrice: candlestickData.dataList.last?.close,
+            realTimePrice: candlestickData.data.last?.close,
             onTapIndicator: (index) {
               KlineUtil.showToast(context: context, text: '点击指标索引：$index');
             },

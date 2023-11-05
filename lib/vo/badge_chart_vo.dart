@@ -6,15 +6,14 @@ import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import 'base_chart_vo.dart';
 
-class BadgeChartVo extends BaseChartVo {
-  List<BadgeChartData?> data;
+class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
 
   BadgeChartVo({
     super.id,
     super.name,
     super.maxValue,
     super.minValue,
-    required this.data,
+    required super.data,
   });
 
   /// 初始化 [data] 的 value
@@ -102,7 +101,7 @@ class BadgeChartVo extends BaseChartVo {
   }
 }
 
-class BadgeChartData {
+class BadgeChartData<E> extends BaseChartData<E> {
   static const EdgeInsets defaultPadding = EdgeInsets.only(bottom: 10);
 
   Widget widget;
@@ -118,5 +117,6 @@ class BadgeChartData {
     required this.widget,
     this.padding = defaultPadding,
     this.value,
+    super.extrasData,
   });
 }

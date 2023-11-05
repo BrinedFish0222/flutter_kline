@@ -2415,24 +2415,24 @@ class ExampleLineData {
 
   static List<BaseChartVo> getLineChartMA13({int end = 800}) {
     return [
-      LineChartVo(name: 'MA', dataList: []),
+      LineChartVo(name: 'MA', data: []),
       LineChartVo(
           name: 'MA13',
-          dataList: ExampleLineData.ma13
+          data: ExampleLineData.ma13
               .sublist(0, end)
               .map((e) => LineChartData(value: e))
               .toList(),
           color: KlineConfig.kLineColors[0]),
       LineChartVo(
           name: 'MA34',
-          dataList: ExampleLineData.ma34
+          data: ExampleLineData.ma34
               .sublist(0, end)
               .map((e) => LineChartData(value: e))
               .toList(),
           color: KlineConfig.kLineColors[1]),
       LineChartVo(
           name: 'MA144',
-          dataList: ExampleLineData.ma144
+          data: ExampleLineData.ma144
               .sublist(0, end)
               .map((e) => LineChartData(value: e))
               .toList(),

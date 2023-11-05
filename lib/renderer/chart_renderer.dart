@@ -121,7 +121,7 @@ class ChartRenderer extends CustomPainter {
     // 实时价格线
     if (realTimePrice != null && candlestickChartVo != null) {
       bool isRealTime =
-          candlestickChartVo.dataList.last?.close == realTimePrice;
+          candlestickChartVo.data.last?.close == realTimePrice;
       PriceLinePainter(
         price: realTimePrice!,
         maxMinValue: maxMinValue,
