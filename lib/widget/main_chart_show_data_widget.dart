@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/kline_config.dart';
 import '../vo/main_chart_selected_data_vo.dart';
@@ -46,29 +47,50 @@ class MainChartShowDataWidget extends StatelessWidget {
               initialData: initData,
               stream: _mainChartSelectedDataStream.stream,
               builder: (context, snapshot) {
-                var data = snapshot.data;
+                List<ChartShowDataItemVo>? data = snapshot.data?.lineChartList
+                    ?.where((element) => element?.value != null)
+                    .map((e) => e!)
+                    .toList();
+
+                if (data == null || data.isEmpty) {
+                  return const SizedBox();
+                }
 
                 return ListView(
                   scrollDirection: Axis.horizontal,
-                  children: data?.lineChartList
-                          ?.where((element) => element?.value != null)
-                          .map((e) => Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Center(
-                                  child: Text(
-                                    '${e?.name} ${e?.value?.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                        color: e?.color,
-                                        fontSize: KlineConfig.showDataFontSize),
-                                  ),
-                                ),
-                              ))
-                          .toList() ??
-                      [],
+                  children: data
+                      .map(
+                        (e) => _ShowDataItemWidget(e),
+                      )
+                      .toList(),
                 );
               }),
         )
       ]),
+    );
+  }
+}
+
+class _ShowDataItemWidget extends StatelessWidget {
+  const _ShowDataItemWidget(
+    this.item,
+  );
+
+  final ChartShowDataItemVo item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 5),
+      child: Center(
+        child: Text(
+          '${item.name} ${item.value?.toStringAsFixed(2)}',
+          style: TextStyle(
+            color: item.color,
+            fontSize: KlineConfig.showDataFontSize,
+          ),
+        ),
+      ),
     );
   }
 }

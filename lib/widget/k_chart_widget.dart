@@ -199,7 +199,9 @@ class _KChartWidgetState extends State<KChartWidget> {
                   child: MainChartWidget(
                     chartData: _showMainChartData,
                     size: _mainChartSize,
-                    infoBarName: widget.mainChartData.firstWhere((element) => element.isSelectedShowData()).name,
+                    infoBarName: widget.mainChartData
+                        .firstWhere((element) => element.isSelectedShowData())
+                        .name,
                     margin: widget.margin,
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
@@ -333,9 +335,6 @@ class _KChartWidgetState extends State<KChartWidget> {
       return;
     }
 
-    var candlestickChartVo =
-        BaseChartVo.getCandlestickChartVo(_showMainChartData);
-
     _selectedIndexStream = StreamController<int>.broadcast();
     // 处理悬浮层。
     _selectedIndexStream?.stream.listen((index) {
@@ -343,6 +342,8 @@ class _KChartWidgetState extends State<KChartWidget> {
         _hideCandlestickOverlay();
         return;
       }
+      var candlestickChartVo =
+          BaseChartVo.getCandlestickChartVo(_showMainChartData);
       var vo = candlestickChartVo?.dataList[index];
       if (vo == null) {
         _hideCandlestickOverlay();
