@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/example/example_badge_data.dart';
 
 import '../utils/kline_util.dart';
 import '../vo/bar_chart_vo.dart';
-import '../vo/line_chart_vo.dart';
 import '../vo/mask_layer.dart';
 import '../widget/k_chart_widget.dart';
 import 'example_candlestick_data.dart';
@@ -37,11 +37,12 @@ class ExampleDayWidget extends StatelessWidget {
           KChartWidget(
             showDataNum: 30,
             size: size,
-            lineChartData:
-                ExampleLineData.getLineChartMA13().cast<LineChartVo>(),
-            candlestickChartData: candlestickData,
+            mainChartData: [
+              candlestickData,
+              ...ExampleLineData.getLineChartMA13(),
+              ExampleBadgeData.badgeChartVo,
+            ],
             realTimePrice: candlestickData.dataList.last?.close,
-            // realTimePrice: 11.89,
             onTapIndicator: (index) {
               KlineUtil.showToast(context: context, text: '点击指标索引：$index');
             },
@@ -49,7 +50,8 @@ class ExampleDayWidget extends StatelessWidget {
             subChartData: [
               [
                 ExampleVolData.barChartData..minValue = 0,
-                ...ExampleVolData.lineChartData
+                ...ExampleVolData.lineChartData,
+                ExampleBadgeData.badgeChartVo,
               ],
               [ExampleRmoData.barChartData..barWidth = 4],
               ExampleMacdData.macd,

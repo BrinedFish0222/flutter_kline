@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/constants/line_type.dart';
-import 'package:flutter_kline/renderer/sub_chart_renderer.dart';
+import 'package:flutter_kline/renderer/chart_renderer.dart';
+import 'package:flutter_kline/setting/rect_setting.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
@@ -64,8 +65,10 @@ class MinuteChartRenderer extends CustomPainter {
       return;
     }
 
-    SubChartRenderer(chartData: minuteChartSubjoinData!, isDrawRect: false)
-        .paint(canvas, size);
+    ChartRenderer(
+      chartData: minuteChartSubjoinData!,
+      rectSetting: const RectSetting(isShow: false),
+    ).paint(canvas, size);
   }
 
   @override

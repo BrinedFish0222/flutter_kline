@@ -30,9 +30,9 @@ class PriceLinePainter extends CustomPainter {
       ..strokeWidth = style.paintStrokeWidth;
 
     // 计算y轴位置
-    double y = KlineUtil.computeHeightValue(
+    double y = KlineUtil.computeYAxisValue(
       maxMinValue: maxMinValue,
-      height: size.height,
+      maxHeight: size.height,
       value: price,
     );
 

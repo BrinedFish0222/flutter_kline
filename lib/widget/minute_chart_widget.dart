@@ -219,7 +219,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
                             maxMinValue: maxMinValue,
                             height: widget.size.height,
                             selectedY: selectedXY.right);
-                    debugPrint("分时图 十字线：分时图");
+                    
                     return CustomPaint(
                       size: widget.size,
                       painter: CrossCurvePainter(

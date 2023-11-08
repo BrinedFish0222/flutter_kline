@@ -11,13 +11,14 @@ class BarChartPainter extends CustomPainter {
   final double pointGap;
 
   /// 高度范围
-  final Pair<double, double>? heightRange;
+  final Pair<double, double>? maxMinValue;
 
-  BarChartPainter(
-      {required this.barData,
-      this.pointWidth,
-      this.pointGap = 5,
-      this.heightRange});
+  BarChartPainter({
+    required this.barData,
+    this.pointWidth,
+    this.pointGap = 5,
+    this.maxMinValue,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -28,7 +29,7 @@ class BarChartPainter extends CustomPainter {
             barHeightData.length;
 
     // 数据最低值
-    double minDataValue = heightRange?.right ?? barData.getMaxMinData().right;
+    double minDataValue = maxMinValue?.right ?? barData.getMaxMinData().right;
     if (minDataValue > 0) {
       minDataValue = 0;
     }
@@ -85,8 +86,8 @@ class BarChartPainter extends CustomPainter {
 
   /// 获取数据份额
   double _getDataShare() {
-    if (heightRange != null) {
-      return (heightRange?.left ?? 0) - (heightRange?.right ?? 0);
+    if (maxMinValue != null) {
+      return (maxMinValue?.left ?? 0) - (maxMinValue?.right ?? 0);
     }
 
     var maxMinData = barData.getMaxMinData();
