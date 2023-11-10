@@ -54,9 +54,9 @@ abstract class BaseChartVo<T extends BaseChartData?> {
       return null;
     }
 
-    return voList!
-        .where((e) => KlineCollectionUtil.isNotEmpty(e.getSelectedShowData()))
-        .map((e) => e.getSelectedShowData()!.last!)
+    return getSelectedShowDataByIndex(chartData: voList!, index: -1)
+        ?.where((e) => e != null)
+        .cast<ChartShowDataItemVo>()
         .toList();
   }
 
@@ -96,6 +96,24 @@ abstract class BaseChartVo<T extends BaseChartData?> {
 
     return dataList.firstWhere((element) => element is CandlestickChartVo)
         as CandlestickChartVo;
+  }
+
+  /// 根据索引获取数据
+  /// [index] 如果是-1，则是最后一个。
+  static List<ChartShowDataItemVo?>? getSelectedShowDataByIndex({
+    required List<BaseChartVo<BaseChartData?>> chartData,
+    required int index,
+  }) {
+    bool isLast = index == -1;
+    return chartData.where((element) => element.isSelectedShowData()).map((e) {
+      try {
+        return isLast
+            ? e.getSelectedShowData()?.last
+            : e.getSelectedShowData()?[index];
+      } catch(e) {
+        return null;
+      }
+    }).toList();
   }
 }
 

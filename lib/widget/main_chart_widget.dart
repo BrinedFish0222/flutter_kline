@@ -76,16 +76,16 @@ class _MainChartWidgetState extends State<MainChartWidget> {
   /// 初始化选中数据
   _initSelectedChartData() {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
-      bool isLast = index == -1;
-      List<ChartShowDataItemVo?>? lineShowData = widget.chartData
-          .where((element) => element.isSelectedShowData())
-          .map((e) => isLast
-              ? e.getSelectedShowData()?.last
-              : e.getSelectedShowData()?[index])
-          .toList();
+      List<ChartShowDataItemVo?>? lineShowData =
+          BaseChartVo.getSelectedShowDataByIndex(
+        chartData: widget.chartData,
+        index: index,
+      );
 
       _mainChartSelectedDataStream.add(MainChartSelectedDataVo(
-          candlestickChartData: null, lineChartList: lineShowData));
+        candlestickChartData: null,
+        lineChartList: lineShowData,
+      ));
     });
   }
 

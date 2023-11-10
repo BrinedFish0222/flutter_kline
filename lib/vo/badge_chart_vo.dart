@@ -74,7 +74,7 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
 
   @override
   List<ChartShowDataItemVo?>? getSelectedShowData() {
-    return [];
+    throw UnimplementedError();
   }
 
   @override
