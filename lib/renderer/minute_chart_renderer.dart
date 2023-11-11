@@ -56,8 +56,9 @@ class MinuteChartRenderer extends CustomPainter {
           color: Colors.grey, fontSize: KlineConfig.rectFontSize),
     ).paint(canvas, size);
 
+    
     LineChartPainter(
-      lineChartData: [minuteChartVo],
+      lineChartData: minuteChartVo,
       maxMinValue: maxMinValue,
     ).paint(canvas, size);
 

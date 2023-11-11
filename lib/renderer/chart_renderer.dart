@@ -96,7 +96,7 @@ class ChartRenderer extends CustomPainter {
       // 画线图
       if (data is LineChartVo) {
         LineChartPainter(
-          lineChartData: [data],
+          lineChartData: data,
           maxMinValue: maxMinValue,
           pointWidth: pointWidth,
           pointGap: pointGap,
