@@ -63,8 +63,24 @@ class _BadgePositionedWidget extends StatelessWidget {
   final BadgeChartData badgeChartData;
   final Pair<double, double> maxMinValue;
 
+  Size get _getSize {
+    double width = pointWidth;
+    double height = pointWidth;
+    if (badgeChartData.minSize != null) {
+      width = badgeChartData.minSize!.width > width
+          ? badgeChartData.minSize!.width
+          : width;
+      height = badgeChartData.minSize!.height > height
+          ? badgeChartData.minSize!.height
+          : height;
+    }
+    return Size(width, height);
+  }
+
   @override
   Widget build(BuildContext context) {
+    Size size = _getSize;
+
     // TODO 目前只支持 padding bottom
     // 高度
     var yAxisValue = KlineUtil.computeYAxisValue(
@@ -76,13 +92,14 @@ class _BadgePositionedWidget extends StatelessWidget {
         .clamp(0, maxHeight - pointWidth)
         .toDouble();
 
-    var xAxisValue = (pointWidth + pointGap) * index;
+    var xAxisValue = (pointWidth + pointGap) * index - ((size.width - pointWidth) / 2);
+
     return Positioned(
       left: xAxisValue,
       top: yAxisValue,
       child: SizedBox(
-        width: pointWidth,
-        height: pointWidth,
+        width: size.width,
+        height: size.height,
         child: badgeChartData.widget,
       ),
     );

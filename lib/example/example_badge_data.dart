@@ -8,6 +8,7 @@ class ExampleBadgeData {
           ..length = 796
           ..addAll([
             BadgeChartData(
+              minSize: const Size(30, 30),
               widget: LayoutBuilder(builder: (context, constraints) {
                 return Container(
                   color: Colors.red,

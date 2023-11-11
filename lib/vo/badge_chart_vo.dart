@@ -108,13 +108,17 @@ class BadgeChartData<E> extends BaseChartData<E> {
   /// 默认值：[defaultPadding]
   EdgeInsets padding;
 
+  /// 最小大小
+  Size? minSize;
+
   /// 决定 badge 在图中的高度位置。
-  /// 默认情况不需要指定，会根据实际情况生成对应的值。
+  /// 如果[value]为空，会默认设置为当前y轴数据点最大值
   double? value;
 
   BadgeChartData({
     required this.widget,
     this.padding = defaultPadding,
+    this.minSize,
     this.value,
     super.extrasData,
   });
