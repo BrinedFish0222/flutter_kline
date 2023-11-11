@@ -1,4 +1,5 @@
 import 'package:flutter_kline/common/kline_config.dart';
+import 'package:flutter_kline/painter/gradient_chart_painter.dart';
 import 'package:flutter_kline/utils/kline_date_util.dart';
 import 'package:flutter_kline/utils/kline_random_util.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
@@ -686,10 +687,14 @@ class ExampleMinuteData {
     List<BaseChartVo> result = [];
 
     for (int i = 0; i < 1; ++i) {
-      result.add(LineChartVo(
+      result.add(
+        LineChartVo(
           name: 'A1',
           data: _a1.map((e) => LineChartData(value: e)).toList(),
-          color: KlineConfig.kLineColors[i + 1]));
+          color: KlineConfig.kLineColors[i + 1],
+          gradient: GradientChartConstants.formGradient(color: KlineConfig.kLineColors[i + 1]),
+        ),
+      );
     }
     return result;
   }

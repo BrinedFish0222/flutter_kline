@@ -11,6 +11,9 @@ import 'candlestick_chart_vo.dart';
 class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   Color color;
 
+  /// 渐变色，空表示不显示
+  Gradient? gradient;
+
   List<ChartShowDataItemVo?>? _selectedShowData;
   Pair<double, double>? _maxMinData;
 
@@ -21,6 +24,7 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
     super.minValue,
     required super.data,
     this.color = Colors.black,
+    this.gradient,
   }) {
     getSelectedShowData();
   }

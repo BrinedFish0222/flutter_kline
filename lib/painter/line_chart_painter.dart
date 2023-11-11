@@ -4,6 +4,8 @@ import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 
+import 'gradient_chart_painter.dart';
+
 /// 折线图
 class LineChartPainter extends CustomPainter {
   final LineChartVo lineChartData;
@@ -62,26 +64,27 @@ class LineChartPainter extends CustomPainter {
         continue;
       }
 
-      lastX ??= computeX(index: j, pointWidth: pointWidth, pointGap: pointGap);
+      lastX ??= KlineUtil.computeXAxisValue(
+          index: j, pointWidth: pointWidth, pointGap: pointGap);
       lastY ??= data;
 
-      // x轴 =
-      double x = computeX(index: j, pointWidth: pointWidth, pointGap: pointGap);
+      double x = KlineUtil.computeXAxisValue(
+          index: j, pointWidth: pointWidth, pointGap: pointGap);
       double y = data;
 
       canvas.drawLine(Offset(lastX, lastY), Offset(x, y), paint);
       lastX = x;
       lastY = y;
     }
-  }
 
-  /// 计算画图x轴位置
-  double computeX({
-    required int index,
-    required double pointWidth,
-    required double pointGap,
-  }) {
-    return index * pointWidth + index * pointGap + pointWidth / 2;
+    if (lineChartData.gradient != null) {
+      GradientChartPainter(
+        gradient: lineChartData.gradient!,
+        heightList: convertDataList,
+        pointWidth: pointWidth,
+        pointGap: pointGap,
+      ).paint(canvas, size);
+    }
   }
 
   @override

@@ -56,19 +56,16 @@ class MinuteChartRenderer extends CustomPainter {
           color: Colors.grey, fontSize: KlineConfig.rectFontSize),
     ).paint(canvas, size);
 
-    
+    if (KlineCollectionUtil.isNotEmpty(minuteChartSubjoinData)) {
+      ChartRenderer(
+        chartData: minuteChartSubjoinData!,
+        rectSetting: const RectSetting(isShow: false),
+      ).paint(canvas, size);
+    }
+
     LineChartPainter(
       lineChartData: minuteChartVo,
       maxMinValue: maxMinValue,
-    ).paint(canvas, size);
-
-    if (KlineCollectionUtil.isEmpty(minuteChartSubjoinData)) {
-      return;
-    }
-
-    ChartRenderer(
-      chartData: minuteChartSubjoinData!,
-      rectSetting: const RectSetting(isShow: false),
     ).paint(canvas, size);
   }
 
@@ -79,7 +76,7 @@ class MinuteChartRenderer extends CustomPainter {
 
   LineChartVo _initData() {
     LineChartVo minuteChartVo = this.minuteChartVo.copy() as LineChartVo;
-    
+
     if (dataNum <= minuteChartVo.data.length) {
       minuteChartVo.data =
           KlineCollectionUtil.lastN(minuteChartVo.data, dataNum) ?? [];

@@ -76,10 +76,7 @@ class _BadgePositionedWidget extends StatelessWidget {
         .clamp(0, maxHeight - pointWidth)
         .toDouble();
 
-    var xAxisValue = KlineUtil.computeXAxisValue(
-      index: index,
-      pointWidth: pointWidth + pointGap,
-    );
+    var xAxisValue = (pointWidth + pointGap) * index;
     return Positioned(
       left: xAxisValue,
       top: yAxisValue,

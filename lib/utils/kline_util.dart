@@ -154,9 +154,9 @@ class KlineUtil {
   static double computeXAxisValue({
     required int index,
     required double pointWidth,
-    
+    required double pointGap,
   }) {
-    return pointWidth * index;
+    return index * pointWidth + index * pointGap + pointWidth / 2;
   }
 
   /// 计算最大最小值
