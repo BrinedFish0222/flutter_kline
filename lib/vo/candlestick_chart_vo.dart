@@ -56,7 +56,7 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>?> {
   @override
   List<ChartShowDataItemVo?>? getSelectedShowData() {
     // 蜡烛图一点要显示四条数据，不适合此方法。
-    throw UnimplementedError();
+    return [];
   }
 
   @override

@@ -7,7 +7,6 @@ import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 import 'base_chart_vo.dart';
 
 class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
-
   BadgeChartVo({
     super.id,
     super.name,
@@ -74,7 +73,7 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
 
   @override
   List<ChartShowDataItemVo?>? getSelectedShowData() {
-    throw UnimplementedError();
+    return [];
   }
 
   @override
