@@ -137,7 +137,7 @@ class KlineUtil {
   /// [maxMinValue] 最大最小值
   /// [maxHeight] 高度
   /// [value] 值
-  static double computeYAxisValue({
+  static double computeYAxis({
     required Pair<double, double> maxMinValue,
     required double maxHeight,
     required double value,
@@ -151,7 +151,7 @@ class KlineUtil {
   /// 计算x轴值：[pointWidth] * [index]
   /// [index] 索引位置
   /// [pointWidth] 每个元素宽度
-  static double computeXAxisValue({
+  static double computeXAxis({
     required int index,
     required double pointWidth,
     required double pointGap,

@@ -63,7 +63,7 @@ class _BadgePositionedWidget extends StatelessWidget {
   final BadgeChartData badgeChartData;
   final Pair<double, double> maxMinValue;
 
-  Size get _getSize {
+  Size _getSize({required double yAxis}) {
     double width = pointWidth;
     double height = pointWidth;
     if (badgeChartData.minSize != null) {
@@ -74,29 +74,35 @@ class _BadgePositionedWidget extends StatelessWidget {
           ? badgeChartData.minSize!.height
           : height;
     }
+
+    // 如果组件高度大于定位y轴高度，则使用最小那个高度
+    height = height > yAxis ? yAxis : height;
+    width = width > height ? height * (2 / 3) : width;
     return Size(width, height);
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = _getSize;
-
     // TODO 目前只支持 padding bottom
     // 高度
-    var yAxisValue = KlineUtil.computeYAxisValue(
+    var yAxis = KlineUtil.computeYAxis(
       maxHeight: maxHeight,
       maxMinValue: maxMinValue,
       value: badgeChartData.value ?? 0,
     );
-    yAxisValue = (yAxisValue - pointWidth / 2 - badgeChartData.padding.bottom)
-        .clamp(0, maxHeight - pointWidth)
+
+    Size size = _getSize(yAxis: yAxis);
+
+    yAxis = (yAxis - size.height - badgeChartData.padding.bottom)
+        .clamp(0, maxHeight - size.height)
         .toDouble();
 
-    var xAxisValue = (pointWidth + pointGap) * index - ((size.width - pointWidth) / 2);
+    var xAxis =
+        (pointWidth + pointGap) * index - ((size.width - pointWidth) / 2);
 
     return Positioned(
-      left: xAxisValue,
-      top: yAxisValue,
+      left: xAxis,
+      top: yAxis,
       child: SizedBox(
         width: size.width,
         height: size.height,

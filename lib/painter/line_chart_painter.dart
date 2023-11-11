@@ -64,11 +64,11 @@ class LineChartPainter extends CustomPainter {
         continue;
       }
 
-      lastX ??= KlineUtil.computeXAxisValue(
+      lastX ??= KlineUtil.computeXAxis(
           index: j, pointWidth: pointWidth, pointGap: pointGap);
       lastY ??= data;
 
-      double x = KlineUtil.computeXAxisValue(
+      double x = KlineUtil.computeXAxis(
           index: j, pointWidth: pointWidth, pointGap: pointGap);
       double y = data;
 

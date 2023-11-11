@@ -37,12 +37,12 @@ class GradientChartPainter extends CustomPainter {
     paint.shader = shader;
 
     // 定义路径
-    var startX = KlineUtil.computeXAxisValue(
+    var startX = KlineUtil.computeXAxis(
       index: 0,
       pointWidth: pointWidth,
       pointGap: pointGap,
     );
-    var endX = KlineUtil.computeXAxisValue(
+    var endX = KlineUtil.computeXAxis(
       index: heightList.length - 1,
       pointWidth: pointWidth,
       pointGap: pointGap,
@@ -53,7 +53,7 @@ class GradientChartPainter extends CustomPainter {
         heightList.first ?? size.height,
       );
     for (int i = 1; i < heightList.length; i++) {
-      double x = KlineUtil.computeXAxisValue(
+      double x = KlineUtil.computeXAxis(
           index: i, pointWidth: pointWidth, pointGap: pointGap);
       path.lineTo(x, heightList[i] ?? size.height);
     }

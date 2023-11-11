@@ -101,7 +101,7 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
 }
 
 class BadgeChartData<E> extends BaseChartData<E> {
-  static const EdgeInsets defaultPadding = EdgeInsets.only(bottom: 10);
+  static const EdgeInsets defaultPadding = EdgeInsets.only(bottom: 4);
 
   Widget widget;
 
