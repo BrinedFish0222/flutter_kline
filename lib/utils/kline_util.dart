@@ -8,28 +8,29 @@ import '../vo/candlestick_chart_vo.dart';
 
 class KlineUtil {
   /// 估算横向拖动阈值
-  /// 默认值：[KlineConfig.horizontalDragThreshold]
-  static int computeHorizontalDragThreshold(int input) {
+  /// [showDataNum] 图显示的数据量
+  /// 默认值阈值：[KlineConfig.horizontalDragThreshold]
+  static int computeHorizontalDragThreshold(int showDataNum) {
     int result = KlineConfig.horizontalDragThreshold;
 
-    if (input >= KlineConfig.showDataMinLength &&
-        input <= KlineConfig.showDataMinLength * 2) {
+    if (showDataNum >= KlineConfig.showDataMinLength &&
+        showDataNum <= KlineConfig.showDataMinLength * 2) {
       result = KlineConfig.horizontalDragThresholdMin * 4;
-    } else if (input >= KlineConfig.showDataMinLength * 2 &&
-        input <= KlineConfig.showDataMinLength * 3) {
-      result = KlineConfig.horizontalDragThresholdMin * 2;
-    } else if (input >= KlineConfig.showDataMinLength * 3 &&
-        input <= KlineConfig.showDataMinLength * 5) {
+    } else if (showDataNum >= KlineConfig.showDataMinLength * 2 &&
+        showDataNum <= KlineConfig.showDataMinLength * 3) {
+      result = KlineConfig.horizontalDragThresholdMin * 2 - 1;
+    } else if (showDataNum >= KlineConfig.showDataMinLength * 3 &&
+        showDataNum <= KlineConfig.showDataMinLength * 5) {
       result = KlineConfig.horizontalDragThresholdMin * 1;
-    } else if (input >= KlineConfig.showDataMinLength * 5 &&
-        input <= KlineConfig.showDataMinLength * 7) {
+    } else if (showDataNum >= KlineConfig.showDataMinLength * 5 &&
+        showDataNum <= KlineConfig.showDataMinLength * 7) {
       result = KlineConfig.horizontalDragThresholdMin;
-    } else if (input >= KlineConfig.showDataMinLength * 7 &&
-        input <= KlineConfig.showDataMinLength * 9) {
+    } else if (showDataNum >= KlineConfig.showDataMinLength * 7 &&
+        showDataNum <= KlineConfig.showDataMinLength * 9) {
       result = KlineConfig.horizontalDragThresholdMin - 1;
     }
 
-    debugPrint("KlineUtil computeHorizontalDragThreshold: $input:$result");
+    debugPrint("KlineUtil computeHorizontalDragThreshold: $showDataNum:$result");
     return result;
   }
 
