@@ -123,9 +123,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 副图遮罩
   List<MaskLayer?> _subChartMaskList = [];
 
-  /// 横向拖动阈值
-  int _horizontalDragThreshold = KlineConfig.horizontalDragThreshold;
-
   @override
   void initState() {
     _originCandlestickDataMaxIndex = widget.mainChartData.first.dataLength - 1;
@@ -168,9 +165,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        "k_chart_widget, _showDataNum: $_showDataNum, _horizontalDragThreshold: $_horizontalDragThreshold");
-
     return GestureDetector(
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: LayoutBuilder(builder: (context, constraints) {
@@ -180,8 +174,9 @@ class _KChartWidgetState extends State<KChartWidget> {
             Column(
               children: [
                 KlineGestureDetector(
+                  pointWidth: _pointWidth,
+                  pointGap: _pointGap,
                   onTap: _onTap,
-                  horizontalDragThreshold: _horizontalDragThreshold,
                   onHorizontalDragStart: _onHorizontalDragStart,
                   onHorizontalDragUpdate: _onHorizontalDragUpdate,
                   onHorizontalDragEnd: (details) =>
@@ -245,8 +240,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 同步：[_horizontalDragThreshold] 横向拖动阈值
   void _updateShowDataNum(int showDataNum) {
     _showDataNum = showDataNum;
-    _horizontalDragThreshold =
-        KlineUtil.computeHorizontalDragThreshold(_showDataNum);
   }
 
   void _onTap(PointerInfo pointerInfo) {

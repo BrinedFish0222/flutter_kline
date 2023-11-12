@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/common/kline_config.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../common/pair.dart';
 import '../vo/pointer_info.dart';
@@ -8,18 +8,23 @@ class KlineGestureDetector extends StatefulWidget {
   const KlineGestureDetector({
     super.key,
     this.onTap,
-    this.horizontalDragThreshold = KlineConfig.horizontalDragThreshold,
     this.onHorizontalDragStart,
     this.onHorizontalDragUpdate,
     this.onHorizontalDragEnd,
     required this.onZoomIn,
     required this.onZoomOut,
     required this.child,
+    this.pointWidth = 0,
+    this.pointGap = 0,
   });
 
+  /// 数据点宽度
+  final double pointWidth;
+
+  /// 数据点间隔
+  final double pointGap;
+
   final Widget child;
-  /// 横向拖动的阈值
-  final int horizontalDragThreshold;
 
   final void Function(PointerInfo)? onTap;
   final void Function(DragStartDetails)? onHorizontalDragStart;
@@ -39,6 +44,7 @@ class KlineGestureDetector extends StatefulWidget {
 class _KlineGestureDetectorState extends State<KlineGestureDetector> {
   /// 手指数量
   int pointerCount = 0;
+
   /// 上一次操作记录点
   PointerInfo? lastPointerInfo;
 
@@ -53,8 +59,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
   /// 双指首个手指空开时间
   int doublePointerFirstPutdownMilliseconds = 0;
 
-  /// 横向拖动执行次数
-  int _onHorizontalDragUpdateExecuteNum = 0;
+  double _horizontalDragThreshold = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +135,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
                 widget.onTap!(lastPointerInfo!);
               },
         onHorizontalDragStart: (details) {
-          _onHorizontalDragUpdateExecuteNum = 0;
           if (_isDoublePointer() || widget.onHorizontalDragStart == null) {
             return;
           }
@@ -138,12 +142,13 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           widget.onHorizontalDragStart!(details);
         },
         onHorizontalDragUpdate: (details) {
+          _horizontalDragThreshold += (details.delta.dx).abs();
           // 达到横向拖动阈值才放行
-          _onHorizontalDragUpdateExecuteNum += 1;
-          if (_onHorizontalDragUpdateExecuteNum < widget.horizontalDragThreshold) {
+          if (_horizontalDragThreshold <
+              (widget.pointWidth + widget.pointGap) / 3) {
             return;
           }
-          _onHorizontalDragUpdateExecuteNum = 0;
+          _horizontalDragThreshold = 0;
 
           if (_isDoublePointer()) {
             return;

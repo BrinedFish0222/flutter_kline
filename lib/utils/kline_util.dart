@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 
@@ -7,31 +6,8 @@ import '../common/pair.dart';
 import '../vo/candlestick_chart_vo.dart';
 
 class KlineUtil {
-  /// 估算横向拖动阈值
-  /// [showDataNum] 图显示的数据量
-  /// 默认值阈值：[KlineConfig.horizontalDragThreshold]
-  static int computeHorizontalDragThreshold(int showDataNum) {
-    int result = KlineConfig.horizontalDragThreshold;
-
-    if (showDataNum >= KlineConfig.showDataMinLength &&
-        showDataNum <= KlineConfig.showDataMinLength * 2) {
-      result = KlineConfig.horizontalDragThresholdMin * 4;
-    } else if (showDataNum >= KlineConfig.showDataMinLength * 2 &&
-        showDataNum <= KlineConfig.showDataMinLength * 3) {
-      result = KlineConfig.horizontalDragThresholdMin * 2 - 1;
-    } else if (showDataNum >= KlineConfig.showDataMinLength * 3 &&
-        showDataNum <= KlineConfig.showDataMinLength * 5) {
-      result = KlineConfig.horizontalDragThresholdMin * 1;
-    } else if (showDataNum >= KlineConfig.showDataMinLength * 5 &&
-        showDataNum <= KlineConfig.showDataMinLength * 7) {
-      result = KlineConfig.horizontalDragThresholdMin;
-    } else if (showDataNum >= KlineConfig.showDataMinLength * 7 &&
-        showDataNum <= KlineConfig.showDataMinLength * 9) {
-      result = KlineConfig.horizontalDragThresholdMin - 1;
-    }
-
-    debugPrint("KlineUtil computeHorizontalDragThreshold: $showDataNum:$result");
-    return result;
+  static void logd(String text) {
+    debugPrint(text);
   }
 
   /// 转换数据为图数据。
