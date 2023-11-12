@@ -1,6 +1,12 @@
 # flutter_kline
 <img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/k_minute_chart_gif.gif" width="300" />&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/k_chart_gif.gif" width="300" />
 
+
+
+<img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/example_1.jpg" width="300" /><img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/example_2.jpg" width="300" />
+
+
+
 之前在一家公司负责股票软件的开发，发现 flutter 关于股票K线图这方面的资源都是很老旧的项目，拿来使用的过程中也发现了一些需要进行改善的地方，所以有了这个开源项目，**flutter_kline 只是给你提供一个实现接近通达信K线图级别的思路，它只能接近，无法完全媲美**。
 
 :warning:我只有半年的app开发经验，是一个萌新，请容忍我的烂代码:sweat_smile::sweat_smile::sweat_smile:。
