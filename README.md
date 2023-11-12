@@ -1,7 +1,4 @@
 # flutter_kline
-<img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/k_minute_chart_gif.gif" width="300" />&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/k_chart_gif.gif" width="300" />
-
-
 
 <img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/example_1.jpg" width="300" /><img src="https://raw.githubusercontent.com/BrinedFish0222/flutter_kline/master/resources/example_2.jpg" width="300" />
 
