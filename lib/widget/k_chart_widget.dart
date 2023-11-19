@@ -32,6 +32,8 @@ class KChartWidget extends StatefulWidget {
     this.subChartRatio = 0.5,
     required this.overlayEntryLocationKey,
     this.realTimePrice,
+    this.leftmost,
+    this.rightmost,
   });
 
   final Size size;
@@ -65,6 +67,12 @@ class KChartWidget extends StatefulWidget {
 
   /// 实时价格
   final double? realTimePrice;
+
+  /// 最左边。当图滑动到最左边时触发。
+  final void Function()? leftmost;
+
+  /// 最右边。当图滑动到最右边时触发。
+  final void Function()? rightmost;
 
   @override
   State<KChartWidget> createState() => _KChartWidgetState();
@@ -382,7 +390,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
     int endIndex = (_showDataStartIndex + _showDataNum)
         .clamp(0, _originCandlestickDataMaxIndex);
-    debugPrint("最后的数据索引：$endIndex");
+    KlineUtil.logd("最后的数据索引：$endIndex");
     _showDataStartIndex =
         (endIndex - _showDataNum).clamp(0, _originCandlestickDataMaxIndex);
 
@@ -407,6 +415,28 @@ class _KChartWidgetState extends State<KChartWidget> {
     setState(() {});
   }
 
+  /// 滑动到最右事件。
+  void _rightmostEvent() {
+    if (_showMainChartData.first.data.last !=
+            widget.mainChartData.first.data.last ||
+        widget.rightmost == null) {
+      return;
+    }
+
+    widget.rightmost!();
+  }
+
+  /// 滑动到最左或最右事件。优先右边。
+  void _leftmostEvent() {
+    if (_showMainChartData.first.data.first !=
+            widget.mainChartData.first.data.first ||
+        widget.rightmost == null) {
+      return;
+    }
+
+    widget.leftmost!();
+  }
+
   /// 长按移动事件
   _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     debugPrint(
@@ -418,7 +448,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
-    debugPrint("k线图横向滑动");
+    KlineUtil.logd("k线图横向滑动");
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
       _resetCrossCurve(Pair(
@@ -432,6 +462,13 @@ class _KChartWidgetState extends State<KChartWidget> {
       _resetShowData(startIndex: _showDataStartIndex + 1);
     } else {
       _resetShowData(startIndex: _showDataStartIndex - 1);
+    }
+
+    // 最左、右的事件
+    if (details.isRightMove) {
+      _rightmostEvent();
+    } else {
+      _leftmostEvent();
     }
 
     _sameTimeLastHorizontalDragX = dx;

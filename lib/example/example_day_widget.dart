@@ -3,7 +3,6 @@ import 'package:flutter_kline/example/example_badge_data.dart';
 
 import '../utils/kline_util.dart';
 import '../vo/bar_chart_vo.dart';
-import '../vo/mask_layer.dart';
 import '../widget/k_chart_widget.dart';
 import 'example_candlestick_data.dart';
 import 'example_ess_data.dart';
@@ -69,6 +68,12 @@ class ExampleDayWidget extends StatelessWidget {
               // MaskLayer(percent: 0.8)
             ], */
             overlayEntryLocationKey: overlayEntryLocationKey,
+            leftmost: () {
+              KlineUtil.showToast(context: context, text: '移动到最左边');
+            },
+            rightmost: () {
+              KlineUtil.showToast(context: context, text: '移动到最右边');
+            },
           ),
           ...List.generate(
               5,

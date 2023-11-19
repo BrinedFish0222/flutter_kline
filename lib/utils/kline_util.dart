@@ -49,6 +49,7 @@ class KlineUtil {
   }
 
   static void showToast({required BuildContext context, required String text}) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
@@ -155,5 +156,17 @@ class KlineUtil {
     });
 
     return result;
+  }
+}
+
+extension DragUpdateDetailsExt on DragUpdateDetails {
+  /// 是否左移
+  bool get isLeftMove {
+    return delta.dx > 0;
+  }
+
+  /// 是否右移
+  bool get isRightMove {
+    return delta.dx < 0;
   }
 }
