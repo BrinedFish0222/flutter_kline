@@ -63,11 +63,11 @@ class ExampleDayWidget extends StatelessWidget {
                 ExampleEssData.lineChartB
               ],
             ],
-            subChartMaskList: [
+            /* subChartMaskList: [
               null,
               MaskLayer(percent: 0.3),
               // MaskLayer(percent: 0.8)
-            ],
+            ], */
             overlayEntryLocationKey: overlayEntryLocationKey,
           ),
           ...List.generate(

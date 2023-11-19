@@ -4,6 +4,7 @@ import 'package:flutter_kline/constants/line_type.dart';
 import 'package:flutter_kline/exts/canvas_ext.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/line_config.dart';
 
 /// 矩形背景图
@@ -90,7 +91,7 @@ class RectPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    debugPrint("绘制矩形。。。");
+    KlineUtil.logd("RectPainter paint");
     _init(canvas: canvas, size: size);
     List<LineConfig> transverseLineConfigList = _initTransverseLineConfig();
 
@@ -182,6 +183,7 @@ class RectPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    KlineUtil.logd("RectPainter paint");
     return true;
   }
 

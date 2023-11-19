@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../common/pair.dart';
 import '../vo/pointer_info.dart';
