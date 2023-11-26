@@ -6,7 +6,7 @@ import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 import '../common/pair.dart';
 
 /// 蜡烛图数据vo
-class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>?> {
+class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
   Pair<double, double>? _maxMinData;
 
   CandlestickChartVo({
@@ -42,9 +42,9 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>?> {
     }
 
     var pairList = data
-        .where((element) => element != null)
-        .map((e) =>
-            KlineNumUtil.maxMinValueDouble([e!.open, e.close, e.high, e.low]))
+        .where((e) => e != null)
+        .map((e) => KlineNumUtil.maxMinValueDouble(
+            [e?.open, e?.close, e?.high, e?.low]))
         .toList();
     _maxMinData = Pair.getMaxMinValue(pairList);
     _maxMinData?.right = minValue ?? _maxMinData!.right;
@@ -105,6 +105,7 @@ class CandlestickChartData<E> extends BaseChartData<E> {
   double low;
 
   CandlestickChartData({
+    super.id,
     required this.dateTime,
     required this.open,
     required this.close,

@@ -30,6 +30,9 @@ class KlineConfig {
   /// 显示数据 - 图标大小
   static const double showDataIconSize = 12;
 
+  /// 显示数据 = 默认长度
+  static const int showDataDefaultLength = 60;
+
   /// 显示数据 - 最小长度
   static const int showDataMinLength = 10;
 

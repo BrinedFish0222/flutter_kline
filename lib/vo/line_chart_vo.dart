@@ -53,10 +53,10 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
       }
 
       for (var data in element.data) {
-        result.left = (data.value ?? -double.maxFinite) > result.left
-            ? data.value!
+        result.left = (data?.value ?? -double.maxFinite) > result.left
+            ? data!.value!
             : result.left;
-        result.right = (data.value ?? double.maxFinite) < result.right
+        result.right = (data!.value ?? double.maxFinite) < result.right
             ? data.value!
             : result.right;
       }
@@ -72,8 +72,8 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
     }
 
     return data
-        .map((e) =>
-            ChartShowDataItemVo(name: name ?? '', value: e.value, color: color))
+        .map((e) => ChartShowDataItemVo(
+            name: name ?? '', value: e?.value, color: color))
         .toList();
   }
 
@@ -89,24 +89,12 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
     }
 
     _maxMinData =
-        KlineNumUtil.maxMinValueDouble(data.map((e) => e.value).toList());
+        KlineNumUtil.maxMinValueDouble(data.map((e) => e?.value).toList());
 
     _maxMinData!.right = minValue ?? _maxMinData!.right;
     _maxMinData!.left = maxValue ?? _maxMinData!.left;
 
     return _maxMinData!;
-  }
-
-  @override
-  BaseChartVo subData({required int start, int? end}) {
-    return LineChartVo(
-        id: id,
-        name: name,
-        maxValue: maxValue,
-        minValue: minValue,
-        data: KlineCollectionUtil.sublist(list: data, start: start, end: end) ??
-            [],
-        color: color);
   }
 
   @override
@@ -118,7 +106,7 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
       return null;
     }
 
-    return data[index].value;
+    return data[index]?.value;
   }
 
   @override
@@ -132,7 +120,12 @@ class LineChartData<E> extends BaseChartData<E> {
 
   double? value;
 
-  LineChartData({this.dateTime, this.value});
+  LineChartData({
+    super.id,
+    this.dateTime,
+    this.value,
+    super.extrasData,
+  });
 }
 
 class SelectedLineChartDataStreamVo {

@@ -28,16 +28,15 @@ class BadgeWidget extends StatelessWidget {
         child: Stack(
           children: [
             for (int i = 0; i < badgeChartVo.data.length; ++i)
-              badgeChartVo.data[i] == null
-                  ? const SizedBox()
-                  : _BadgePositionedWidget(
-                      index: i,
-                      pointWidth: pointWidth ?? secPointWidth,
-                      pointGap: pointGap,
-                      badgeChartData: badgeChartVo.data[i]!,
-                      maxHeight: constraints.maxHeight,
-                      maxMinValue: maxMinValue,
-                    ),
+              if (badgeChartVo.data[i] != null)
+                _BadgePositionedWidget(
+                  index: i,
+                  pointWidth: pointWidth ?? secPointWidth,
+                  pointGap: pointGap,
+                  badgeChartData: badgeChartVo.data[i]!,
+                  maxHeight: constraints.maxHeight,
+                  maxMinValue: maxMinValue,
+                ),
           ],
         ),
       );

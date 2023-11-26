@@ -1,4 +1,5 @@
 import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 import '../common/pair.dart';
 
 /// 图数据基类
-abstract class BaseChartVo<T extends BaseChartData?> {
+abstract class BaseChartVo<T extends BaseChartData> {
   String? id;
   String? name;
 
@@ -17,7 +18,7 @@ abstract class BaseChartVo<T extends BaseChartData?> {
   /// 柱图如果不支持负数，设置成0。
   double? minValue;
 
-  List<T> data = [];
+  List<T?> data = [];
 
   BaseChartVo({
     this.id,
@@ -38,7 +39,17 @@ abstract class BaseChartVo<T extends BaseChartData?> {
   Pair<double, double> getMaxMinData();
 
   /// 子数据
-  BaseChartVo subData({required int start, int? end});
+  BaseChartVo subData({required int start, int? end}) {
+    var newVo = copy();
+    if (end != null && end > newVo.data.length) {
+      var maxLength = end - newVo.data.length;
+      for (int i = 0; i < maxLength; ++i) {
+        newVo.data.add(null);
+      }
+    }
+    newVo.data = newVo.data.sublist(start, end);
+    return newVo;
+  }
 
   /// 复制
   BaseChartVo copy();
@@ -101,7 +112,7 @@ abstract class BaseChartVo<T extends BaseChartData?> {
   /// 根据索引获取数据
   /// [index] 如果是-1，则是最后一个。
   static List<ChartShowDataItemVo?>? getSelectedShowDataByIndex({
-    required List<BaseChartVo<BaseChartData?>> chartData,
+    required List<BaseChartVo<BaseChartData>> chartData,
     required int index,
   }) {
     bool isLast = index == -1;
@@ -110,17 +121,27 @@ abstract class BaseChartVo<T extends BaseChartData?> {
         return isLast
             ? e.getSelectedShowData()?.last
             : e.getSelectedShowData()?[index];
-      } catch(e) {
+      } catch (e) {
         return null;
       }
     }).toList();
+  }
+
+  /// 最大数据长度
+  static int maxDataLength(List<BaseChartVo<BaseChartData>> mainChartData) {
+    var dataLengths = mainChartData.map((e) => e.dataLength).toList();
+    return KlineNumUtil.maxMinValue(dataLengths)?.left.toInt() ?? 0;
   }
 }
 
 /// 图基础数据
 /// 使用场景：一根线上一个点的信息
 abstract class BaseChartData<T> {
+  String? id;
   T? extrasData;
 
-  BaseChartData({this.extrasData});
+  BaseChartData({
+    this.id,
+    this.extrasData,
+  });
 }

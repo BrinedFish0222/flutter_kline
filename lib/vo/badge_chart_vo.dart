@@ -6,7 +6,7 @@ import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import 'base_chart_vo.dart';
 
-class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
+class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
   BadgeChartVo({
     super.id,
     super.name,
@@ -30,7 +30,7 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
     for (BadgeChartVo badge in badgeList) {
       for (int i = 0; i < badge.dataLength; ++i) {
         BadgeChartData? data = badge.data[i];
-        if (data == null || data.value != null) {
+        if (data?.value != null) {
           continue;
         }
 
@@ -38,7 +38,7 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
                 chartData.map((e) => e.getDataMaxValueByIndex(i)).toList())
             ?.left
             .toDouble();
-        data.value = maxValue;
+        data?.value = maxValue;
       }
     }
   }
@@ -56,13 +56,12 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
 
   @override
   Pair<double, double> getMaxMinData() {
-    var everyNull = data.every((element) => element == null);
-    if (everyNull) {
+    if (data.isEmpty) {
       return Pair.defaultMaxMinValue;
     }
 
     List<num> valueList = data
-        .where((element) => element != null && element.value != null)
+        .where((element) => element?.value != null)
         .map((e) => e!.value!)
         .cast<num>()
         .toList();
@@ -74,13 +73,6 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
   @override
   List<ChartShowDataItemVo?>? getSelectedShowData() {
     return [];
-  }
-
-  @override
-  BaseChartVo subData({required int start, int? end}) {
-    var newVo = copy() as BadgeChartVo;
-    newVo.data = newVo.data.sublist(start, end);
-    return newVo;
   }
 
   @override
@@ -100,10 +92,12 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>?> {
   }
 }
 
+/// <E> 是扩展数据
 class BadgeChartData<E> extends BaseChartData<E> {
   static const EdgeInsets defaultPadding = EdgeInsets.only(bottom: 4);
 
-  Widget widget;
+  /// 显示的组件，没有则不显示
+  Widget? widget;
 
   /// 默认值：[defaultPadding]
   EdgeInsets padding;
@@ -116,6 +110,7 @@ class BadgeChartData<E> extends BaseChartData<E> {
   double? value;
 
   BadgeChartData({
+    super.id,
     required this.widget,
     this.padding = defaultPadding,
     this.minSize,

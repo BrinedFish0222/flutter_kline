@@ -73,7 +73,7 @@ class ChartRenderer extends CustomPainter {
         maxValue: maxMinValue.left,
         minValue: maxMinValue.right,
         isDrawVerticalLine: true,
-        textStyle:  TextStyle(
+        textStyle: TextStyle(
           color: rectSetting.color,
           fontSize: KlineConfig.rectFontSize,
         ),
@@ -120,8 +120,7 @@ class ChartRenderer extends CustomPainter {
 
     // 实时价格线
     if (realTimePrice != null && candlestickChartVo != null) {
-      bool isRealTime =
-          candlestickChartVo.data.last?.close == realTimePrice;
+      bool isRealTime = candlestickChartVo.data.last?.close == realTimePrice;
       PriceLinePainter(
         price: realTimePrice!,
         maxMinValue: maxMinValue,

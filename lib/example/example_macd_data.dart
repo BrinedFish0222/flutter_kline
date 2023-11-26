@@ -2416,7 +2416,7 @@ class ExampleMacdData {
 
   static List<BaseChartVo> get macd {
     List<BaseChartVo> result = [];
-    var barChartDataList = _macd
+    List<BarChartData?> barChartDataList = _macd
         .map((e) => BarChartData(
             value: e ?? 0,
             isFill: true,

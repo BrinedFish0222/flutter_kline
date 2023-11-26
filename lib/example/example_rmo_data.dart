@@ -808,7 +808,7 @@ class ExampleRmoData {
   ];
 
   static BarChartVo get barChartData {
-    List<BarChartData> dataList = [];
+    List<BarChartData?> dataList = [];
     for (int i = 0; i < _dataList.length; ++i) {
       Color color = _dataList[i] == null || _dataList[i]! < 0
           ? KlineConfig.green
@@ -818,6 +818,6 @@ class ExampleRmoData {
           BarChartData(value: _dataList[i] ?? 0, color: color, isFill: isFill));
     }
 
-    return BarChartVo(name: 'RMO', data: dataList.toList());
+    return BarChartVo(name: 'RMO', data: dataList);
   }
 }

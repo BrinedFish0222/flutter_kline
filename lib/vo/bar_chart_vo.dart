@@ -42,7 +42,10 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
 
     return data
         .map((e) => ChartShowDataItemVo(
-            name: name ?? '', value: e.value, color: e.color))
+              name: name ?? '',
+              value: e?.value,
+              color: e?.color ?? Colors.black,
+            ))
         .toList();
   }
 
@@ -58,7 +61,7 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
     }
 
     Pair<double, double> maxMinValue =
-        KlineNumUtil.maxMinValueDouble(data.map((e) => e.value).toList());
+        KlineNumUtil.maxMinValueDouble(data.map((e) => e?.value).toList());
 
     double max = maxValue ?? maxMinValue.left;
     double min = minValue ?? maxMinValue.right;
@@ -70,13 +73,18 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
   @override
   BaseChartVo subData({required int start, int? end}) {
     return BarChartVo(
-        id: id,
-        name: name,
-        barWidth: barWidth,
-        maxValue: maxValue,
-        minValue: minValue,
-        data: KlineCollectionUtil.sublist(list: data, start: start, end: end) ??
-            []);
+      id: id,
+      name: name,
+      barWidth: barWidth,
+      maxValue: maxValue,
+      minValue: minValue,
+      data: KlineCollectionUtil.sublist(
+            list: data,
+            start: start,
+            end: end,
+          ) ??
+          [],
+    );
   }
 
   @override
@@ -88,7 +96,7 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
       return null;
     }
 
-    return (data[index]).value;
+    return (data[index])?.value;
   }
 
   @override
@@ -103,7 +111,8 @@ class BarChartData<E> extends BaseChartData<E> {
   Color color;
 
   BarChartData({
-    required this.value,
+    super.id,
+    this.value = 0,
     this.isFill = false,
     this.color = Colors.black,
     super.extrasData,

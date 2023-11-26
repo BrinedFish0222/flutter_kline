@@ -43,7 +43,11 @@ class BarChartPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     for (int i = 0; i < barHeightData.length; i++) {
-      var data = barHeightData[i];
+      BarChartData? data = barHeightData[i];
+      if (data == null) {
+        continue;
+      }
+
       paint.color = data.color;
       paint.style = data.isFill ? PaintingStyle.fill : PaintingStyle.stroke;
 

@@ -38,9 +38,8 @@ class CandlestickChartPainter extends CustomPainter {
         continue;
       }
 
-      bool isUp = data.data[index]!.open > data.data[index]!.close
-          ? false
-          : true;
+      bool isUp =
+          data.data[index]!.open > data.data[index]!.close ? false : true;
       CandlestickPainter(
         rect: Rect.fromLTRB(x, element.open, x + pointWidth, element.close),
         top: element.high,
@@ -64,12 +63,10 @@ class CandlestickChartPainter extends CustomPainter {
         canvasMaxHeight / ((maxMinValue.left - maxMinValue.right).abs());
 
     // 遍历数据数组，将每个数据值转换成对应的高度值，
-    List<CandlestickChartData?> result = data.data.map((data) {
-      if (data == null) {
-        return null;
-      }
+    List<CandlestickChartData?> result =
+        data.data.where((element) => element != null).map((data) {
       double open =
-          ((data.open - maxMinValue.right) * scaleFactor - canvasMaxHeight)
+          ((data!.open - maxMinValue.right) * scaleFactor - canvasMaxHeight)
               .abs()
               .toDouble();
       double close =

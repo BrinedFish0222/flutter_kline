@@ -37,6 +37,7 @@ class KMinuteChartWidget extends StatefulWidget {
   /// 分时数据
   final LineChartVo minuteChartData;
 
+  /// 分时图副数据
   final List<BaseChartVo>? minuteChartSubjoinData;
 
   /// [minuteChartData] 追加数据流
@@ -127,13 +128,12 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
     // 增加对悬浮层的操作
     _selectedIndexStream?.stream.listen((index) {
-      if (index == -1 ||
-          KlineCollectionUtil.isEmpty(_minuteChartData.data)) {
+      if (index == -1 || KlineCollectionUtil.isEmpty(_minuteChartData.data)) {
         _hideCandlestickOverlay();
         return;
       }
 
-      LineChartData data = _minuteChartData.data[index];
+      LineChartData data = _minuteChartData.data[index]!;
       _showCandlestickOverlay(context: context, data: data);
     });
   }
@@ -283,7 +283,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   /// 获取蜡烛浮层地址
   /// @return left 是x轴，right 是y轴
   Pair<double, double> _getCandlestickOverlayLocation() {
-    RenderBox? renderBox = widget.overlayEntryLocationKey.currentContext?.findRenderObject() as RenderBox?;
+    RenderBox? renderBox = widget.overlayEntryLocationKey.currentContext
+        ?.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       // 获取组件在页面中的位置信息
       Offset offset = renderBox.localToGlobal(Offset.zero);

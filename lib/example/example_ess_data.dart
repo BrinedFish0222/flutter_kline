@@ -809,7 +809,7 @@ class ExampleEssData {
   ];
 
   static BarChartVo get barChartData {
-    List<BarChartData> dataList = [];
+    List<BarChartData?> dataList = [];
     for (int i = 0; i < _dataList.length; ++i) {
       Color color = i % 2 == 0 ? KlineConfig.green : KlineConfig.red;
       bool isFill = true;

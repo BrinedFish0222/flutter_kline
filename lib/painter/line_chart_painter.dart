@@ -27,7 +27,7 @@ class LineChartPainter extends CustomPainter {
     }
 
     Pair<double, double> maxMinValue = KlineNumUtil.maxMinValueDouble(
-        lineChartData.data.map((e) => e.value).toList());
+        lineChartData.data.map((e) => e?.value).toList());
 
     return maxMinValue;
   }
@@ -51,7 +51,7 @@ class LineChartPainter extends CustomPainter {
     paint.color = lineChartData.color;
 
     var convertDataList = KlineUtil.convertDataToChartData(
-      lineChartData.data.map((e) => e.value).toList(),
+      lineChartData.data.map((e) => e?.value).toList(),
       size.height,
       maxMinValue: maxMinValue,
     );

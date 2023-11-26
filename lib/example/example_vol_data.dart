@@ -2425,7 +2425,7 @@ class ExampleVolData {
 
     var candlestickData = ExampleCandlestickData.getCandlestickData();
 
-    List<BarChartData> dataList = [];
+    List<BarChartData?> dataList = [];
     for (int i = 0; i < _volume.length; ++i) {
       var data = KlineCollectionUtil.getByIndex(candlestickData.data, i);
       Color color = (data?.close ?? 0) < (data?.open ?? 0)
@@ -2436,7 +2436,7 @@ class ExampleVolData {
           BarChartData(value: _volume[i] ?? 0, color: color, isFill: isFill));
     }
 
-    return BarChartVo(name: 'VOLUME', data: dataList.toList());
+    return BarChartVo(name: 'VOLUME', data: dataList);
   }
 
   static BarChartVo barChartDataLastN(int lastN) {
