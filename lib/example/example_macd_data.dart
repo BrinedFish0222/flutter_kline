@@ -2417,10 +2417,15 @@ class ExampleMacdData {
   static List<BaseChartVo> get macd {
     List<BaseChartVo> result = [];
     List<BarChartData?> barChartDataList = _macd
-        .map((e) => BarChartData(
-            value: e ?? 0,
-            isFill: true,
-            color: e == null || e > 0 ? KlineConfig.green : KlineConfig.red))
+        .map(
+          (e) => e == null
+              ? null
+              : BarChartData(
+                  value: e,
+                  isFill: true,
+                  color: e > 0 ? KlineConfig.green : KlineConfig.red,
+                ),
+        )
         .toList();
     BarChartVo barChartVo =
         BarChartVo(data: barChartDataList, name: 'MACD', barWidth: 2);

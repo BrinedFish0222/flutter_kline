@@ -71,23 +71,6 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
   }
 
   @override
-  BaseChartVo subData({required int start, int? end}) {
-    return BarChartVo(
-      id: id,
-      name: name,
-      barWidth: barWidth,
-      maxValue: maxValue,
-      minValue: minValue,
-      data: KlineCollectionUtil.sublist(
-            list: data,
-            start: start,
-            end: end,
-          ) ??
-          [],
-    );
-  }
-
-  @override
   int get dataLength => data.length;
 
   @override
