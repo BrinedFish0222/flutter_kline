@@ -1,4 +1,3 @@
-import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
@@ -7,8 +6,6 @@ import '../common/pair.dart';
 
 /// 蜡烛图数据vo
 class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
-  Pair<double, double>? _maxMinData;
-
   CandlestickChartVo({
     super.id,
     super.name,
@@ -26,19 +23,14 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
       name: name,
       maxValue: maxValue,
       minValue: minValue,
-      data: KlineCollectionUtil.sublist(list: data, start: 0) ?? [],
+      data: data.isEmpty ? [] : data.sublist(0),
     );
   }
 
   @override
   Pair<double, double> getMaxMinData() {
-    if (_maxMinData != null) {
-      return _maxMinData!;
-    }
-
     if (minValue != null && maxValue != null) {
-      _maxMinData = Pair(left: maxValue!, right: minValue!);
-      return _maxMinData!;
+      return Pair(left: maxValue!, right: minValue!);
     }
 
     var pairList = data
@@ -46,29 +38,18 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
         .map((e) => KlineNumUtil.maxMinValueDouble(
             [e?.open, e?.close, e?.high, e?.low]))
         .toList();
-    _maxMinData = Pair.getMaxMinValue(pairList);
-    _maxMinData?.right = minValue ?? _maxMinData!.right;
-    _maxMinData?.left = maxValue ?? _maxMinData!.left;
 
-    return _maxMinData!;
+    Pair<double, double> maxMinData = Pair.getMaxMinValue(pairList);
+    maxMinData.right = minValue ?? maxMinData.right;
+    maxMinData.left = maxValue ?? maxMinData.left;
+
+    return maxMinData;
   }
 
   @override
   List<ChartShowDataItemVo?>? getSelectedShowData() {
     // 蜡烛图一点要显示四条数据，不适合此方法。
     return [];
-  }
-
-  @override
-  BaseChartVo subData({required int start, int? end}) {
-    return CandlestickChartVo(
-      id: id,
-      name: name,
-      maxValue: maxValue,
-      minValue: minValue,
-      data:
-          KlineCollectionUtil.sublist(list: data, start: start, end: end) ?? [],
-    );
   }
 
   @override

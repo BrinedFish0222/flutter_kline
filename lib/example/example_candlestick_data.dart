@@ -3,7 +3,7 @@ import 'package:flutter_kline/utils/kline_util.dart';
 import '../vo/candlestick_chart_vo.dart';
 
 class ExampleCandlestickData {
-  static const List<List<double>> originData = [
+  static const List<List<double>?> originData = [
     [
       20200508,
       0,
@@ -3621,7 +3621,11 @@ class ExampleCandlestickData {
       return _candlestickData!;
     }
 
-    var dataList = originData.map((e) {
+    List<CandlestickChartData?> dataList = originData.map((e) {
+      if (e == null) {
+        return null;
+      }
+
       return CandlestickChartData(
           dateTime: KlineUtil.parseIntDateToDateTime(e[0].toInt()),
           open: e[2],

@@ -23,7 +23,7 @@ class KChartWidget extends StatefulWidget {
     required this.size,
     required this.source,
     this.subChartMaskList,
-    this.showDataNum = 60,
+    this.showDataNum = KlineConfig.showDataDefaultLength,
     this.margin,
     required this.onTapIndicator,
     this.dataGapRatio = 3,

@@ -88,6 +88,11 @@ abstract class BaseChartVo<T extends BaseChartData> {
   static Pair<double, double> maxMinValue(List<BaseChartVo> dataList) {
     var hasBarChart = dataList.any((element) => element is BarChartVo);
 
+    dataList.map((e) {
+      var maxMinData = e.getMaxMinData();
+      return maxMinData;
+    }).toList();
+
     var result =
         Pair.getMaxMinValue(dataList.map((e) => e.getMaxMinData()).toList());
     if (hasBarChart && result.right > 0) {
