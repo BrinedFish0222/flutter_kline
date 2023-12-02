@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/minute_chart_widget.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
@@ -19,13 +20,10 @@ class KMinuteChartWidget extends StatefulWidget {
   const KMinuteChartWidget({
     super.key,
     required this.size,
-    required this.minuteChartData,
-    this.minuteChartSubjoinData,
+    required this.source,
     this.minuteChartDataAddStream,
     required this.middleNum,
     this.differenceNumbers,
-    this.dataNum = KlineConfig.minuteDataNum,
-    required this.subChartData,
     this.subChartMaskList,
     this.subChartRatio = 0.5,
     required this.onTapIndicator,
@@ -34,11 +32,8 @@ class KMinuteChartWidget extends StatefulWidget {
 
   final Size size;
 
-  /// 分时数据
-  final LineChartVo minuteChartData;
-
-  /// 分时图副数据
-  final List<BaseChartVo>? minuteChartSubjoinData;
+  /// 数据源
+  final KChartDataSource source;
 
   /// [minuteChartData] 追加数据流
   final StreamController<LineChartData>? minuteChartDataAddStream;
@@ -49,12 +44,6 @@ class KMinuteChartWidget extends StatefulWidget {
   /// 额外增加的差值：这些数据会加入和 [middleNum] 进行差值比较
   /// 常设值：最高价、最低价
   final List<double>? differenceNumbers;
-
-  /// 数据点，一天默认有240个时间点
-  final int dataNum;
-
-  /// 副图数据
-  final List<List<BaseChartVo>> subChartData;
 
   /// 副图遮罩
   final List<MaskLayer?>? subChartMaskList;
@@ -95,8 +84,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   bool _isOnHorizontalDragStart = true;
 
-  final List<List<BaseChartVo>> _showSubChartData = [];
-
   // 选中的折线数据
   final StreamController<MainChartSelectedDataVo> _selectedLineChartDataStream =
       StreamController();
@@ -114,9 +101,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   void initState() {
-    _minuteChartData = widget.minuteChartData.copy() as LineChartVo;
+    _minuteChartData =
+        widget.source.showData.mainChartData.first as LineChartVo;
     _initSubChartMaskList();
-    _initSubChartData();
     _initCrossCurveStream();
     _initSelectedIndexStream();
 
@@ -138,32 +125,31 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     });
   }
 
-  void _initSubChartData() {
-    for (var subData in widget.subChartData) {
-      var showDataList =
-          subData.map((e) => e.subData(start: 0, end: widget.dataNum)).toList();
-
-      _showSubChartData.add(showDataList);
-    }
-  }
-
   /// 初始化副图遮罩列表
   void _initSubChartMaskList() {
     if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
       _subChartMaskList = widget.subChartMaskList!;
     }
 
-    _subChartMaskList.length = widget.subChartData.length;
+    _subChartMaskList.length = _showDataNum;
   }
+
+  int get _showDataNum => widget.source.showDataNum;
+
+  List<List<BaseChartVo>> get _showSubChartData =>
+      widget.source.showData.subChartData;
 
   /// 初始化十字线 StreamController
   void _initCrossCurveStream() {
     _crossCurveStreamList = [];
     _crossCurveStreamList.add(StreamController());
-    for (int i = 0; i < widget.subChartData.length; ++i) {
+    for (int i = 0; i < _subChartData.length; ++i) {
       _crossCurveStreamList.add(StreamController());
     }
   }
+
+  List<List<BaseChartVo<BaseChartData>>> get _subChartData =>
+      widget.source.data.subChartData;
 
   @override
   void dispose() {
@@ -203,7 +189,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                             size: _mainChartSize,
                             minuteChartData: _minuteChartData,
                             minuteChartSubjoinData:
-                                widget.minuteChartSubjoinData,
+                                widget.source.showData.mainChartData.sublist(1),
                             minuteChartDataAddStream:
                                 widget.minuteChartDataAddStream,
                             middleNum: widget.middleNum,
@@ -212,7 +198,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                             pointGap: _pointGap,
                             crossCurveStream: _crossCurveStreamList[0],
                             selectedChartDataIndexStream: _selectedIndexStream,
-                            dataNum: widget.dataNum,
+                            dataNum: _showDataNum,
                             onTapIndicator: () {
                               widget.onTapIndicator(0);
                             },
@@ -272,11 +258,11 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
         totalHeight: widget.size.height,
         subChartRatio: widget.subChartRatio,
-        subChartNum: widget.subChartData.length);
+        subChartNum: _subChartData.length);
     _mainChartSize = Size(width, heightPair.left);
     _subChartSize = Size(width, heightPair.right);
 
-    _pointWidth = width / widget.dataNum;
+    _pointWidth = width / _showDataNum;
     _pointGap = 0;
   }
 

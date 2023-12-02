@@ -23,13 +23,14 @@ class ExampleDayWidget extends StatefulWidget {
 }
 
 class _ExampleDayWidgetState extends State<ExampleDayWidget> {
-  late KChartDataSource source;
+  late KChartDataSource _source;
 
   @override
   void initState() {
+    KlineUtil.logd('ExampleDayWidget initState ...');
     var candlestickData = ExampleCandlestickData.getCandlestickData();
 
-    source = KChartDayDataSource(
+    _source = KChartDayDataSource(
         data: KChartDataVo(mainChartData: [
       candlestickData,
       ...ExampleLineData.getLineChartMA13(),
@@ -52,7 +53,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
     ]));
 
     Future.delayed(const Duration(seconds: 2), () {
-      source.updateData(
+      _source.updateData(
         mainChartData: [
           CandlestickChartVo(
             data: [
@@ -65,12 +66,18 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
         isAddMode: true,
         isEnd: true,
       );
-      source.resetShowData(startIndex: source.showDataStartIndex + 2);
+      _source.resetShowData(startIndex: _source.showDataStartIndex + 2);
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      source.notifyListeners();
+      _source.notifyListeners();
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _source.dispose();
+    super.dispose();
   }
 
   @override
@@ -89,7 +96,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
           KChartWidget(
             showDataNum: 30,
             size: size,
-            source: source,
+            source: _source,
             realTimePrice: 11.56,
             onTapIndicator: (index) {
               KlineUtil.showToast(context: context, text: '点击指标索引：$index');
@@ -102,10 +109,12 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
             ], */
             overlayEntryLocationKey: widget.overlayEntryLocationKey,
             leftmost: () {
-              KlineUtil.showToast(context: context, text: '移动到最左边');
+              KlineUtil.logd('移动到最左边');
+              // KlineUtil.showToast(context: context, text: '移动到最左边');
             },
             rightmost: () {
-              KlineUtil.showToast(context: context, text: '移动到最右边');
+              KlineUtil.logd('移动到最右边');
+              // KlineUtil.showToast(context: context, text: '移动到最右边');
             },
           ),
           ...List.generate(

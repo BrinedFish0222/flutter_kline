@@ -2445,4 +2445,40 @@ class ExampleMacdData {
 
     return result;
   }
+
+  static List<BaseChartVo> get macdMinute {
+    List<BaseChartVo> result = [];
+    List<BarChartData?> barChartDataList = _macd
+        .map(
+          (e) => e == null
+              ? null
+              : BarChartData(
+                  value: e,
+                  isFill: true,
+                  color: e > 0 ? KlineConfig.green : KlineConfig.red,
+                ),
+        )
+        .toList();
+    BarChartVo barChartVo =
+        BarChartVo(data: barChartDataList, name: 'MACD', barWidth: 2);
+    result.add(barChartVo);
+
+    var dea = LineChartVo(
+        name: 'DEA',
+        color: KlineConfig.kLineColors[0],
+        data: _dea.map((e) => LineChartData(value: e)).toList());
+    result.add(dea);
+
+    var dif = LineChartVo(
+        name: 'DIF',
+        color: KlineConfig.kLineColors[1],
+        data: _dif.map((e) => LineChartData(value: e)).toList());
+    result.add(dif);
+
+    for (var element in result) {
+      element.data.length = 240;
+    }
+
+    return result;
+  }
 }

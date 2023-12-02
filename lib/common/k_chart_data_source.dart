@@ -29,6 +29,8 @@ abstract class KChartDataSource extends ChangeNotifier {
   /// 显示数据的开始索引
   int showDataStartIndex = 0;
 
+  int get showDataNum => _showDataNum;
+
   /// 重置显示的数据。
   /// 自动适配
   void resetShowData({int? startIndex}) {

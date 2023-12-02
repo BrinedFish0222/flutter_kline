@@ -692,7 +692,25 @@ class ExampleMinuteData {
           name: 'A1',
           data: _a1.map((e) => LineChartData(value: e)).toList(),
           color: KlineConfig.kLineColors[i + 1],
-          gradient: GradientChartConstants.formGradient(color: KlineConfig.kLineColors[i + 1]),
+          gradient: GradientChartConstants.formGradient(
+              color: KlineConfig.kLineColors[i + 1]),
+        ),
+      );
+    }
+    return result;
+  }
+
+  static List<BaseChartVo> subDataMinute() {
+    List<BaseChartVo> result = [];
+
+    for (int i = 0; i < 1; ++i) {
+      result.add(
+        LineChartVo(
+          name: 'A1',
+          data: _a1.map((e) => LineChartData(value: e)).toList()..length = 240,
+          color: KlineConfig.kLineColors[i + 1],
+          gradient: GradientChartConstants.formGradient(
+              color: KlineConfig.kLineColors[i + 1]),
         ),
       );
     }

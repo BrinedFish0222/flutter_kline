@@ -820,4 +820,19 @@ class ExampleRmoData {
 
     return BarChartVo(name: 'RMO', data: dataList);
   }
+
+  static BarChartVo get barChartDataMinute {
+    List<BarChartData?> dataList = [];
+    for (int i = 0; i < _dataList.length; ++i) {
+      Color color = _dataList[i] == null || _dataList[i]! < 0
+          ? KlineConfig.green
+          : KlineConfig.red;
+      bool isFill = true;
+      dataList.add(
+          BarChartData(value: _dataList[i] ?? 0, color: color, isFill: isFill));
+    }
+
+    dataList.length = KlineConfig.minuteDataNum;
+    return BarChartVo(name: 'RMO', data: dataList);
+  }
 }

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:example_network/main.dart';
 import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/k_chart_data_source.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/example/example_macd_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
@@ -21,6 +23,7 @@ class ExampleMinuteNetworkWidget extends StatefulWidget {
 
 class _ExampleMinuteNetworkWidgetState
     extends State<ExampleMinuteNetworkWidget> {
+  late KChartDataSource _source;
   final LineChartVo _vo = LineChartVo(data: []);
 
   final StreamController<LineChartData> _minuteChartDataAddStream =
@@ -28,6 +31,13 @@ class _ExampleMinuteNetworkWidgetState
 
   @override
   void initState() {
+    _source = KChartMinuteDataSource(
+        data: KChartDataVo(mainChartData: [
+      _vo
+    ], subChartData: [
+      [ExampleRmoData.barChartDataMinute..barWidth = 4],
+      ExampleMacdData.macdMinute,
+    ]));
     // 监听websocket数据
     webSocketChannel.stream.listen((data) {
       if (data == null) {
@@ -55,19 +65,28 @@ class _ExampleMinuteNetworkWidgetState
     return KMinuteChartWidget(
       size: Size(MediaQuery.of(context).size.width - 20,
           MediaQuery.of(context).size.height * 0.6),
-      minuteChartData: _vo,
+      source: _source,
       minuteChartDataAddStream: _minuteChartDataAddStream,
       // minuteChartSubjoinData: ExampleMinuteData.subData(),
       middleNum: 11.39,
       differenceNumbers: const [11.42, 11.36],
-      subChartData: [
-        [ExampleRmoData.barChartData..barWidth = 4],
-        ExampleMacdData.macd,
-      ],
       onTapIndicator: (int index) {
         KlineUtil.showToast(context: context, text: '点击指标索引：$index');
       },
       overlayEntryLocationKey: widget.candlestickOverlayEntryLocationKey,
     );
   }
+}
+
+class KChartMinuteDataSource extends KChartDataSource {
+  KChartMinuteDataSource({
+    required super.data,
+    super.showDataNum = KlineConfig.minuteDataNum,
+  });
+
+  @override
+  void leftmost() {}
+
+  @override
+  void rightmost() {}
 }

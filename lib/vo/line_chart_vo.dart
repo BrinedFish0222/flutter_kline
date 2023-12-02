@@ -39,6 +39,7 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
       data: newDataList,
       minValue: minValue,
       maxValue: maxValue,
+      gradient: gradient,
     );
   }
 
