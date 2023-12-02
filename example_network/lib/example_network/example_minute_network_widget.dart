@@ -37,7 +37,7 @@ class _ExampleMinuteNetworkWidgetState
       ResponseResult responseResult = responseResultFromJson(data);
       LineChartData? lineChartData = responseResult.parseMinuteData();
       if (lineChartData != null) {
-        debugPrint("分时图数据增加, 数据长度：$lineChartData");
+        KlineUtil.logd("分时图数据增加, 数据长度：$lineChartData");
         _minuteChartDataAddStream.add(lineChartData);
       }
     });

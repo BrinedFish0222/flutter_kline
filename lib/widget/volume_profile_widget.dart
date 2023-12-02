@@ -114,6 +114,6 @@ class VolumeProfileWidget extends StatelessWidget {
       dataList.add(VolumeProfileVo(price: i));
     }
 
-    debugPrint("volume profile fill dataList length: ${dataList.length}");
+    KlineUtil.logd("volume profile fill dataList length: ${dataList.length}");
   }
 }

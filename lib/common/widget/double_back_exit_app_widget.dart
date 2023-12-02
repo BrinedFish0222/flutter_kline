@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 
 class DoubleBackExitAppWidget extends StatefulWidget {
   const DoubleBackExitAppWidget({super.key, required this.child});
@@ -17,7 +18,7 @@ class _DoubleBackExitAppWidgetState extends State<DoubleBackExitAppWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        debugPrint("退出app");
+        KlineUtil.logd("退出app");
         if (_lastPressedAt == null ||
             DateTime.now().difference(_lastPressedAt!) >
                 const Duration(seconds: 2)) {

@@ -48,7 +48,7 @@ class ChartRenderer extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    debugPrint("KChartRenderer paint run ...");
+    KlineUtil.logd("KChartRenderer paint run ...");
 
     Size marginSize =
         margin == null ? size : Size(size.width - margin!.right, size.height);

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/widget/volume_profile_widget.dart';
 
 import '../common/pair.dart';
@@ -59,7 +60,7 @@ class _ExampleVolumeProfileWidgetState extends State<ExampleVolumeProfileWidget>
           StreamBuilder<int>(
             stream: _selectedChartDataIndexStream.stream,
             builder: (context, snapshot) {
-              debugPrint("volume profile cross curve selected data: ${snapshot.data}, dataList length: ${dataList.length}");
+              KlineUtil.logd("volume profile cross curve selected data: ${snapshot.data}, dataList length: ${dataList.length}");
               int idx = snapshot.data == null || snapshot.data! < 0 ? 0 : snapshot.data!;
               idx = idx > dataList.length - 1 ? dataList.length - 1 : idx;
 

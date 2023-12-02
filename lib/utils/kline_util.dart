@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
@@ -7,7 +8,10 @@ import '../vo/candlestick_chart_vo.dart';
 
 class KlineUtil {
   static void logd(String text) {
-    debugPrint(text);
+    if (kReleaseMode) {
+      return;
+    }
+    KlineUtil.logd(text);
   }
 
   /// 转换数据为图数据。

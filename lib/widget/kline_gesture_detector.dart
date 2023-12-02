@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../common/pair.dart';
 import '../vo/pointer_info.dart';
@@ -152,7 +153,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           if (_isDoublePointer()) {
             return;
           }
-          debugPrint("单指水平移动");
+          KlineUtil.logd("单指水平移动");
           if (widget.onHorizontalDragUpdate != null) {
             widget.onHorizontalDragUpdate!(details);
           }
@@ -171,10 +172,10 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           var delta = details.delta;
 
           if (delta.dy < 0) {
-            debugPrint("单指放大");
+            KlineUtil.logd("单指放大");
             widget.onZoomIn();
           } else {
-            debugPrint("单指缩小");
+            KlineUtil.logd("单指缩小");
             widget.onZoomOut();
           }
         },

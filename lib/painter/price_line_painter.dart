@@ -16,7 +16,7 @@ class PriceLinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    debugPrint("PriceLinePainter paint");
+    KlineUtil.logd("PriceLinePainter paint");
     // 超出范围，直接结束
     if (price > maxMinValue.left || price < maxMinValue.right) {
       return;

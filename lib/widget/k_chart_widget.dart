@@ -237,7 +237,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   void _onTap(PointerInfo pointerInfo) {
-    debugPrint("k_chart_widget _onTap");
+    KlineUtil.logd("k_chart_widget _onTap");
     // 取消选中的十字线
     if (_cancelCrossCurve()) {
       return;
@@ -249,7 +249,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   void _onHorizontalDragStart(details) {
-    debugPrint("GestureDetector onHorizontalDragStart");
+    KlineUtil.logd("GestureDetector onHorizontalDragStart");
     _sameTimeLastHorizontalDragX = details.localPosition.dx;
     _isOnHorizontalDragStart = true;
   }
@@ -361,7 +361,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         .clamp(KlineConfig.showDataMinLength, KlineConfig.showDataMaxLength));
     int startIndex =
         (endIndex - _showDataNum).clamp(0, widget.source.dataMaxIndex);
-    debugPrint("最后的数据索引： _onZoom to _resetShowData");
+    KlineUtil.logd("最后的数据索引： _onZoom to _resetShowData");
     widget.source.resetShowData(startIndex: startIndex);
     setState(() {});
   }
@@ -406,7 +406,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 长按移动事件
   _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
-    debugPrint(
+    KlineUtil.logd(
         "_onLongPressMoveUpdate, dx: ${details.localPosition.dx}, dy ${details.localPosition.dy}");
 
     _resetCrossCurve(Pair(
