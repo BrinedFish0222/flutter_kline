@@ -11,7 +11,7 @@ class KlineUtil {
     if (kReleaseMode) {
       return;
     }
-    KlineUtil.logd(text);
+    debugPrint(text);
   }
 
   /// 转换数据为图数据。
