@@ -40,7 +40,9 @@ class _ExampleMinuteNetworkWidgetState
       }
 
       ResponseResult responseResult = responseResultFromJson(data);
-      LineChartData? lineChartData = responseResult.parseMinuteData();
+
+      /// 分时图单根数据更新
+      /* LineChartData? lineChartData = responseResult.parseMinuteData();
       if (lineChartData != null) {
         KlineUtil.logd("分时图数据增加, 数据长度：$lineChartData");
         _source.updateData(
@@ -49,6 +51,21 @@ class _ExampleMinuteNetworkWidgetState
           ],
           subChartData: [],
           isAddMode: true,
+          isEnd: true,
+        );
+        _source.resetShowData(startIndex: 0);
+      } */
+
+      /// 分时图全量数据更新
+      var lineChartDataList = responseResult.parseMinuteAllData();
+      if (lineChartDataList?.isNotEmpty ?? false) {
+        _source.clearMainChartData();
+        _source.updateData(
+          mainChartData: [
+            LineChartVo(data: lineChartDataList!)
+          ],
+          subChartData: [],
+          isAddMode: false,
           isEnd: true,
         );
         _source.resetShowData(startIndex: 0);

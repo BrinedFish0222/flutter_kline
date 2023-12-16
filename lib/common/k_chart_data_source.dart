@@ -31,6 +31,24 @@ abstract class KChartDataSource extends ChangeNotifier {
 
   int get showDataNum => _showDataNum;
 
+  /// 清除数据 - 全部
+  void clearChartData() {
+    clearMainChartData();
+    clearSubChartData();
+  }
+
+  /// 清除数据 - 主图
+  void clearMainChartData() {
+    data.clearMainChartData();
+    showData.clearMainChartData();
+  }
+
+  /// 清除数据 - 副图
+  void clearSubChartData() {
+    data.clearSubChartData();
+    showData.clearSubChartData();
+  }
+
   /// 重置显示的数据。
   /// 自动适配
   void resetShowData({int? startIndex}) {
@@ -190,4 +208,24 @@ class KChartDataVo {
     required this.mainChartData,
     required this.subChartData,
   });
+
+  /// 清理数据
+  void clearChartData() {
+    clearMainChartData();
+    clearSubChartData();
+  }
+
+  void clearMainChartData() {
+    for (BaseChartVo<BaseChartData> mainChart in mainChartData) {
+      mainChart.data.clear();
+    }
+  }
+
+  void clearSubChartData() {
+    for (List<BaseChartVo<BaseChartData>> subCharts in subChartData) {
+      for (BaseChartVo<BaseChartData> subChart in subCharts) {
+        subChart.data.clear();
+      }
+    }
+  }
 }

@@ -31,7 +31,26 @@ class ResponseResult {
     }
 
     return LineChartData(
-        dateTime: KlineDateUtil.parseIntTime((data[0] as double).toInt()), value: data[1]);
+        dateTime: KlineDateUtil.parseIntTime((data[0] as double).toInt()),
+        value: data[1]);
+  }
+
+  List<LineChartData>? parseMinuteAllData() {
+    if (type != 'minuteAll') {
+      return null;
+    }
+
+    List<LineChartData> result = [];
+    var dataList = data as List;
+    for (var data in dataList) {
+      result.add(LineChartData(
+          id: KlineDateUtil.parseIntTime((data[0] as double).toInt())
+              .toString(),
+          dateTime: KlineDateUtil.parseIntTime((data[0] as double).toInt()),
+          value: data[1]));
+    }
+
+    return result;
   }
 
   ResponseResult copyWith({
