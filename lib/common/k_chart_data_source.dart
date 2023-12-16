@@ -61,6 +61,8 @@ abstract class KChartDataSource extends ChangeNotifier {
         showData.subChartData.add(newDataList);
       }
     }
+
+    notifyListeners();
   }
 
   /// 数据最大长度

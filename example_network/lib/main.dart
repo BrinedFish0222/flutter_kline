@@ -1,9 +1,12 @@
 import 'package:example_network/example_network/example_minute_network_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+const String ip = '192.168.31.208:8080';
 
 late WebSocketChannel webSocketChannel;
 void main() {
@@ -11,7 +14,7 @@ void main() {
   ExampleCandlestickData.getCandlestickData();
 
   webSocketChannel = WebSocketChannel.connect(
-    Uri.parse("ws://192.168.137.1:8080/websocket/123"),
+    Uri.parse("ws://$ip/websocket/123"),
   );
 
   // 设置应用程序的方向为竖屏（只允许竖屏显示）
@@ -72,16 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ExampleMinuteNetworkWidget(
                       candlestickOverlayEntryLocationKey: _globalKey,
                     ),
-                    ...List.generate(
-                        5,
-                        (index) => Padding(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Container(
-                                color:
-                                    index % 2 == 0 ? Colors.red : Colors.green,
-                                height: 100,
-                              ),
-                            )).toList(),
+                    const ColorBlockWidget(),
                   ],
                 ),
               ),

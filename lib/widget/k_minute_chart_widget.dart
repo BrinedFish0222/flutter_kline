@@ -21,7 +21,6 @@ class KMinuteChartWidget extends StatefulWidget {
     super.key,
     required this.size,
     required this.source,
-    this.minuteChartDataAddStream,
     required this.middleNum,
     this.differenceNumbers,
     this.subChartMaskList,
@@ -34,9 +33,6 @@ class KMinuteChartWidget extends StatefulWidget {
 
   /// 数据源
   final KChartDataSource source;
-
-  /// [minuteChartData] 追加数据流
-  final StreamController<LineChartData>? minuteChartDataAddStream;
 
   /// 中间值
   final double middleNum;
@@ -94,15 +90,11 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   /// 副图遮罩
   List<MaskLayer?> _subChartMaskList = [];
 
-  late LineChartVo _minuteChartData;
-
   /// 点击全局坐标
   Offset? onTapGlobalPointer;
 
   @override
   void initState() {
-    _minuteChartData =
-        widget.source.showData.mainChartData.first as LineChartVo;
     _initSubChartMaskList();
     _initCrossCurveStream();
     _initSelectedIndexStream();
@@ -136,6 +128,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   int get _showDataNum => widget.source.showDataNum;
 
+  LineChartVo get _minuteChartData =>
+      widget.source.showData.mainChartData.first as LineChartVo;
+
   List<List<BaseChartVo>> get _showSubChartData =>
       widget.source.showData.subChartData;
 
@@ -167,67 +162,74 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
         _computeLayout(constraints);
         return Stack(
           children: [
-            Column(
-              children: [
-                Listener(
-                  // 记录点击的位置
-                  onPointerDown: (event) => onTapGlobalPointer =
-                      Offset(event.position.dx, event.position.dy),
-                  child: ValueListenableBuilder(
-                      valueListenable: _isShowCrossCurve,
-                      builder: (context, data, _) {
-                        return GestureDetector(
-                          onTap: _onTap,
-                          onHorizontalDragStart:
-                              data ? _onHorizontalDragStart : null,
-                          onHorizontalDragUpdate:
-                              data ? _onHorizontalDragUpdate : null,
-                          onHorizontalDragEnd: data
-                              ? (details) => _isOnHorizontalDragStart = false
-                              : null,
-                          child: MinuteChartWidget(
-                            size: _mainChartSize,
-                            minuteChartData: _minuteChartData,
-                            minuteChartSubjoinData:
-                                widget.source.showData.mainChartData.sublist(1),
-                            minuteChartDataAddStream:
-                                widget.minuteChartDataAddStream,
-                            middleNum: widget.middleNum,
-                            differenceNumbers: widget.differenceNumbers,
-                            pointWidth: _pointWidth,
-                            pointGap: _pointGap,
-                            crossCurveStream: _crossCurveStreamList[0],
-                            selectedChartDataIndexStream: _selectedIndexStream,
-                            dataNum: _showDataNum,
-                            onTapIndicator: () {
-                              widget.onTapIndicator(0);
-                            },
-                          ),
-                        );
-                      }),
-                ),
-                for (int i = 0; i < _showSubChartData.length; ++i)
-                  SizedBox.fromSize(
-                    size: _subChartSize,
-                    child: GestureDetector(
-                      onTapDown: (details) => _cancelCrossCurve(),
-                      child: SubChartWidget(
-                        size: _subChartSize,
-                        name: _showSubChartData[i].first.name ?? '',
-                        chartData: _showSubChartData[i],
-                        pointWidth: _pointWidth,
-                        pointGap: _pointGap,
-                        maskLayer: _subChartMaskList[i],
-                        crossCurveStream: _crossCurveStreamList[i + 1],
-                        selectedChartDataIndexStream: _selectedIndexStream,
-                        onTapIndicator: () {
-                          widget.onTapIndicator(i + 1);
-                        },
+            /// 数据源更新
+            ListenableBuilder(
+                listenable: widget.source,
+                builder: (context, _) {
+                  return Column(
+                    children: [
+                      Listener(
+                        // 记录点击的位置
+                        onPointerDown: (event) => onTapGlobalPointer =
+                            Offset(event.position.dx, event.position.dy),
+                        child: ValueListenableBuilder(
+                            valueListenable: _isShowCrossCurve,
+                            builder: (context, data, _) {
+                              return GestureDetector(
+                                onTap: _onTap,
+                                onHorizontalDragStart:
+                                    data ? _onHorizontalDragStart : null,
+                                onHorizontalDragUpdate:
+                                    data ? _onHorizontalDragUpdate : null,
+                                onHorizontalDragEnd: data
+                                    ? (details) =>
+                                        _isOnHorizontalDragStart = false
+                                    : null,
+                                child: MinuteChartWidget(
+                                  size: _mainChartSize,
+                                  minuteChartData: _minuteChartData,
+                                  minuteChartSubjoinData: widget
+                                      .source.showData.mainChartData
+                                      .sublist(1),
+                                  middleNum: widget.middleNum,
+                                  differenceNumbers: widget.differenceNumbers,
+                                  pointWidth: _pointWidth,
+                                  pointGap: _pointGap,
+                                  crossCurveStream: _crossCurveStreamList[0],
+                                  selectedChartDataIndexStream:
+                                      _selectedIndexStream,
+                                  dataNum: _showDataNum,
+                                  onTapIndicator: () {
+                                    widget.onTapIndicator(0);
+                                  },
+                                ),
+                              );
+                            }),
                       ),
-                    ),
-                  ),
-              ],
-            ),
+                      for (int i = 0; i < _showSubChartData.length; ++i)
+                        SizedBox.fromSize(
+                          size: _subChartSize,
+                          child: GestureDetector(
+                            onTapDown: (details) => _cancelCrossCurve(),
+                            child: SubChartWidget(
+                              size: _subChartSize,
+                              name: _showSubChartData[i].first.name ?? '',
+                              chartData: _showSubChartData[i],
+                              pointWidth: _pointWidth,
+                              pointGap: _pointGap,
+                              maskLayer: _subChartMaskList[i],
+                              crossCurveStream: _crossCurveStreamList[i + 1],
+                              selectedChartDataIndexStream:
+                                  _selectedIndexStream,
+                              onTapIndicator: () {
+                                widget.onTapIndicator(i + 1);
+                              },
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                }),
           ],
         );
       }),

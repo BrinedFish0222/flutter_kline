@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:example_network/main.dart';
 import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +24,6 @@ class _ExampleMinuteNetworkWidgetState
   late KChartDataSource _source;
   final LineChartVo _vo = LineChartVo(data: []);
 
-  final StreamController<LineChartData> _minuteChartDataAddStream =
-      StreamController();
-
   @override
   void initState() {
     _source = KChartMinuteDataSource(
@@ -48,7 +43,15 @@ class _ExampleMinuteNetworkWidgetState
       LineChartData? lineChartData = responseResult.parseMinuteData();
       if (lineChartData != null) {
         KlineUtil.logd("分时图数据增加, 数据长度：$lineChartData");
-        _minuteChartDataAddStream.add(lineChartData);
+        _source.updateData(
+          mainChartData: [
+            LineChartVo(data: [lineChartData])
+          ],
+          subChartData: [],
+          isAddMode: true,
+          isEnd: true,
+        );
+        _source.resetShowData(startIndex: 0);
       }
     });
     super.initState();
@@ -66,7 +69,6 @@ class _ExampleMinuteNetworkWidgetState
       size: Size(MediaQuery.of(context).size.width - 20,
           MediaQuery.of(context).size.height * 0.6),
       source: _source,
-      minuteChartDataAddStream: _minuteChartDataAddStream,
       // minuteChartSubjoinData: ExampleMinuteData.subData(),
       middleNum: 11.39,
       differenceNumbers: const [11.42, 11.36],
