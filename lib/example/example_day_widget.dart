@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/example/example_badge_data.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 
@@ -117,15 +118,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
               // KlineUtil.showToast(context: context, text: '移动到最右边');
             },
           ),
-          ...List.generate(
-              5,
-              (index) => Padding(
-                    padding: const EdgeInsets.only(top: 15),
-                    child: Container(
-                      color: index % 2 == 0 ? Colors.red : Colors.green,
-                      height: 100,
-                    ),
-                  )).toList(),
+          const ColorBlockWidget(),
         ],
       ),
     );

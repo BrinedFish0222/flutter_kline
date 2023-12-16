@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
+import 'package:flutter_kline/common/widget/color_block_widget.dart';
 
 import '../utils/kline_util.dart';
 import '../widget/k_minute_chart_widget.dart';
@@ -56,15 +57,8 @@ class _ExampleMinuteWidgetState extends State<ExampleMinuteWidget> {
               },
               overlayEntryLocationKey: widget.overlayEntryLocationKey,
             ),
-            ...List.generate(
-                5,
-                (index) => Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Container(
-                        color: index % 2 == 0 ? Colors.red : Colors.green,
-                        height: 100,
-                      ),
-                    )).toList(),
+
+            const ColorBlockWidget(),
           ],
         ),
       ),

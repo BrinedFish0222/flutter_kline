@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 创建 [size] 个颜色块
 class ColorBlockWidget extends StatelessWidget {
   const ColorBlockWidget({super.key, this.size = 5});
 
