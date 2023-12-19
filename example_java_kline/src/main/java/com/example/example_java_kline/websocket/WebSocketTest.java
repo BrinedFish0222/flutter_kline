@@ -110,7 +110,7 @@ public class WebSocketTest {
      */
     public static void sendMessage(Object data) {
         String dataJson = JSON.toJSONString(data);
-        System.out.println("发送数据：" + dataJson);
+        // System.out.println("发送数据：" + dataJson);
         for (Session session : CLIENTS.values()) {
             session.getAsyncRemote().sendText(dataJson);
         }
