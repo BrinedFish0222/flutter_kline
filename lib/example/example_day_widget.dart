@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/example/example_badge_data.dart';
-import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
@@ -53,25 +52,6 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       ],
     ]));
 
-    Future.delayed(const Duration(seconds: 2), () {
-      _source.updateData(
-        mainChartData: [
-          CandlestickChartVo(
-            data: [
-              candlestickData.data[candlestickData.data.length - 1],
-              candlestickData.data[candlestickData.data.length - 1],
-            ],
-          )
-        ],
-        subChartData: [],
-        isAddMode: true,
-        isEnd: true,
-      );
-      _source.resetShowData(startIndex: _source.showDataStartIndex + 2);
-      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      _source.notifyListeners();
-    });
-
     super.initState();
   }
 
@@ -109,13 +89,8 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
               // MaskLayer(percent: 0.8)
             ], */
             overlayEntryLocationKey: widget.overlayEntryLocationKey,
-            leftmost: () {
-              KlineUtil.logd('移动到最左边');
-              // KlineUtil.showToast(context: context, text: '移动到最左边');
-            },
-            rightmost: () {
-              KlineUtil.logd('移动到最右边');
-              // KlineUtil.showToast(context: context, text: '移动到最右边');
+            onHorizontalDragUpdate: (details, location) {
+              KlineUtil.logd('移动的位置：$location');
             },
           ),
           const ColorBlockWidget(),

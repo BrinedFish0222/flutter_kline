@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
+import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
@@ -30,8 +31,7 @@ class KChartWidget extends StatefulWidget {
     this.subChartRatio = 0.5,
     required this.overlayEntryLocationKey,
     this.realTimePrice,
-    this.leftmost,
-    this.rightmost,
+    this.onHorizontalDragUpdate,
   });
 
   final Size size;
@@ -62,11 +62,8 @@ class KChartWidget extends StatefulWidget {
   /// 实时价格
   final double? realTimePrice;
 
-  /// 最左边。当图滑动到最左边时触发。
-  final void Function()? leftmost;
-
-  /// 最右边。当图滑动到最右边时触发。
-  final void Function()? rightmost;
+  /// 图滑动时触发，提供图位置（最左、中、最右）
+  final void Function(DragUpdateDetails, ChartLocation)? onHorizontalDragUpdate;
 
   @override
   State<KChartWidget> createState() => _KChartWidgetState();
@@ -366,16 +363,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     setState(() {});
   }
 
-  /// 滑动到最右事件。
-  void _rightmostEvent() {
-    if (_showMainChartData.first.data.last != _mainChartData.first.data.last ||
-        widget.rightmost == null) {
-      return;
-    }
-
-    widget.rightmost!();
-  }
-
   List<BaseChartVo<BaseChartData>> get _mainChartData =>
       widget.source.data.mainChartData;
 
@@ -392,17 +379,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   set _showDataStartIndex(int index) =>
       widget.source.showDataStartIndex = index;
-
-  /// 滑动到最左或最右事件。优先右边。
-  void _leftmostEvent() {
-    if (_showMainChartData.first.data.first !=
-            _mainChartData.first.data.first ||
-        widget.rightmost == null) {
-      return;
-    }
-
-    widget.leftmost!();
-  }
 
   /// 长按移动事件
   _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
@@ -431,12 +407,8 @@ class _KChartWidgetState extends State<KChartWidget> {
       widget.source.resetShowData(startIndex: _showDataStartIndex - 1);
     }
 
-    // 最左、右的事件
-    if (details.isRightMove) {
-      _rightmostEvent();
-    } else {
-      _leftmostEvent();
-    }
+    // 图位置
+    _chartLocation(details);
 
     _sameTimeLastHorizontalDragX = dx;
     setState(() {});
@@ -463,5 +435,25 @@ class _KChartWidgetState extends State<KChartWidget> {
     for (var element in _crossCurveStreamList) {
       element.add(crossCurveXY ?? Pair(left: null, right: null));
     }
+  }
+
+  /// 图位置
+  void _chartLocation(DragUpdateDetails details) {
+    if (widget.onHorizontalDragUpdate == null) {
+      return;
+    }
+
+    ChartLocation chartLocation = ChartLocation.centre;
+    if (_showMainChartData.first.data.first ==
+        _mainChartData.first.data.first) {
+      // 最左
+      chartLocation = ChartLocation.leftmost;
+    } else if (_showMainChartData.first.data.last ==
+        _mainChartData.first.data.last) {
+      // 最右
+      chartLocation = ChartLocation.rightmost;
+    }
+
+    widget.onHorizontalDragUpdate!(details, chartLocation);
   }
 }
