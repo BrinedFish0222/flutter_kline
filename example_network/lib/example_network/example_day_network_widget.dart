@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/example/example_badge_data.dart';
 import 'package:flutter_kline/example/example_ess_data.dart';
+import 'package:flutter_kline/example/example_line_data.dart';
 import 'package:flutter_kline/example/example_macd_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/example/example_vol_data.dart';
@@ -35,8 +36,8 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
       data: KChartDataVo(
         mainChartData: [
           CandlestickChartVo(data: []),
-          // ...ExampleLineData.getLineChartMA13(),
-          // ExampleBadgeData.badgeChartVo,
+          ...ExampleLineData.getLineChartMA13(),
+          ExampleBadgeData.badgeChartVo,
         ],
         subChartData: [
           [
