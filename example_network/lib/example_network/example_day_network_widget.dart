@@ -64,7 +64,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
 
       ResponseResult responseResult = responseResultFromJson(data);
       // KlineUtil.logd('日K initState responseResult type：${responseResult.type}');
-      List<BaseChartVo> dataList = responseResult.parseDayAllData();
+      List<BaseChartVo> dataList = responseResult.parseDayData(type: 'daySingle');
       if (dataList.isEmpty) {
         return;
       }

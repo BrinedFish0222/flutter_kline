@@ -29,11 +29,18 @@ public class DayScheduleTask {
         if (singleIndex >= ExampleDayData.datatList.size()) {
             singleIndex = 0;
         }
+
+        List<List<String>> candlestickData = new ArrayList<>();
         List<String> candlestickDataList = ExampleDayData.datatList.get(singleIndex);
-        List<List<String>> dataList = new ArrayList<>();
-        dataList.add(candlestickDataList);
-        ResponseResult<List<List<String>>> responseResult = ResponseResult.success("daySingle", dataList);
-        System.out.println("日K数据 - 单：" + dataList);
+        candlestickData.add(candlestickDataList);
+
+        System.out.println("蜡烛数据 - 单根：" + candlestickData.size());
+
+        List<List<List<String>>> dataList = new ArrayList<>();
+        dataList.add(candlestickData);
+
+        ResponseResult<List<List<List<String>>>> responseResult = ResponseResult.success("daySingle",
+                dataList);
         WebSocketTest.sendMessage(responseResult);
         singleIndex += 1;
     }

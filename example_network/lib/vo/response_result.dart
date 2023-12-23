@@ -56,8 +56,10 @@ class ResponseResult {
     return result;
   }
 
-  List<BaseChartVo> parseDayAllData() {
-    if (type != 'dayAll') {
+  /// 解析日K数据
+  /// type daySingle dayAll
+  List<BaseChartVo> parseDayData({String type = 'dayAll'}) {
+    if (this.type != type) {
       return [];
     }
 
