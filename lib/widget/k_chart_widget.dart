@@ -201,13 +201,14 @@ class _KChartWidgetState extends State<KChartWidget> {
                         ),
                       ),
                       for (int i = 0; i < _showSubChartData.length; ++i)
-                        GestureDetector(
+                        if (_showSubChartData[i].isNotEmpty)
+                          GestureDetector(
                           onTapDown: (details) => _cancelCrossCurve(),
                           child: SizedBox.fromSize(
                             size: _subChartSize,
                             child: SubChartWidget(
                               size: _subChartSize,
-                              name: _showSubChartData[i].first.name ?? '',
+                              name: KlineCollectionUtil.first(_showSubChartData[i])?.name ?? '',
                               chartData: _showSubChartData[i],
                               pointWidth: _pointWidth,
                               pointGap: _pointGap,
