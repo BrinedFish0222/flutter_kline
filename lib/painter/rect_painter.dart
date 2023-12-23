@@ -71,12 +71,19 @@ class RectPainter extends CustomPainter {
     // 定义最大最小值，默认是最小是0，最大是1。
     double minValue = this.minValue ?? double.maxFinite;
     double maxValue = this.maxValue ?? -double.maxFinite;
-    if (maxValue == -double.maxFinite) {
-      maxValue = minValue == double.maxFinite ? 1 : minValue + 1;
+
+    if (maxValue == -double.maxFinite && minValue == double.maxFinite) {
+      maxValue = KlineConfig.defaultMaxMinValue.left;
+      minValue = KlineConfig.defaultMaxMinValue.right;
+    } else {
+      if (maxValue == -double.maxFinite) {
+        maxValue = minValue == double.maxFinite ? 1 : minValue + 1;
+      }
+      if (minValue == double.maxFinite) {
+        minValue = maxValue - 1;
+      }
     }
-    if (minValue == double.maxFinite) {
-      minValue = maxValue - 1;
-    }
+
 
     double value = (maxValue - minValue) / (transverseLineNum + 1);
 

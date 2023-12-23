@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/pair.dart';
 
 class KlineConfig {
   static const List<Color> kLineColors = [
@@ -45,4 +46,6 @@ class KlineConfig {
   /// 分时图一天数据点
   static const int minuteDataNum = 240;
 
+  /// 默认数据最大最小值
+  static final Pair<double, double> defaultMaxMinValue = Pair(left: 1, right: 0);
 }

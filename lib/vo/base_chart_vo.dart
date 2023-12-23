@@ -1,3 +1,4 @@
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
@@ -97,6 +98,10 @@ abstract class BaseChartVo<T extends BaseChartData> {
         Pair.getMaxMinValue(dataList.map((e) => e.getMaxMinData()).toList());
     if (hasBarChart && result.right > 0) {
       result.right = 0;
+    }
+
+    if (result.left == -double.maxFinite && result.right == double.maxFinite) {
+      result = KlineConfig.defaultMaxMinValue;
     }
 
     return result;
