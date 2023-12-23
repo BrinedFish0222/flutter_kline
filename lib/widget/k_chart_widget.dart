@@ -369,7 +369,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     KlineUtil.logd("最后的数据索引： _onZoom to _resetShowData");
     widget.source.showDataNum = _showDataNum;
     widget.source.resetShowData(startIndex: startIndex);
-    setState(() {});
+    widget.source.notifyListeners();
   }
 
   List<BaseChartVo<BaseChartData>> get _mainChartData =>
@@ -425,7 +425,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _chartLocation(details);
 
     _sameTimeLastHorizontalDragX = dx;
-    setState(() {});
+    widget.source.notifyListeners();
   }
 
   /// 取消十字线

@@ -73,7 +73,9 @@ class KChartDataSource extends ChangeNotifier {
     if (chartLocation == ChartLocation.rightmost) {
       KlineUtil.logd('KChartDataSource notifyListeners rightmost');
       showDataStartIndex = (dataMaxIndex - _showDataNum).clamp(0, dataMaxIndex);
+      resetShowData(startIndex: showDataStartIndex);
     }
+
     super.notifyListeners();
   }
 
@@ -124,7 +126,8 @@ class KChartDataSource extends ChangeNotifier {
       }
     }
 
-    notifyListeners();
+    // 不可设置，需要更新调用 [notifyListeners()]
+    // notifyListeners();
   }
 
   /// 数据最大长度
