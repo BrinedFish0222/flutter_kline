@@ -22,14 +22,15 @@ class _ExampleMinuteWidgetState extends State<ExampleMinuteWidget> {
 
   @override
   void initState() {
-    _source = KChartMinuteDataSource(
+    _source = KChartDataSource(
+        showDataNum: KlineConfig.minuteDataNum,
         data: KChartDataVo(mainChartData: [
-      ExampleMinuteData.lineData2,
-      ...ExampleMinuteData.subDataMinute()
-    ], subChartData: [
-      [ExampleRmoData.barChartDataMinute..barWidth = 4],
-      ExampleMacdData.macdMinute,
-    ]));
+          ExampleMinuteData.lineData2,
+          ...ExampleMinuteData.subDataMinute()
+        ], subChartData: [
+          [ExampleRmoData.barChartDataMinute..barWidth = 4],
+          ExampleMacdData.macdMinute,
+        ]));
     super.initState();
   }
 
@@ -64,17 +65,4 @@ class _ExampleMinuteWidgetState extends State<ExampleMinuteWidget> {
       ),
     );
   }
-}
-
-class KChartMinuteDataSource extends KChartDataSource {
-  KChartMinuteDataSource({
-    required super.data,
-    super.showDataNum = KlineConfig.minuteDataNum,
-  });
-
-  @override
-  void leftmost() {}
-
-  @override
-  void rightmost() {}
 }

@@ -7,6 +7,7 @@ import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/example/example_macd_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
+import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
@@ -29,13 +30,15 @@ class _ExampleMinuteNetworkWidgetState
 
   @override
   void initState() {
-    _source = KChartMinuteDataSource(
+    _source = KChartDataSource(
+        showDataNum: KlineConfig.minuteDataNum,
         data: KChartDataVo(mainChartData: [
-      _vo
-    ], subChartData: [
-      [ExampleRmoData.barChartDataMinute..barWidth = 4],
-      ExampleMacdData.macdMinute,
-    ]));
+          _vo,
+          ...ExampleMinuteData.subDataMinute()
+        ], subChartData: [
+          [ExampleRmoData.barChartDataMinute..barWidth = 4],
+          ExampleMacdData.macdMinute,
+        ]));
     // 监听websocket数据
     _streamSubscription = webSocketChannelStream.listen((data) {
       if (data == null) {
@@ -44,7 +47,7 @@ class _ExampleMinuteNetworkWidgetState
 
       ResponseResult responseResult = responseResultFromJson(data);
 
-      /// 分时图单根数据更新
+      /// 分时图单根数据更新 TODO 代码示例为旧版
       /* LineChartData? lineChartData = responseResult.parseMinuteData();
       if (lineChartData != null) {
         KlineUtil.logd("分时图数据增加, 数据长度：$lineChartData");
@@ -62,7 +65,6 @@ class _ExampleMinuteNetworkWidgetState
       /// 分时图全量数据更新
       var lineChartDataList = responseResult.parseMinuteAllData();
       if (lineChartDataList?.isNotEmpty ?? false) {
-        _source.clearMainChartData();
         _source.updateData(
           mainCharts: [
             LineChartVo(data: lineChartDataList!)
@@ -70,7 +72,7 @@ class _ExampleMinuteNetworkWidgetState
           subCharts: [],
           isEnd: true,
         );
-        _source.resetShowData(startIndex: 0);
+        _source.notifyListeners();
       }
     });
     super.initState();
@@ -78,7 +80,7 @@ class _ExampleMinuteNetworkWidgetState
 
   @override
   void dispose() {
-    // _streamSubscription.cancel();
+    _streamSubscription.cancel();
     super.dispose();
   }
 
@@ -97,17 +99,4 @@ class _ExampleMinuteNetworkWidgetState
       overlayEntryLocationKey: widget.overlayEntryLocationKey,
     );
   }
-}
-
-class KChartMinuteDataSource extends KChartDataSource {
-  KChartMinuteDataSource({
-    required super.data,
-    super.showDataNum = KlineConfig.minuteDataNum,
-  });
-
-  @override
-  void leftmost() {}
-
-  @override
-  void rightmost() {}
 }
