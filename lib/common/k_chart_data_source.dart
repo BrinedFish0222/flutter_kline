@@ -95,6 +95,11 @@ abstract class KChartDataSource extends ChangeNotifier {
 
   /// 数据最大索引位置
   int get dataMaxIndex {
+    int maxLength = dataMaxLength;
+    if (maxLength == 0) {
+      return 0;
+    }
+
     return dataMaxLength - 1;
   }
 

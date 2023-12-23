@@ -155,7 +155,7 @@ class _KChartWidgetState extends State<KChartWidget> {
             KlineUtil.logd("KChartWidget ValueListenableBuilder run ...");
             widget.source.resetShowData(startIndex: _showDataStartIndex);
             KlineUtil.logd(
-                "KChartWidget ValueListenableBuilder run; main data length ${widget.source.data.mainChartData.first.dataLength}:${widget.source.showData.mainChartData.first.dataLength}");
+                "KChartWidget ValueListenableBuilder run; main data length ${KlineCollectionUtil.first(widget.source.data.mainChartData)?.dataLength}:${KlineCollectionUtil.first(widget.source.showData.mainChartData)?.dataLength}");
             return LayoutBuilder(builder: (context, constraints) {
               _computeLayout(constraints);
               return Stack(
@@ -183,10 +183,11 @@ class _KChartWidgetState extends State<KChartWidget> {
                         child: MainChartWidget(
                           chartData: _showMainChartData,
                           size: _mainChartSize,
-                          infoBarName: _mainChartData
-                              .firstWhere(
-                                  (element) => element.isSelectedShowData())
-                              .name,
+                          infoBarName: KlineCollectionUtil.firstWhere(
+                                      _mainChartData,
+                                      (element) => element.isSelectedShowData())
+                                  ?.name ??
+                              '无名字',
                           margin: widget.margin,
                           pointWidth: _pointWidth,
                           pointGap: _pointGap,
