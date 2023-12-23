@@ -157,6 +157,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onLongPressStart: _onLongPressStart,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: LayoutBuilder(builder: (context, constraints) {
         _computeLayout(constraints);
@@ -377,5 +378,10 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     for (var element in _crossCurveStreamList) {
       element.add(crossCurveXY ?? Pair(left: null, right: null));
     }
+  }
+
+  void _onLongPressStart(LongPressStartDetails details) {
+    _resetCrossCurve(Pair(
+        left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 }

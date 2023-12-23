@@ -147,6 +147,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onLongPressStart: _onLongPressStart,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: ListenableBuilder(
           listenable: widget.source,
@@ -379,6 +380,11 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   set _showDataStartIndex(int index) =>
       widget.source.showDataStartIndex = index;
+
+  _onLongPressStart(LongPressStartDetails details) {
+    _resetCrossCurve(Pair(
+        left: details.globalPosition.dx, right: details.globalPosition.dy));
+  }
 
   /// 长按移动事件
   _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
