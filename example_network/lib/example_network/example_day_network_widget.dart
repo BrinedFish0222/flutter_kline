@@ -2,8 +2,14 @@ import 'package:example_network/main.dart';
 import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
+import 'package:flutter_kline/example/example_badge_data.dart';
+import 'package:flutter_kline/example/example_ess_data.dart';
+import 'package:flutter_kline/example/example_macd_data.dart';
+import 'package:flutter_kline/example/example_rmo_data.dart';
+import 'package:flutter_kline/example/example_vol_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
+import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
 
 /// 日K网络组件示例
@@ -27,8 +33,27 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
   void initState() {
     _source = KChartDataSource(
       data: KChartDataVo(
-        mainChartData: [],
-        subChartData: [],
+        mainChartData: [
+          CandlestickChartVo(data: []),
+          // ...ExampleLineData.getLineChartMA13(),
+          // ExampleBadgeData.badgeChartVo,
+        ],
+        subChartData: [
+          [
+            ExampleVolData.barChartData..minValue = 0,
+            ...ExampleVolData.lineChartData,
+            ExampleBadgeData.badgeChartVo,
+          ],
+          [ExampleRmoData.barChartData..barWidth = 4],
+          ExampleMacdData.macd,
+          [
+            ExampleEssData.barChartData
+              ..barWidth = 2
+              ..minValue = 0,
+            ExampleEssData.lineChartA,
+            ExampleEssData.lineChartB
+          ],
+        ],
       ),
     );
 
@@ -38,7 +63,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
       }
 
       ResponseResult responseResult = responseResultFromJson(data);
-      KlineUtil.logd('日K initState responseResult type：${responseResult.type}');
+      // KlineUtil.logd('日K initState responseResult type：${responseResult.type}');
       List<BaseChartVo> dataList = responseResult.parseDayAllData();
       if (dataList.isEmpty) {
         return;
@@ -55,7 +80,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
     return KChartWidget(
       size: Size(
         MediaQuery.of(context).size.width,
-        200,
+        MediaQuery.of(context).size.height * .6,
       ),
       source: _source,
       onTapIndicator: (val) {
