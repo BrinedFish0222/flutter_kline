@@ -68,8 +68,13 @@ class ResponseResult {
 
     var candlestickList = KlineCollectionUtil.first(dataList as List<dynamic>);
     if (candlestickList != null) {
-      List<CandlestickChartData> dataList = [];
+      List<CandlestickChartData?> dataList = [];
       for (var data in candlestickList) {
+        if (data is List? && (data?.isEmpty ?? true)) {
+          dataList.add(null);
+          continue;
+        }
+
         DateTime dateTime = KlineDateUtil.parseIntDateToDateTime(int.parse(data[0]));
         dataList.add(CandlestickChartData(
           id: data[0],
