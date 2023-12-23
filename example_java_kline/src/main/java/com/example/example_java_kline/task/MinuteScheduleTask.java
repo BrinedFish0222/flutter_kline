@@ -28,7 +28,8 @@ public class MinuteScheduleTask {
     /**
      * 分时 - 单根数据
      */
-    @Scheduled(fixedRate=300)
+    // TODO
+    // @Scheduled(fixedRate=300)
     private void minuteSingleTask() {
         // System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
         if (ExampleMinuteData.index >= ExampleMinuteData.lineData2.size()) {
@@ -52,7 +53,8 @@ public class MinuteScheduleTask {
     /**
      * 分时 - 全部数据
      */
-    @Scheduled(fixedRate = 300)
+    // TODO
+    // @Scheduled(fixedRate = 300)
     private void minuteAllTask() {
         // System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
         if (minuteAllIndex >= ExampleMinuteData.lineData2.size()) {

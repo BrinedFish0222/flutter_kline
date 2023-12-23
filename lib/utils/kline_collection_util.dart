@@ -105,3 +105,27 @@ class KlineCollectionUtil {
     return list?.first;
   }
 }
+
+extension ListExt on List {
+
+  int get maxIndex {
+    if (length == 0) {
+      return 0;
+    }
+
+    return length - 1;
+  }
+
+  /// 是否包含索引
+  bool hasIndex(int index) {
+    if (index < 0) {
+      return false;
+    }
+
+    if (length - 1 < index) {
+      return false;
+    }
+
+    return true;
+  }
+}

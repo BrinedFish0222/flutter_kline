@@ -24,6 +24,14 @@ class KlineDateUtil {
     return '${dateTime.hour}$spaceCharacter$minuteStr';
   }
 
+  static DateTime parseIntDateToDateTime(int intDate) {
+    var dateStr = intDate.toString();
+    int year = int.parse(dateStr.substring(0, 4));
+    int month = int.parse(dateStr.substring(4, 6));
+    int day = int.parse(dateStr.substring(6, 8));
+    return DateTime(year, month, day);
+  }
+
   static DateTime? parseIntTime(int time) {
     if (time < 0 || time > 2359) {
       return null;

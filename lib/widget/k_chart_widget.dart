@@ -62,6 +62,7 @@ class KChartWidget extends StatefulWidget {
   /// 实时价格
   final double? realTimePrice;
 
+  /// 不推荐使用，推荐使用 [source.leftmost()]、[source.rightmost()]、[source.centre()]
   /// 图滑动时触发，提供图位置（最左、中、最右）
   final void Function(DragUpdateDetails, ChartLocation)? onHorizontalDragUpdate;
 
@@ -187,7 +188,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                                       _mainChartData,
                                       (element) => element.isSelectedShowData())
                                   ?.name ??
-                              '无名字',
+                              '无指标',
                           margin: widget.margin,
                           pointWidth: _pointWidth,
                           pointGap: _pointGap,
@@ -319,13 +320,14 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   _initSelectedIndexStream() {
-    if (_showMainChartData.isEmpty) {
+    /*if (_showMainChartData.isEmpty) {
       return;
-    }
+    }*/
 
     _selectedIndexStream = StreamController<int>.broadcast();
     // 处理悬浮层。
     _selectedIndexStream?.stream.listen((index) {
+      KlineUtil.logd('触发悬浮层监听');
       if (index == -1) {
         _hideCandlestickOverlay();
         return;
@@ -339,7 +341,11 @@ class _KChartWidgetState extends State<KChartWidget> {
       }
       var overlayLocation = _getCandlestickOverlayLocation();
       _showCandlestickOverlay(
-          context: context, left: 0, top: overlayLocation.right, vo: vo);
+        context: context,
+        left: 0,
+        top: overlayLocation.right,
+        vo: vo,
+      );
     });
   }
 
@@ -361,6 +367,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     int startIndex =
         (endIndex - _showDataNum).clamp(0, widget.source.dataMaxIndex);
     KlineUtil.logd("最后的数据索引： _onZoom to _resetShowData");
+    widget.source.showDataNum = _showDataNum;
     widget.source.resetShowData(startIndex: startIndex);
     setState(() {});
   }
@@ -446,6 +453,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 图位置
   void _chartLocation(DragUpdateDetails details) {
+    widget.source.updateChartLocation(details);
     if (widget.onHorizontalDragUpdate == null) {
       return;
     }

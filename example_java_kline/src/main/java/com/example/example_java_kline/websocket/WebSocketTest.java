@@ -108,10 +108,13 @@ public class WebSocketTest {
     /*
      * 发送消息
      */
-    public static void sendMessage(Object data) {
+    public static synchronized void sendMessage(Object data) {
         String dataJson = JSON.toJSONString(data);
         // System.out.println("发送数据：" + dataJson);
         for (Session session : CLIENTS.values()) {
+            if (!session.isOpen()) {
+                return;
+            }
             session.getAsyncRemote().sendText(dataJson);
         }
     }

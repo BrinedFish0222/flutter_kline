@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
+import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../utils/kline_collection_util.dart';
@@ -7,7 +9,7 @@ import '../utils/kline_util.dart';
 import '../vo/base_chart_vo.dart';
 
 /// k线图数据源
-abstract class KChartDataSource extends ChangeNotifier {
+class KChartDataSource extends ChangeNotifier {
   KChartDataSource({
     required this.data,
     int showDataNum = KlineConfig.showDataDefaultLength,
@@ -19,17 +21,54 @@ abstract class KChartDataSource extends ChangeNotifier {
     KlineUtil.logd('KChartDataSource 初始化 - 结束');
   }
 
+  /// 原始数据，并非页面显示的数据
   late final KChartDataVo data;
 
   /// 显示的数据
   final KChartDataVo showData =
       KChartDataVo(mainChartData: [], subChartData: []);
+
+  /// 显示数据量
   late int _showDataNum;
 
   /// 显示数据的开始索引
   int showDataStartIndex = 0;
 
+  /// 图的位置
+  ChartLocation chartLocation = ChartLocation.rightmost;
+
   int get showDataNum => _showDataNum;
+
+  set showDataNum(val) => _showDataNum = val;
+
+  /// 更新图位置，优先级：最右 > 最左 > 中间
+  void updateChartLocation(DragUpdateDetails details) {
+    if (showData.mainChartData.isEmpty ||
+        showData.mainChartData.first.data.last ==
+            data.mainChartData.first.data.last) {
+      // 最右
+      chartLocation = ChartLocation.rightmost;
+      rightmost();
+    } else if (showData.mainChartData.first.data.first ==
+        data.mainChartData.first.data.first) {
+      // 最左
+      chartLocation = ChartLocation.leftmost;
+      leftmost();
+    } else {
+      chartLocation = ChartLocation.centre;
+      centre();
+    }
+  }
+
+  /// 更新UI
+  /// 如果图位置是右边，设置显示图数据的开始位置
+  @override
+  void notifyListeners() {
+    if (chartLocation == ChartLocation.rightmost) {
+      showDataStartIndex = (dataMaxIndex - _showDataNum).clamp(0, dataMaxIndex);
+    }
+    super.notifyListeners();
+  }
 
   /// 清除数据 - 全部
   void clearChartData() {
@@ -86,11 +125,11 @@ abstract class KChartDataSource extends ChangeNotifier {
   /// 数据最大长度
   int get dataMaxLength {
     int mainDataMaxLength = BaseChartVo.maxDataLength(data.mainChartData);
-    List<int> subdataLengths =
+    List<int> subDataLengths =
         data.subChartData.map((e) => BaseChartVo.maxDataLength(e)).toList();
 
-    subdataLengths.add(mainDataMaxLength);
-    return KlineNumUtil.maxMinValue(subdataLengths)?.left.toInt() ?? 0;
+    subDataLengths.add(mainDataMaxLength);
+    return KlineNumUtil.maxMinValue(subDataLengths)?.left.toInt() ?? 0;
   }
 
   /// 数据最大索引位置
@@ -104,10 +143,19 @@ abstract class KChartDataSource extends ChangeNotifier {
   }
 
   /// 最左时触发
-  void leftmost();
+  void leftmost() {
+    KlineUtil.logd('图处于最左边');
+  }
 
   /// 最右时触发
-  void rightmost();
+  void rightmost() {
+    KlineUtil.logd('图处于最右边');
+  }
+
+  /// 中间时触发
+  void centre() {
+    KlineUtil.logd('图处于中间');
+  }
 
   /// 更新数据
   /// [isAddMode] 是否是添加模式
@@ -118,7 +166,8 @@ abstract class KChartDataSource extends ChangeNotifier {
     required bool isAddMode,
     required bool isEnd,
   }) {
-    if (isAddMode) {
+    // TODO 暂时屏蔽添加模式
+    if (false) {
       _addData(
         mainChartData: mainChartData,
         subChartData: subChartData,
@@ -140,22 +189,30 @@ abstract class KChartDataSource extends ChangeNotifier {
     required bool isEnd,
   }) {
     // 主数据
-    for (int i = 0; i < mainChartData.length; ++i) {
-      List<BaseChartData?> newData = mainChartData[i].data;
-      BaseChartVo<BaseChartData> originData = data.mainChartData[i];
-      for (var newD in newData) {
-        isEnd ? originData.data.add(newD) : originData.data.insert(0, newD);
+    if (data.mainChartData.isEmpty) {
+      data.mainChartData.addAll(mainChartData);
+    } else {
+      for (int i = 0; i < mainChartData.length; ++i) {
+        List<BaseChartData?> newData = mainChartData[i].data;
+        BaseChartVo<BaseChartData> originData = data.mainChartData[i];
+        for (var newD in newData) {
+          isEnd ? originData.data.add(newD) : originData.data.insert(0, newD);
+        }
       }
     }
 
     // 副数据
-    for (int i = 0; i < subChartData.length; ++i) {
-      for (int j = 0; j < subChartData[i].length; ++j) {
-        var newData = subChartData[i][j].data;
-        var originData = data.subChartData[i][j];
-        isEnd
-            ? originData.data.addAll(newData)
-            : originData.data.insertAll(0, newData);
+    if (data.subChartData.isEmpty) {
+      data.subChartData.addAll(subChartData);
+    } else {
+      for (int i = 0; i < subChartData.length; ++i) {
+        for (int j = 0; j < subChartData[i].length; ++j) {
+          var newData = subChartData[i][j].data;
+          var originData = data.subChartData[i][j];
+          isEnd
+              ? originData.data.addAll(newData)
+              : originData.data.insertAll(0, newData);
+        }
       }
     }
   }
@@ -167,38 +224,56 @@ abstract class KChartDataSource extends ChangeNotifier {
     required bool isEnd,
   }) {
     // 主数据
-    for (int i = 0; i < mainChartData.length; ++i) {
-      List<BaseChartData?> newData = mainChartData[i].data;
-      var originData = data.mainChartData[i];
+    if (data.mainChartData.isEmpty)  {
+      // 原主数据为空，直接新增
+      data.mainChartData.addAll(mainChartData);
+    } else {
+      for (int i = 0; i < mainChartData.length; ++i) {
+        List<BaseChartData?> newData = mainChartData[i].data;
 
-      for (BaseChartData? data in newData) {
-        var indexWhere =
-            originData.data.indexWhere((element) => element?.id == data?.id);
-        if (indexWhere == -1) {
-          isEnd ? originData.data.add(data) : originData.data.insert(0, data);
-          continue;
+        bool hasIndex = data.mainChartData.hasIndex(i);
+        if (hasIndex) {
+          // 原主数据不为空，有对应索引的数据
+          BaseChartVo<BaseChartData> originData = data.mainChartData[i];
+          for (BaseChartData? data in newData) {
+            int indexWhere = originData.data.indexWhere((element) => element?.id == data?.id);
+            if (indexWhere == -1) {
+              isEnd ? originData.data.add(data) : originData.data.insert(0, data);
+              continue;
+            }
+            originData.data[indexWhere] = data;
+          }
+        } else {
+          // 原主数据不为空，没有对应索引的数据
+          data.mainChartData[i] = mainChartData[i];
         }
-        newData[indexWhere] = data;
       }
     }
 
     // 副数据
-    for (int i = 0; i < subChartData.length; ++i) {
-      for (int j = 0; j < subChartData[i].length; ++j) {
-        List<BaseChartData?> newData = subChartData[i][j].data;
-        BaseChartVo<BaseChartData> originData = data.subChartData[i][j];
+    if (data.subChartData.isEmpty) {
+      // 原副数据为空，直接新增
+      data.subChartData.addAll(subChartData);
+    } else {
+      for (int i = 0; i < subChartData.length; ++i) {
+        for (int j = 0; j < subChartData[i].length; ++j) {
+          List<BaseChartData?> newData = subChartData[i][j].data;
+          BaseChartVo<BaseChartData> originData = data.subChartData[i][j];
 
-        for (BaseChartData? data in newData) {
-          int indexWhere =
-              originData.data.indexWhere((element) => element?.id == data?.id);
-          if (indexWhere == -1) {
-            isEnd ? originData.data.add(data) : originData.data.insert(0, data);
-            continue;
+          for (BaseChartData? data in newData) {
+            int indexWhere =
+            originData.data.indexWhere((element) => element?.id == data?.id);
+            if (indexWhere == -1) {
+              isEnd ? originData.data.add(data) : originData.data.insert(0, data);
+              continue;
+            }
+            newData[indexWhere] = data;
           }
-          newData[indexWhere] = data;
         }
       }
     }
+
+
   }
 }
 

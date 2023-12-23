@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:example_network/main.dart';
 import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,8 @@ import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
 
 class ExampleMinuteNetworkWidget extends StatefulWidget {
   const ExampleMinuteNetworkWidget(
-      {super.key, required this.candlestickOverlayEntryLocationKey});
-  final GlobalKey candlestickOverlayEntryLocationKey;
+      {super.key, required this.overlayEntryLocationKey});
+  final GlobalKey overlayEntryLocationKey;
 
   @override
   State<ExampleMinuteNetworkWidget> createState() =>
@@ -21,6 +23,7 @@ class ExampleMinuteNetworkWidget extends StatefulWidget {
 
 class _ExampleMinuteNetworkWidgetState
     extends State<ExampleMinuteNetworkWidget> {
+  late StreamSubscription _streamSubscription;
   late KChartDataSource _source;
   final LineChartVo _vo = LineChartVo(data: []);
 
@@ -34,7 +37,7 @@ class _ExampleMinuteNetworkWidgetState
       ExampleMacdData.macdMinute,
     ]));
     // 监听websocket数据
-    webSocketChannel.stream.listen((data) {
+    _streamSubscription = webSocketChannelStream.listen((data) {
       if (data == null) {
         return;
       }
@@ -76,7 +79,7 @@ class _ExampleMinuteNetworkWidgetState
 
   @override
   void dispose() {
-    // _minuteChartDataAddStream.close();
+    // _streamSubscription.cancel();
     super.dispose();
   }
 
@@ -92,7 +95,7 @@ class _ExampleMinuteNetworkWidgetState
       onTapIndicator: (int index) {
         KlineUtil.showToast(context: context, text: '点击指标索引：$index');
       },
-      overlayEntryLocationKey: widget.candlestickOverlayEntryLocationKey,
+      overlayEntryLocationKey: widget.overlayEntryLocationKey,
     );
   }
 }

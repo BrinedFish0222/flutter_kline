@@ -34,7 +34,7 @@ class KMinuteChartWidget extends StatefulWidget {
   /// 数据源
   final KChartDataSource source;
 
-  /// 中间值
+  /// 分时图：中间值
   final double middleNum;
 
   /// 额外增加的差值：这些数据会加入和 [middleNum] 进行差值比较
@@ -107,7 +107,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
     // 增加对悬浮层的操作
     _selectedIndexStream?.stream.listen((index) {
-      if (index == -1 || KlineCollectionUtil.isEmpty(_minuteChartData.data)) {
+      if (index == -1 ||
+          KlineCollectionUtil.isEmpty(_minuteChartData.data) ||
+          _minuteChartData.data.hasIndex(index)) {
         _hideCandlestickOverlay();
         return;
       }

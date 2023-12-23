@@ -22,31 +22,43 @@ public class DayScheduleTask {
 
     int singleIndex = 0;
 
+    int allIndex = 0;
+
     @Scheduled(fixedRate = 2000)
-    private void candlestickSingleTask() {
+    private void daySingleTask() {
         if (singleIndex >= ExampleDayData.datatList.size()) {
             singleIndex = 0;
         }
         List<String> candlestickDataList = ExampleDayData.datatList.get(singleIndex);
         List<List<String>> dataList = new ArrayList<>();
         dataList.add(candlestickDataList);
-        ResponseResult<List<List<String>>> responseResult = ResponseResult.success("candlestickSingle", dataList);
+        ResponseResult<List<List<String>>> responseResult = ResponseResult.success("daySingle", dataList);
         System.out.println("日K数据 - 单：" + dataList);
         WebSocketTest.sendMessage(responseResult);
         singleIndex += 1;
     }
 
     @Scheduled(fixedRate = 2000)
-    private void candlestickAllTask() {
-        List<List<String>> dataList = new ArrayList<>();
-        for (int i = 0; i < ExampleDayData.datatList.size(); i++) {
-            List<String> candlestickDataList = ExampleDayData.datatList.get(i);
-            dataList.add(candlestickDataList);
+    private void dayAllTask() {
+        if (allIndex >= ExampleDayData.datatList.size()) {
+            allIndex = 0;
         }
 
-        ResponseResult<List<List<String>>> responseResult = ResponseResult.success("candlestickAll",
-                ExampleDayData.datatList);
+        List<List<String>> candlestickData = new ArrayList<>();
+        for (int i = 0; i < allIndex; i++) {
+            List<String> candlestickDataList = ExampleDayData.datatList.get(i);
+            candlestickData.add(candlestickDataList);
+        }
+
+        System.out.println("蜡烛数据 - 全部：" + candlestickData.size());
+
+        List<List<List<String>>> dataList = new ArrayList<>();
+        dataList.add(candlestickData);
+
+        ResponseResult<List<List<List<String>>>> responseResult = ResponseResult.success("dayAll",
+                dataList);
         System.out.println("蜡烛数据 - 全部");
         WebSocketTest.sendMessage(responseResult);
+        allIndex += 1;
     }
 }

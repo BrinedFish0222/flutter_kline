@@ -4,7 +4,10 @@
 
 import 'dart:convert';
 
+import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_date_util.dart';
+import 'package:flutter_kline/vo/base_chart_vo.dart';
+import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 
 ResponseResult responseResultFromJson(String str) =>
@@ -53,6 +56,41 @@ class ResponseResult {
     return result;
   }
 
+  List<BaseChartVo> parseDayAllData() {
+    if (type != 'dayAll') {
+      return [];
+    }
+
+    List<BaseChartVo> result = [];
+    var dataList = jsonDecode(jsonEncode(data));
+
+    var candlestickList = KlineCollectionUtil.first(dataList as List<dynamic>);
+    if (candlestickList != null) {
+      List<CandlestickChartData> dataList = [];
+      for (var data in candlestickList) {
+        DateTime dateTime = KlineDateUtil.parseIntDateToDateTime(int.parse(data[0]));
+        dataList.add(CandlestickChartData(
+          id: data[0],
+          dateTime: dateTime,
+          // open: data[2],
+          // close: data[5],
+          // high: data[3],
+          // low: data[4],
+          open: double.parse(data[2]),
+          close: double.parse(data[5]),
+          high: double.parse(data[3]),
+          low: double.parse(data[4]),
+        ));
+
+      }
+
+      result.add(CandlestickChartVo(data: dataList));
+    }
+
+
+    return result;
+  }
+
   ResponseResult copyWith({
     int? code,
     double? data,
@@ -79,4 +117,6 @@ class ResponseResult {
         "msg": msg,
         "type": type,
       };
+
+
 }
