@@ -42,21 +42,28 @@ class KChartDataSource extends ChangeNotifier {
 
   /// 更新图位置，优先级：最右 > 最左 > 中间
   void updateChartLocation(DragUpdateDetails details) {
-    if (showData.mainChartData.isEmpty ||
-        showData.mainChartData.first.data.last ==
-            data.mainChartData.first.data.last) {
+    var showDataLast = showData.lastData();
+    var originDataLast = data.lastData();
+    if (showDataLast == originDataLast) {
       // 最右
       chartLocation = ChartLocation.rightmost;
       rightmost();
-    } else if (showData.mainChartData.first.data.first ==
-        data.mainChartData.first.data.first) {
+      return;
+    }
+
+    var showDataFirst = showData.firstData();
+    var originDataFirst = data.firstData();
+
+    if (showDataFirst == originDataFirst)  {
       // 最左
       chartLocation = ChartLocation.leftmost;
       leftmost();
-    } else {
-      chartLocation = ChartLocation.centre;
-      centre();
+      return;
     }
+
+    // 中间
+    chartLocation = ChartLocation.centre;
+    centre();
   }
 
   /// 更新UI
@@ -64,6 +71,7 @@ class KChartDataSource extends ChangeNotifier {
   @override
   void notifyListeners() {
     if (chartLocation == ChartLocation.rightmost) {
+      KlineUtil.logd('KChartDataSource notifyListeners rightmost');
       showDataStartIndex = (dataMaxIndex - _showDataNum).clamp(0, dataMaxIndex);
     }
     super.notifyListeners();
@@ -90,14 +98,12 @@ class KChartDataSource extends ChangeNotifier {
   /// 重置显示的数据。
   /// 自动适配
   void resetShowData({int? startIndex}) {
-    if (startIndex == null) {
-      showDataStartIndex = showDataStartIndex;
-    } else {
+    if (startIndex != null) {
       showDataStartIndex = startIndex;
     }
 
     int endIndex = (showDataStartIndex + _showDataNum).clamp(0, dataMaxIndex);
-    KlineUtil.logd("最后的数据索引：$endIndex");
+    // KlineUtil.logd("最后的数据索引：$endIndex");
     showDataStartIndex = (endIndex - _showDataNum).clamp(0, dataMaxIndex);
 
     showData.mainChartData.clear();
@@ -259,6 +265,56 @@ class KChartDataVo {
     required this.mainChartData,
     required this.subChartData,
   });
+
+  /// 首个图数据
+  BaseChartData? firstData() {
+    // 找出第一个存在的图数据
+    for (BaseChartVo mainChart in mainChartData) {
+      if (mainChart.data.isEmpty) {
+        continue;
+      }
+
+      return mainChart.data.first;
+    }
+
+    for (List<BaseChartVo<BaseChartData>> subChart in subChartData) {
+      for (BaseChartVo<BaseChartData> subChartChild in subChart) {
+        if (subChartChild.data.isEmpty) {
+          continue;
+        }
+
+        return subChartChild.data.first;
+      }
+    }
+
+    return null;
+  }
+
+  /// 最后图数据
+  BaseChartData? lastData() {
+    BaseChartData? result;
+    int currentMaxIndex = 0;
+    for (BaseChartVo mainChart in mainChartData) {
+      if (mainChart.data.isEmpty || mainChart.dataLength - 1 < currentMaxIndex) {
+        continue;
+      }
+
+      result = mainChart.data.last;
+    }
+
+    for (List<BaseChartVo<BaseChartData>> subChart in subChartData) {
+      for (BaseChartVo<BaseChartData> subChartChild in subChart) {
+        if (subChartChild.data.isEmpty || subChartChild.dataLength - 1 < currentMaxIndex) {
+          continue;
+        }
+
+        result = subChartChild.data.last;
+      }
+    }
+
+
+    return result;
+  }
 
   /// 清理数据
   void clearChartData() {
