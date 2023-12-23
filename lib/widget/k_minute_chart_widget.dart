@@ -93,6 +93,15 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   /// 点击全局坐标
   Offset? onTapGlobalPointer;
 
+  get _minuteChartSubjoinData {
+    int mainChartsLength = widget.source.showData.mainChartData.length;
+    if (mainChartsLength < 1) {
+      return null;
+    }
+
+    return widget.source.showData.mainChartData.sublist(1);
+  }
+
   @override
   void initState() {
     _initSubChartMaskList();
@@ -132,8 +141,13 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   int get _showDataNum => widget.source.showDataNum;
 
-  LineChartVo get _minuteChartData =>
-      widget.source.showData.mainChartData.first as LineChartVo;
+  LineChartVo get _minuteChartData {
+    BaseChartVo? firstLineChart = KlineCollectionUtil.firstWhere(widget.source.showData.mainChartData, (element) => element is LineChartVo);
+    if (firstLineChart == null) {
+      return LineChartVo(data: []);
+    }
+    return firstLineChart as LineChartVo;
+  }
 
   List<List<BaseChartVo>> get _showSubChartData =>
       widget.source.showData.subChartData;
@@ -193,9 +207,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                                 child: MinuteChartWidget(
                                   size: _mainChartSize,
                                   minuteChartData: _minuteChartData,
-                                  minuteChartSubjoinData: widget
-                                      .source.showData.mainChartData
-                                      .sublist(1),
+                                  minuteChartSubjoinData: _minuteChartSubjoinData,
                                   middleNum: widget.middleNum,
                                   differenceNumbers: widget.differenceNumbers,
                                   pointWidth: _pointWidth,
