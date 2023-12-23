@@ -107,9 +107,11 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
     // 增加对悬浮层的操作
     _selectedIndexStream?.stream.listen((index) {
+      // 不显示的情况：索引为-1；空数据；索引不存在；索引位置空数据；
       if (index == -1 ||
           KlineCollectionUtil.isEmpty(_minuteChartData.data) ||
-          _minuteChartData.data.hasIndex(index)) {
+          !_minuteChartData.data.hasIndex(index) ||
+          _minuteChartData.data[index] == null) {
         _hideCandlestickOverlay();
         return;
       }
