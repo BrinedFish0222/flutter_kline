@@ -10,7 +10,7 @@
 
 :warning: 目前 flutter_kline 更多是一个画K线图的思路，不是完整可以直接商业使用的版本。
 
-如果这个项目对你有启发，请一定要给个:star::star::star:
+如果这个项目对你有启发，请一定要给个 :star: :star: :star:
 
 # 为什么使用 flutter_kline
 
