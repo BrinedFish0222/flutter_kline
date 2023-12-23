@@ -458,17 +458,6 @@ class _KChartWidgetState extends State<KChartWidget> {
       return;
     }
 
-    ChartLocation chartLocation = ChartLocation.centre;
-    if (_showMainChartData.first.data.first ==
-        _mainChartData.first.data.first) {
-      // 最左
-      chartLocation = ChartLocation.leftmost;
-    } else if (_showMainChartData.first.data.last ==
-        _mainChartData.first.data.last) {
-      // 最右
-      chartLocation = ChartLocation.rightmost;
-    }
-
-    widget.onHorizontalDragUpdate!(details, chartLocation);
+    widget.onHorizontalDragUpdate!(details, widget.source.chartLocation);
   }
 }
