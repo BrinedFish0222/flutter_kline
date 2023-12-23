@@ -44,7 +44,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
         return;
       }
       KlineUtil.logd('更新日K数据，数据长度：${dataList.first.dataLength}');
-      _source.updateData(mainChartData: dataList, subChartData: [], isAddMode: false, isEnd: true);
+      _source.updateData(mainCharts: dataList, subCharts: [], isEnd: true);
       _source.notifyListeners();
     });
     super.initState();

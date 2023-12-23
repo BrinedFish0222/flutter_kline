@@ -64,11 +64,10 @@ class _ExampleMinuteNetworkWidgetState
       if (lineChartDataList?.isNotEmpty ?? false) {
         _source.clearMainChartData();
         _source.updateData(
-          mainChartData: [
+          mainCharts: [
             LineChartVo(data: lineChartDataList!)
           ],
-          subChartData: [],
-          isAddMode: false,
+          subCharts: [],
           isEnd: true,
         );
         _source.resetShowData(startIndex: 0);

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/constants/chart_location.dart';
@@ -158,123 +157,95 @@ class KChartDataSource extends ChangeNotifier {
   }
 
   /// 更新数据
-  /// [isAddMode] 是否是添加模式
   /// [isEnd] 数据是加到前还是后面
   void updateData({
-    required List<BaseChartVo<BaseChartData>> mainChartData,
-    required List<List<BaseChartVo<BaseChartData>>> subChartData,
-    required bool isAddMode,
-    required bool isEnd,
-  }) {
-    // TODO 暂时屏蔽添加模式
-    if (false) {
-      _addData(
-        mainChartData: mainChartData,
-        subChartData: subChartData,
-        isEnd: isEnd,
-      );
-    } else {
-      _updateData(
-        mainChartData: mainChartData,
-        subChartData: subChartData,
-        isEnd: isEnd,
-      );
-    }
-  }
-
-  /// 新增数据
-  void _addData({
-    required List<BaseChartVo<BaseChartData>> mainChartData,
-    required List<List<BaseChartVo<BaseChartData>>> subChartData,
+    required List<BaseChartVo<BaseChartData>> mainCharts,
+    required List<List<BaseChartVo<BaseChartData>>> subCharts,
     required bool isEnd,
   }) {
     // 主数据
-    if (data.mainChartData.isEmpty) {
-      data.mainChartData.addAll(mainChartData);
-    } else {
-      for (int i = 0; i < mainChartData.length; ++i) {
-        List<BaseChartData?> newData = mainChartData[i].data;
-        BaseChartVo<BaseChartData> originData = data.mainChartData[i];
-        for (var newD in newData) {
-          isEnd ? originData.data.add(newD) : originData.data.insert(0, newD);
-        }
-      }
-    }
-
+    _updateMainChart(mainCharts: mainCharts, isEnd: isEnd);
     // 副数据
-    if (data.subChartData.isEmpty) {
-      data.subChartData.addAll(subChartData);
-    } else {
-      for (int i = 0; i < subChartData.length; ++i) {
-        for (int j = 0; j < subChartData[i].length; ++j) {
-          var newData = subChartData[i][j].data;
-          var originData = data.subChartData[i][j];
-          isEnd
-              ? originData.data.addAll(newData)
-              : originData.data.insertAll(0, newData);
-        }
-      }
-    }
+    _updateSubChart(subCharts: subCharts, isEnd: isEnd);
   }
 
-  /// 更新数据
-  void _updateData({
-    required List<BaseChartVo<BaseChartData>> mainChartData,
-    required List<List<BaseChartVo<BaseChartData>>> subChartData,
+  /// 更新副图数据
+  void _updateSubChart({
+    required List<List<BaseChartVo<BaseChartData>>> subCharts,
     required bool isEnd,
   }) {
-    // 主数据
-    if (data.mainChartData.isEmpty)  {
-      // 原主数据为空，直接新增
-      data.mainChartData.addAll(mainChartData);
-    } else {
-      for (int i = 0; i < mainChartData.length; ++i) {
-        List<BaseChartData?> newData = mainChartData[i].data;
-
-        bool hasIndex = data.mainChartData.hasIndex(i);
-        if (hasIndex) {
-          // 原主数据不为空，有对应索引的数据
-          BaseChartVo<BaseChartData> originData = data.mainChartData[i];
-          for (BaseChartData? data in newData) {
-            int indexWhere = originData.data.indexWhere((element) => element?.id == data?.id);
-            if (indexWhere == -1) {
-              isEnd ? originData.data.add(data) : originData.data.insert(0, data);
-              continue;
-            }
-            originData.data[indexWhere] = data;
-          }
-        } else {
-          // 原主数据不为空，没有对应索引的数据
-          data.mainChartData[i] = mainChartData[i];
-        }
-      }
-    }
-
-    // 副数据
     if (data.subChartData.isEmpty) {
       // 原副数据为空，直接新增
-      data.subChartData.addAll(subChartData);
-    } else {
-      for (int i = 0; i < subChartData.length; ++i) {
-        for (int j = 0; j < subChartData[i].length; ++j) {
-          List<BaseChartData?> newData = subChartData[i][j].data;
-          BaseChartVo<BaseChartData> originData = data.subChartData[i][j];
+      data.subChartData.addAll(subCharts);
+      return;
+    }
 
-          for (BaseChartData? data in newData) {
-            int indexWhere =
-            originData.data.indexWhere((element) => element?.id == data?.id);
-            if (indexWhere == -1) {
-              isEnd ? originData.data.add(data) : originData.data.insert(0, data);
-              continue;
-            }
-            newData[indexWhere] = data;
+    for (int i = 0; i < subCharts.length; ++i) {
+      // 是否包含副图
+      bool hasSubChart = data.subChartData.hasIndex(i);
+      if (!hasSubChart) {
+        // 不包含副图，直接添加
+        data.subChartData[i] = subCharts[i];
+        continue;
+      }
+
+      for (int j = 0; j < subCharts[i].length; ++j) {
+        bool hasSubChartChild = data.subChartData[i].hasIndex(i);
+        if (!hasSubChartChild) {
+          // 不包含副图子数据，直接添加
+          data.subChartData[i][j] = subCharts[i][j];
+          continue;
+        }
+
+        List<BaseChartData?> newData = subCharts[i][j].data;
+        BaseChartVo<BaseChartData> originData = data.subChartData[i][j];
+
+        for (BaseChartData? data in newData) {
+          int indexWhere =
+              originData.data.indexWhere((element) => element?.id == data?.id);
+          if (indexWhere == -1) {
+            isEnd ? originData.data.add(data) : originData.data.insert(0, data);
+            continue;
           }
+          newData[indexWhere] = data;
         }
       }
     }
-
-
   }
+
+  /// 更新主图数据
+  void _updateMainChart({
+    required List<BaseChartVo<BaseChartData>> mainCharts,
+    required bool isEnd,
+  }) {
+    if (data.mainChartData.isEmpty) {
+      // 原主数据为空，直接新增
+      data.mainChartData.addAll(mainCharts);
+      return;
+    }
+
+    for (int i = 0; i < mainCharts.length; ++i) {
+      bool hasMainChart = data.mainChartData.hasIndex(i);
+      if (hasMainChart) {
+        // 原主数据不为空，有对应索引的数据
+        List<BaseChartData?> newDataList = mainCharts[i].data;
+        BaseChartVo<BaseChartData> originVo = data.mainChartData[i];
+        for (BaseChartData? data in newDataList) {
+          int indexWhere =
+              originVo.data.indexWhere((element) => element?.id == data?.id);
+          if (indexWhere == -1) {
+            isEnd ? originVo.data.add(data) : originVo.data.insert(0, data);
+            continue;
+          }
+          originVo.data[indexWhere] = data;
+        }
+      } else {
+        // 原主数据不为空，但没有对应索引的数据
+        data.mainChartData[i] = mainCharts[i];
+      }
+    }
+  }
+
 }
 
 class KChartDataVo {
