@@ -24,14 +24,15 @@ class _ExampleMinuteWidgetState extends State<ExampleMinuteWidget> {
   @override
   void initState() {
     List<ChartData> charts = [
-      ChartData(id: '0', baseCharts: [
+      ChartData(id: '0', name: '分时图', baseCharts: [
         ExampleMinuteData.lineData2,
         ...ExampleMinuteData.subDataMinute()
       ]),
       ChartData(
           id: '1',
+          name: 'RMO',
           baseCharts: [ExampleRmoData.barChartDataMinute..barWidth = 4]),
-      ChartData(id: '2', baseCharts: ExampleMacdData.macdMinute),
+      ChartData(id: '2', name: 'MACD', baseCharts: ExampleMacdData.macdMinute),
     ];
 
     _source = KChartDataSource(showDataNum: KlineConfig.minuteDataNum, originCharts: charts);

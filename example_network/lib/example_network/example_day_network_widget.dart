@@ -35,19 +35,19 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
   void initState() {
     _source = KChartDataSource(
       originCharts: [
-        ChartData(id: '0', baseCharts: [
+        ChartData(id: '0', name: 'MA', baseCharts: [
           CandlestickChartVo(data: []),
           ...ExampleLineData.getLineChartMA13(),
           ExampleBadgeData.badgeChartVo,
         ]),
-        ChartData(id: '1',baseCharts: [
+        ChartData(id: '1', name: 'VOL', baseCharts: [
           ExampleVolData.barChartData..minValue = 0,
           ...ExampleVolData.lineChartData,
           ExampleBadgeData.badgeChartVo,
         ]),
-        ChartData(id: '2',baseCharts: [ExampleRmoData.barChartData..barWidth = 4]),
-        ChartData(id: '3',baseCharts: ExampleMacdData.macd),
-        ChartData(id: '4',baseCharts: [
+        ChartData(id: '2', name: 'RMO', baseCharts: [ExampleRmoData.barChartData..barWidth = 4]),
+        ChartData(id: '3', name: 'MACD', baseCharts: ExampleMacdData.macd),
+        ChartData(id: '4', name: 'ESS', baseCharts: [
           ExampleEssData.barChartData
             ..barWidth = 2
             ..minValue = 0,

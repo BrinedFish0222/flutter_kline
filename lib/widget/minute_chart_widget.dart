@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/renderer/minute_chart_renderer.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 
@@ -19,6 +18,7 @@ class MinuteChartWidget extends StatefulWidget {
   const MinuteChartWidget({
     super.key,
     required this.size,
+    String? name,
     required this.minuteChartData,
     this.minuteChartSubjoinData,
     required this.middleNum,
@@ -29,9 +29,11 @@ class MinuteChartWidget extends StatefulWidget {
     this.selectedChartDataIndexStream,
     this.dataNum = KlineConfig.minuteDataNum,
     required this.onTapIndicator,
-  });
+  }) : name = name ?? '分时图';
 
   final Size size;
+
+  final String name;
 
   /// 分时图数据 - 分时数据
   final LineChartVo minuteChartData;
@@ -120,9 +122,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
               child: Row(
                 children: [
                   Text(
-                    KlineCollectionUtil.isEmpty(widget.minuteChartSubjoinData)
-                        ? '分时图'
-                        : widget.minuteChartSubjoinData!.first.name ?? '分时图',
+                    widget.name,
                     style:
                         const TextStyle(fontSize: KlineConfig.showDataFontSize),
                   ),

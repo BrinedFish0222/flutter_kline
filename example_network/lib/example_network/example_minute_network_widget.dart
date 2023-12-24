@@ -34,9 +34,9 @@ class _ExampleMinuteNetworkWidgetState
     _source = KChartDataSource(
         showDataNum: KlineConfig.minuteDataNum,
         originCharts: [
-          ChartData(id: '0', baseCharts: [_vo, ...ExampleMinuteData.subDataMinute()]),
-          ChartData(id: '1', baseCharts: [ExampleRmoData.barChartDataMinute..barWidth = 4]),
-          ChartData(id: '2', baseCharts: ExampleMacdData.macdMinute)
+          ChartData(id: '0', name: '分时图', baseCharts: [_vo, ...ExampleMinuteData.subDataMinute()]),
+          ChartData(id: '1', name: 'RMO', baseCharts: [ExampleRmoData.barChartDataMinute..barWidth = 4]),
+          ChartData(id: '2', name: 'MACD', baseCharts: ExampleMacdData.macdMinute)
         ]);
     // 监听websocket数据
     _streamSubscription = webSocketChannelStream.listen((data) {

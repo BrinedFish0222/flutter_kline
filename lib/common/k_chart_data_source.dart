@@ -39,11 +39,22 @@ class KChartDataSource extends ChangeNotifier {
 
   int get showDataNum => _showDataNum;
 
-  List<BaseChartVo<BaseChartData>> get mainChart => originCharts.isEmpty ? [] : originCharts.first.baseCharts;
+  ChartData? get mainChartShow => showCharts.isEmpty ? null : showCharts.first;
 
-  List<BaseChartVo<BaseChartData>> get mainChartShow => showCharts.isEmpty ? [] : showCharts.first.baseCharts;
+  List<BaseChartVo<BaseChartData>> get mainChartBaseCharts => originCharts.isEmpty ? [] : originCharts.first.baseCharts;
 
-  List<List<BaseChartVo>> get subChart {
+  List<BaseChartVo<BaseChartData>> get mainChartBaseChartsShow => showCharts.isEmpty ? [] : showCharts.first.baseCharts;
+
+  List<ChartData> get subChartsShow {
+    if (showCharts.isEmpty || showCharts.length == 1) {
+      return [];
+    }
+
+    var result = showCharts.sublist(1).toList();
+    return result;
+  }
+
+  List<List<BaseChartVo>> get subChartBaseCharts {
     if (originCharts.isEmpty || originCharts.length == 1) {
       return [];
     }
@@ -51,7 +62,7 @@ class KChartDataSource extends ChangeNotifier {
     return originCharts.sublist(1).map((e) => e.baseCharts).toList();
   }
 
-  List<List<BaseChartVo>> get subChartShow {
+  List<List<BaseChartVo>> get subChartBaseChartsShow {
     if (showCharts.isEmpty || showCharts.length == 1) {
       return [];
     }

@@ -6,6 +6,7 @@ import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
+import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
@@ -157,71 +158,70 @@ class _KChartWidgetState extends State<KChartWidget> {
             widget.source.resetShowData(startIndex: _showDataStartIndex);
             return LayoutBuilder(builder: (context, constraints) {
               _computeLayout(constraints);
-              return Stack(
+
+              /// 副图显示的数据
+              List<ChartData> subChartsShow = widget.source.subChartsShow;
+
+              return Column(
                 children: [
-                  Column(
-                    children: [
-                      KlineGestureDetector(
-                        pointWidth: _pointWidth,
-                        pointGap: _pointGap,
-                        onTap: _onTap,
-                        onHorizontalDragStart: _onHorizontalDragStart,
-                        onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                        onHorizontalDragEnd: (details) =>
-                            _isOnHorizontalDragStart = false,
-                        onZoomIn: () {
-                          int endIndex = (_showDataStartIndex + _showDataNum)
-                              .clamp(0, widget.source.dataMaxIndex);
-                          _onZoom(endIndex: endIndex, zoomIn: true);
-                        },
-                        onZoomOut: () {
-                          int endIndex = (_showDataStartIndex + _showDataNum)
-                              .clamp(0, widget.source.dataMaxIndex);
-                          _onZoom(endIndex: endIndex, zoomIn: false);
-                        },
-                        child: MainChartWidget(
-                          chartData: _showMainChartData,
-                          size: _mainChartSize,
-                          infoBarName: KlineCollectionUtil.firstWhere(
-                                      _mainChartData,
-                                      (element) => element.isSelectedShowData())
-                                  ?.name ??
-                              '无指标',
-                          margin: widget.margin,
+
+                  /// 主图
+                  KlineGestureDetector(
+                    pointWidth: _pointWidth,
+                    pointGap: _pointGap,
+                    onTap: _onTap,
+                    onHorizontalDragStart: _onHorizontalDragStart,
+                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                    onHorizontalDragEnd: (details) =>
+                        _isOnHorizontalDragStart = false,
+                    onZoomIn: () {
+                      int endIndex = (_showDataStartIndex + _showDataNum)
+                          .clamp(0, widget.source.dataMaxIndex);
+                      _onZoom(endIndex: endIndex, zoomIn: true);
+                    },
+                    onZoomOut: () {
+                      int endIndex = (_showDataStartIndex + _showDataNum)
+                          .clamp(0, widget.source.dataMaxIndex);
+                      _onZoom(endIndex: endIndex, zoomIn: false);
+                    },
+                    child: MainChartWidget(
+                      chartData: _showMainChartData,
+                      size: _mainChartSize,
+                      infoBarName: widget.source.mainChartShow?.name ?? '无指标',
+                      margin: widget.margin,
+                      pointWidth: _pointWidth,
+                      pointGap: _pointGap,
+                      crossCurveStream: _crossCurveStreamList[0],
+                      selectedChartDataIndexStream: _selectedIndexStream,
+                      onTapIndicator: () {
+                        widget.onTapIndicator(0);
+                      },
+                      realTimePrice: widget.realTimePrice,
+                    ),
+                  ),
+
+                  /// 副图
+                  for (int i = 0; i < subChartsShow.length; ++i)
+                    GestureDetector(
+                      onTapDown: (details) => _cancelCrossCurve(),
+                      child: SizedBox.fromSize(
+                        size: _subChartSize,
+                        child: SubChartWidget(
+                          size: _subChartSize,
+                          name: subChartsShow[i].name,
+                          chartData: subChartsShow[i].baseCharts,
                           pointWidth: _pointWidth,
                           pointGap: _pointGap,
-                          crossCurveStream: _crossCurveStreamList[0],
-                          selectedChartDataIndexStream: _selectedIndexStream,
+                          maskLayer: _subChartMaskList[i],
+                          crossCurveStream: _crossCurveStreamList[i + 1],
+                          selectedChartDataIndexStream:
+                              _selectedIndexStream,
                           onTapIndicator: () {
-                            widget.onTapIndicator(0);
+                            widget.onTapIndicator(i + 1);
                           },
-                          realTimePrice: widget.realTimePrice,
                         ),
                       ),
-                      for (int i = 0; i < _showSubChartData.length; ++i)
-                        if (_showSubChartData[i].isNotEmpty)
-                          GestureDetector(
-                          onTapDown: (details) => _cancelCrossCurve(),
-                          child: SizedBox.fromSize(
-                            size: _subChartSize,
-                            child: SubChartWidget(
-                              size: _subChartSize,
-                              name: KlineCollectionUtil.first(_showSubChartData[i])?.name ?? '',
-                              chartData: _showSubChartData[i],
-                              pointWidth: _pointWidth,
-                              pointGap: _pointGap,
-                              maskLayer: _subChartMaskList[i],
-                              crossCurveStream: _crossCurveStreamList[i + 1],
-                              selectedChartDataIndexStream:
-                                  _selectedIndexStream,
-                              onTapIndicator: () {
-                                widget.onTapIndicator(i + 1);
-                              },
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                    ),
                 ],
               );
             });
@@ -372,16 +372,12 @@ class _KChartWidgetState extends State<KChartWidget> {
     widget.source.notifyListeners();
   }
 
-  List<BaseChartVo<BaseChartData>> get _mainChartData =>
-      widget.source.mainChart;
 
-  List<List<BaseChartVo>> get _subChartData => widget.source.subChart;
+  List<List<BaseChartVo>> get _subChartData => widget.source.subChartBaseCharts;
 
   List<BaseChartVo<BaseChartData>> get _showMainChartData =>
-      widget.source.mainChartShow;
+      widget.source.mainChartBaseChartsShow;
 
-  List<List<BaseChartVo>> get _showSubChartData =>
-      widget.source.subChartShow;
 
   /// 显示数据的开始索引值。
   int get _showDataStartIndex => widget.source.showDataStartIndex;
