@@ -57,7 +57,7 @@ class ResponseResult {
   }
 
   /// 解析日K数据
-  /// type daySingle dayAll
+  /// type daySingle dayAll daySingleAll
   List<BaseChartVo> parseDayData({String type = 'dayAll'}) {
     if (this.type != type) {
       return [];

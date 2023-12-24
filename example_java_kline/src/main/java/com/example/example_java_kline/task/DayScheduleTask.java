@@ -68,4 +68,22 @@ public class DayScheduleTask {
         WebSocketTest.sendMessage(responseResult);
         allIndex += 1;
     }
+
+
+    /**
+     * 一次推送所有数据
+     */
+    @Scheduled(fixedRate = 2000)
+    private void daySingleAllTask() {
+        List<List<String>> candlestickData = ExampleDayData.datatList;
+
+        System.out.println("蜡烛数据 - 一次全部：" + candlestickData.size());
+
+        List<List<List<String>>> dataList = new ArrayList<>();
+        dataList.add(candlestickData);
+
+        ResponseResult<List<List<List<String>>>> responseResult = ResponseResult.success("daySingleAll",
+                dataList);
+        WebSocketTest.sendMessage(responseResult);
+    }
 }
