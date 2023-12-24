@@ -14,6 +14,13 @@ class KlineUtil {
     debugPrint(text);
   }
 
+  static void loge(String text) {
+    if (kReleaseMode) {
+      return;
+    }
+    debugPrint(text);
+  }
+
   /// 转换数据为图数据。
   static List<double?> convertDataToChartData(
       List<double?> data, double canvasMaxHeight,

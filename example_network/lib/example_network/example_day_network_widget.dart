@@ -11,6 +11,7 @@ import 'package:flutter_kline/example/example_vol_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
+import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
 
 /// 日K网络组件示例
@@ -33,29 +34,27 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
   @override
   void initState() {
     _source = KChartDataSource(
-      data: KChartDataVo(
-        mainChartData: [
+      originCharts: [
+        ChartData(id: '0', baseCharts: [
           CandlestickChartVo(data: []),
           ...ExampleLineData.getLineChartMA13(),
           ExampleBadgeData.badgeChartVo,
-        ],
-        subChartData: [
-          [
-            ExampleVolData.barChartData..minValue = 0,
-            ...ExampleVolData.lineChartData,
-            ExampleBadgeData.badgeChartVo,
-          ],
-          [ExampleRmoData.barChartData..barWidth = 4],
-          ExampleMacdData.macd,
-          [
-            ExampleEssData.barChartData
-              ..barWidth = 2
-              ..minValue = 0,
-            ExampleEssData.lineChartA,
-            ExampleEssData.lineChartB
-          ],
-        ],
-      ),
+        ]),
+        ChartData(id: '1',baseCharts: [
+          ExampleVolData.barChartData..minValue = 0,
+          ...ExampleVolData.lineChartData,
+          ExampleBadgeData.badgeChartVo,
+        ]),
+        ChartData(id: '2',baseCharts: [ExampleRmoData.barChartData..barWidth = 4]),
+        ChartData(id: '3',baseCharts: ExampleMacdData.macd),
+        ChartData(id: '4',baseCharts: [
+          ExampleEssData.barChartData
+            ..barWidth = 2
+            ..minValue = 0,
+          ExampleEssData.lineChartA,
+          ExampleEssData.lineChartB
+        ]),
+      ],
     );
 
     webSocketChannelStream.listen((data) {
@@ -70,7 +69,9 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
         return;
       }
       KlineUtil.logd('更新日K数据，数据长度：${dataList.first.dataLength}');
-      _source.updateData(mainCharts: dataList, subCharts: [], isEnd: true);
+      _source.updateData(newCharts: [
+        ChartData(id: '0', baseCharts: dataList)
+      ], isEnd: true);
       _source.notifyListeners();
     });
     super.initState();

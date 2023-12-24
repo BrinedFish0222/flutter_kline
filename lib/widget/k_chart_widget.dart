@@ -155,8 +155,6 @@ class _KChartWidgetState extends State<KChartWidget> {
           builder: (context, _) {
             KlineUtil.logd("KChartWidget ValueListenableBuilder run ...");
             widget.source.resetShowData(startIndex: _showDataStartIndex);
-            KlineUtil.logd(
-                "KChartWidget ValueListenableBuilder run; main data length ${KlineCollectionUtil.first(widget.source.data.mainChartData)?.dataLength}:${KlineCollectionUtil.first(widget.source.showData.mainChartData)?.dataLength}");
             return LayoutBuilder(builder: (context, constraints) {
               _computeLayout(constraints);
               return Stack(
@@ -335,6 +333,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       }
       var candlestickChartVo =
           BaseChartVo.getCandlestickChartVo(_showMainChartData);
+
       var vo = candlestickChartVo?.data[index];
       if (vo == null) {
         _hideCandlestickOverlay();
@@ -374,15 +373,15 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   List<BaseChartVo<BaseChartData>> get _mainChartData =>
-      widget.source.data.mainChartData;
+      widget.source.mainChart;
 
-  List<List<BaseChartVo>> get _subChartData => widget.source.data.subChartData;
+  List<List<BaseChartVo>> get _subChartData => widget.source.subChart;
 
   List<BaseChartVo<BaseChartData>> get _showMainChartData =>
-      widget.source.showData.mainChartData;
+      widget.source.mainChartShow;
 
   List<List<BaseChartVo>> get _showSubChartData =>
-      widget.source.showData.subChartData;
+      widget.source.subChartShow;
 
   /// 显示数据的开始索引值。
   int get _showDataStartIndex => widget.source.showDataStartIndex;

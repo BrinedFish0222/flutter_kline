@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/example/example_badge_data.dart';
+import 'package:flutter_kline/vo/chart_data.dart';
 
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
@@ -30,27 +31,28 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
     KlineUtil.logd('ExampleDayWidget initState ...');
     var candlestickData = ExampleCandlestickData.getCandlestickData();
 
-    _source = KChartDayDataSource(
-        data: KChartDataVo(mainChartData: [
-      candlestickData,
-      ...ExampleLineData.getLineChartMA13(),
-      ExampleBadgeData.badgeChartVo,
-    ], subChartData: [
-      [
+    _source = KChartDataSource(originCharts: [
+      ChartData(id: '0', baseCharts: [
+        candlestickData,
+        ...ExampleLineData.getLineChartMA13(),
+        ExampleBadgeData.badgeChartVo,
+      ]),
+      ChartData(id: '1', baseCharts: [
         ExampleVolData.barChartData..minValue = 0,
         ...ExampleVolData.lineChartData,
         ExampleBadgeData.badgeChartVo,
-      ],
-      [ExampleRmoData.barChartData..barWidth = 4],
-      ExampleMacdData.macd,
-      [
+      ]),
+      ChartData(
+          id: '2', baseCharts: [ExampleRmoData.barChartData..barWidth = 4]),
+      ChartData(id: '3', baseCharts: ExampleMacdData.macd),
+      ChartData(id: '4', baseCharts: [
         ExampleEssData.barChartData
           ..barWidth = 2
           ..minValue = 0,
         ExampleEssData.lineChartA,
         ExampleEssData.lineChartB
-      ],
-    ]));
+      ])
+    ]);
 
     super.initState();
   }
@@ -100,12 +102,4 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
   }
 }
 
-class KChartDayDataSource extends KChartDataSource {
-  KChartDayDataSource({required super.data});
 
-  @override
-  void leftmost() {}
-
-  @override
-  void rightmost() {}
-}

@@ -94,12 +94,12 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   Offset? onTapGlobalPointer;
 
   get _minuteChartSubjoinData {
-    int mainChartsLength = widget.source.showData.mainChartData.length;
+    int mainChartsLength = widget.source.mainChartShow.length;
     if (mainChartsLength < 1) {
       return null;
     }
 
-    return widget.source.showData.mainChartData.sublist(1);
+    return widget.source.mainChartShow.sublist(1);
   }
 
   @override
@@ -142,7 +142,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   int get _showDataNum => widget.source.showDataNum;
 
   LineChartVo get _minuteChartData {
-    BaseChartVo? firstLineChart = KlineCollectionUtil.firstWhere(widget.source.showData.mainChartData, (element) => element is LineChartVo);
+    BaseChartVo? firstLineChart = KlineCollectionUtil.firstWhere(widget.source.mainChartShow, (element) => element is LineChartVo);
     if (firstLineChart == null) {
       return LineChartVo(data: []);
     }
@@ -150,7 +150,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   }
 
   List<List<BaseChartVo>> get _showSubChartData =>
-      widget.source.showData.subChartData;
+      widget.source.subChartShow;
 
   /// 初始化十字线 StreamController
   void _initCrossCurveStream() {
@@ -161,8 +161,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     }
   }
 
-  List<List<BaseChartVo<BaseChartData>>> get _subChartData =>
-      widget.source.data.subChartData;
+  List<List<BaseChartVo<BaseChartData>>> get _subChartData => widget.source.subChart;
 
   @override
   void dispose() {

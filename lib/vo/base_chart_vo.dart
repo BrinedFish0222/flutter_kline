@@ -1,6 +1,7 @@
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
+import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/bar_chart_vo.dart';
 import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
@@ -28,6 +29,54 @@ abstract class BaseChartVo<T extends BaseChartData> {
     this.minValue,
     required this.data,
   });
+
+  /// 更新数据
+  void updateDataBy(BaseChartVo newBaseChart, {bool isEnd = true}) {
+    if (newBaseChart.data.isEmpty) {
+      return;
+    }
+
+    for (int i = 0; i < newBaseChart.data.length; ++i) {
+      BaseChartData? newData = newBaseChart.data[i];
+      if (newData == null) {
+        isEnd ? data.add(null) : data.insert(0, null);
+        continue;
+      }
+
+      if (newData.id != null) {
+        // 根据ID更新数据
+        _updateDataById(newData, isEnd: isEnd);
+        continue;
+      }
+
+      if (newData is! T?) {
+        // 类型不对，直接结束
+        KlineUtil.loge('新数据类型不对，直接结束');
+        return;
+      }
+
+      // 没有ID，无法追溯源数据，直接增加数据
+      isEnd ? data.add(newData as T?) : data.insert(0, newData as T?);
+    }
+  }
+
+  /// 根据ID更新数据
+  void _updateDataById(BaseChartData newData, {required bool isEnd}) {
+    if (newData.id == null) {
+      return;
+    }
+
+    bool replaceWhereFlag = KlineCollectionUtil.replaceWhere(dataList: data, test: (d) => d?.id == newData.id, element: newData);
+    if (replaceWhereFlag) {
+      return;
+    }
+
+    if (newData is T) {
+      data.add(newData);
+    }
+  }
+
+  int get dataIndex => dataLength - 1;
 
   /// 获取整个图**所有**选中显示的数据集合
   List<ChartShowDataItemVo?>? getSelectedShowData();

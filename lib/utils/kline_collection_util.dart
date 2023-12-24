@@ -2,6 +2,24 @@ import 'dart:convert';
 
 /// 集合工具
 class KlineCollectionUtil {
+
+  /// 根据条件替换
+  static bool replaceWhere<E>(
+      {required List<E?>? dataList, required bool Function(E?) test, required E element}) {
+    dataList ??= [];
+    if (isEmpty(dataList)) {
+      return false;
+    }
+
+    var index = dataList.indexWhere(test);
+    if (index == -1) {
+      return false;
+    }
+
+    dataList[index] = element;
+    return true;
+  }
+
   static List<T> copy<T>(List<T> dataList) {
     if (KlineCollectionUtil.isEmpty(dataList)) {
       return [];

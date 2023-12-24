@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
+import 'package:flutter_kline/vo/chart_data.dart';
 
 import '../utils/kline_util.dart';
 import '../widget/k_minute_chart_widget.dart';
@@ -22,15 +23,18 @@ class _ExampleMinuteWidgetState extends State<ExampleMinuteWidget> {
 
   @override
   void initState() {
-    _source = KChartDataSource(
-        showDataNum: KlineConfig.minuteDataNum,
-        data: KChartDataVo(mainChartData: [
-          ExampleMinuteData.lineData2,
-          ...ExampleMinuteData.subDataMinute()
-        ], subChartData: [
-          [ExampleRmoData.barChartDataMinute..barWidth = 4],
-          ExampleMacdData.macdMinute,
-        ]));
+    List<ChartData> charts = [
+      ChartData(id: '0', baseCharts: [
+        ExampleMinuteData.lineData2,
+        ...ExampleMinuteData.subDataMinute()
+      ]),
+      ChartData(
+          id: '1',
+          baseCharts: [ExampleRmoData.barChartDataMinute..barWidth = 4]),
+      ChartData(id: '2', baseCharts: ExampleMacdData.macdMinute),
+    ];
+
+    _source = KChartDataSource(showDataNum: KlineConfig.minuteDataNum, originCharts: charts);
     super.initState();
   }
 

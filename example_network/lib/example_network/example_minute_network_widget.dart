@@ -9,6 +9,7 @@ import 'package:flutter_kline/example/example_macd_data.dart';
 import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
+import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
 
@@ -32,13 +33,11 @@ class _ExampleMinuteNetworkWidgetState
   void initState() {
     _source = KChartDataSource(
         showDataNum: KlineConfig.minuteDataNum,
-        data: KChartDataVo(mainChartData: [
-          _vo,
-          ...ExampleMinuteData.subDataMinute()
-        ], subChartData: [
-          [ExampleRmoData.barChartDataMinute..barWidth = 4],
-          ExampleMacdData.macdMinute,
-        ]));
+        originCharts: [
+          ChartData(id: '0', baseCharts: [_vo, ...ExampleMinuteData.subDataMinute()]),
+          ChartData(id: '1', baseCharts: [ExampleRmoData.barChartDataMinute..barWidth = 4]),
+          ChartData(id: '2', baseCharts: ExampleMacdData.macdMinute)
+        ]);
     // 监听websocket数据
     _streamSubscription = webSocketChannelStream.listen((data) {
       if (data == null) {
@@ -47,29 +46,14 @@ class _ExampleMinuteNetworkWidgetState
 
       ResponseResult responseResult = responseResultFromJson(data);
 
-      /// 分时图单根数据更新 TODO 代码示例为旧版
-      /* LineChartData? lineChartData = responseResult.parseMinuteData();
-      if (lineChartData != null) {
-        KlineUtil.logd("分时图数据增加, 数据长度：$lineChartData");
-        _source.updateData(
-          mainChartData: [
-            LineChartVo(data: [lineChartData])
-          ],
-          subChartData: [],
-          isAddMode: true,
-          isEnd: true,
-        );
-        _source.resetShowData(startIndex: 0);
-      } */
-
       /// 分时图全量数据更新
       var lineChartDataList = responseResult.parseMinuteAllData();
       if (lineChartDataList?.isNotEmpty ?? false) {
         _source.updateData(
-          mainCharts: [
-            LineChartVo(data: lineChartDataList!)
+          newCharts: [
+            ChartData(
+                id: '0', baseCharts: [LineChartVo(data: lineChartDataList!)])
           ],
-          subCharts: [],
           isEnd: true,
         );
         _source.notifyListeners();
@@ -90,7 +74,6 @@ class _ExampleMinuteNetworkWidgetState
       size: Size(MediaQuery.of(context).size.width - 20,
           MediaQuery.of(context).size.height * 0.6),
       source: _source,
-      // minuteChartSubjoinData: ExampleMinuteData.subData(),
       middleNum: 11.39,
       differenceNumbers: const [11.42, 11.36],
       onTapIndicator: (int index) {
