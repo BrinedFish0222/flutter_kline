@@ -26,6 +26,7 @@ class KMinuteChartWidget extends StatefulWidget {
     this.subChartRatio = 0.5,
     required this.onTapIndicator,
     required this.overlayEntryLocationKey,
+    this.overlayEntryBuilder,
   });
 
 
@@ -49,6 +50,9 @@ class KMinuteChartWidget extends StatefulWidget {
   final void Function(int index) onTapIndicator;
 
   final GlobalKey overlayEntryLocationKey;
+
+  /// 悬浮层自定义组件
+  final Widget Function(LineChartData)? overlayEntryBuilder;
 
   @override
   State<KMinuteChartWidget> createState() => _KMinuteChartWidgetState();
@@ -322,32 +326,41 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
             width: MediaQuery.of(context).size.width,
             height: 40,
             color: const Color(0xFFF5F5F5),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 15,
-                ),
-                Text(KlineDateUtil.formatTime(dateTime: data.dateTime),
-                    style: const TextStyle(
-                        fontSize: KlineConfig.showDataFontSize)),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text('价 ${data.value ?? 0}',
-                    style: const TextStyle(
-                        fontSize: KlineConfig.showDataFontSize)),
-                const SizedBox(
-                  width: 15,
-                ),
-              ],
-            ),
+            child: _overlayEntryWidget(data),
           ),
         ),
       ),
     );
 
     Overlay.of(context).insert(_candlestickOverlayEntry!);
+  }
+
+  /// 悬浮层组件
+  Widget _overlayEntryWidget(LineChartData data) {
+    if (widget.overlayEntryBuilder != null) {
+      return widget.overlayEntryBuilder!(data);
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(
+          width: 15,
+        ),
+        Text(KlineDateUtil.formatTime(dateTime: data.dateTime),
+            style: const TextStyle(
+                fontSize: KlineConfig.showDataFontSize)),
+        const SizedBox(
+          width: 10,
+        ),
+        Text('价 ${data.value ?? 0}',
+            style: const TextStyle(
+                fontSize: KlineConfig.showDataFontSize)),
+        const SizedBox(
+          width: 15,
+        ),
+      ],
+    );
   }
 
   void _hideCandlestickOverlay() {

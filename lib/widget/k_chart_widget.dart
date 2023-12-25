@@ -30,6 +30,7 @@ class KChartWidget extends StatefulWidget {
     this.dataGapRatio = 3,
     this.subChartRatio = 0.5,
     required this.overlayEntryLocationKey,
+    this.overlayEntryBuilder,
     this.realTimePrice,
     this.onHorizontalDragUpdate,
   });
@@ -56,6 +57,9 @@ class KChartWidget extends StatefulWidget {
 
   /// 悬浮层位置Key
   final GlobalKey overlayEntryLocationKey;
+
+  /// 悬浮层自定义组件
+  final Widget Function(CandlestickChartData)? overlayEntryBuilder;
 
   /// TODO 不指定，默认取最后一根数据，但是最后一根数据会有多份，需要考虑怎么处理，或许可以考虑在数据VO中设置启动实时价格的开关
   /// 实时价格
@@ -310,7 +314,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         left: left,
         child: Material(
           color: Colors.transparent,
-          child: CandlestickShowDataWidget(vo: vo),
+          child: CandlestickShowDataWidget(vo: vo, builder: widget.overlayEntryBuilder),
         ),
       ),
     );
