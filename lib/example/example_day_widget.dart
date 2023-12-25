@@ -65,8 +65,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var size = Size(MediaQuery.of(context).size.width - 20,
-        MediaQuery.of(context).size.height * 0.6);
+
     BarChartVo barChartVo = ExampleVolData.barChartData..barWidth = 2;
     for (var element in barChartVo.data) {
       element?.isFill = true;
@@ -78,7 +77,6 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
         children: [
           KChartWidget(
             showDataNum: 30,
-            size: size,
             source: _source,
             realTimePrice: 11.56,
             onTapIndicator: (index) {

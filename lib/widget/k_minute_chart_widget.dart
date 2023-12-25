@@ -19,7 +19,6 @@ import '../vo/mask_layer.dart';
 class KMinuteChartWidget extends StatefulWidget {
   const KMinuteChartWidget({
     super.key,
-    required this.size,
     required this.source,
     required this.middleNum,
     this.differenceNumbers,
@@ -29,7 +28,6 @@ class KMinuteChartWidget extends StatefulWidget {
     required this.overlayEntryLocationKey,
   });
 
-  final Size size;
 
   /// 数据源
   final KChartDataSource source;
@@ -266,12 +264,19 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   /// 重算布局
   void _computeLayout(BoxConstraints constraints) {
-    double width = widget.size.width > constraints.maxWidth
+    Size defaultSize = Size(MediaQuery.of(context).size.width - 20,
+        MediaQuery.of(context).size.height * 0.6);
+
+    double width = constraints.maxWidth != double.infinity
         ? constraints.maxWidth - 1
-        : widget.size.width - 1;
+        : defaultSize.width - 1;
+
+    double height = constraints.maxHeight != double.infinity
+        ? constraints.maxHeight
+        : defaultSize.height;
 
     Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
-        totalHeight: widget.size.height,
+        totalHeight: height,
         subChartRatio: widget.subChartRatio,
         subChartNum: _subChartData.length);
     _mainChartSize = Size(width, heightPair.left);

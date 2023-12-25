@@ -96,86 +96,90 @@ class _SubChartWidgetState extends State<SubChartWidget> {
     _badgeChartVoList = widget.chartData.whereType<BadgeChartVo>().toList();
 
     return LayoutBuilder(builder: (context, constraints) {
-      return Column(
-        children: [
-          // 信息栏
-          SubChartShowDataWidget(
-            initData: BaseChartVo.getLastShowData(widget.chartData),
-            name: widget.name,
-            onTapName: widget.onTapIndicator,
-            chartShowDataItemsStream: _chartShowDataItemsStream,
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                RepaintBoundary(
-                  child: CustomPaint(
-                    key: _chartKey,
-                    size: widget.size,
-                    painter: ChartRenderer(
-                        chartData: widget.chartData,
-                        pointWidth: widget.pointWidth,
-                        pointGap: widget.pointGap,
-                        maxMinValue: maxMinValue,
-                        rectSetting: const RectSetting(transverseLineNum: 0)),
-                  ),
-                ),
-                RepaintBoundary(
-                  child: StreamBuilder(
-                      stream: widget.crossCurveStream?.stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return const SizedBox();
-                        }
-
-                        RenderBox renderBox = _chartKey.currentContext!
-                            .findRenderObject() as RenderBox;
-                        var selectedXY = renderBox.globalToLocal(Offset(
-                            snapshot.data?.left ?? 0,
-                            snapshot.data?.right ?? 0));
-
-                        double? selectedHorizontalValue =
-                            KlineUtil.computeSelectedHorizontalValue(
-                                maxMinValue: maxMinValue,
-                                height: widget.size.height,
-                                selectedY: selectedXY.dy);
-
-                        KlineUtil.logd("副图十字线绘制，选中的横轴值：$selectedHorizontalValue");
-                        return CustomPaint(
-                          size: widget.size,
-                          painter: CrossCurvePainter(
-                              selectedXY: Pair(
-                                  left: selectedXY.dx, right: selectedXY.dy),
-                              pointWidth: widget.pointWidth,
-                              pointGap: widget.pointGap,
-                              selectedHorizontalValue: selectedHorizontalValue),
-                        );
-                      }),
-                ),
-
-                /// badge
-                for (BadgeChartVo vo in _badgeChartVoList)
-                  BadgeWidget(
-                    badgeChartVo: vo,
-                    pointWidth: widget.pointWidth,
-                    pointGap: widget.pointGap ?? 0,
-                    maxMinValue: maxMinValue,
-                  ),
-
-                /// 遮罩层
-                if (widget.maskLayer != null && widget.maskLayer?.percent != 0)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: MaskLayerWidget(
-                      width: widget.size.width * widget.maskLayer!.percent,
-                      height: widget.size.height,
-                      onTap: widget.maskLayer?.onTap,
-                    ),
-                  )
-              ],
+      return SizedBox(
+        width: constraints.maxWidth,
+        height: constraints.maxHeight,
+        child: Column(
+          children: [
+            // 信息栏
+            SubChartShowDataWidget(
+              initData: BaseChartVo.getLastShowData(widget.chartData),
+              name: widget.name,
+              onTapName: widget.onTapIndicator,
+              chartShowDataItemsStream: _chartShowDataItemsStream,
             ),
-          ),
-        ],
+            Expanded(
+              child: Stack(
+                children: [
+                  RepaintBoundary(
+                    child: CustomPaint(
+                      key: _chartKey,
+                      size: widget.size,
+                      painter: ChartRenderer(
+                          chartData: widget.chartData,
+                          pointWidth: widget.pointWidth,
+                          pointGap: widget.pointGap,
+                          maxMinValue: maxMinValue,
+                          rectSetting: const RectSetting(transverseLineNum: 0)),
+                    ),
+                  ),
+                  RepaintBoundary(
+                    child: StreamBuilder(
+                        stream: widget.crossCurveStream?.stream,
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return const SizedBox();
+                          }
+
+                          RenderBox renderBox = _chartKey.currentContext!
+                              .findRenderObject() as RenderBox;
+                          var selectedXY = renderBox.globalToLocal(Offset(
+                              snapshot.data?.left ?? 0,
+                              snapshot.data?.right ?? 0));
+
+                          double? selectedHorizontalValue =
+                              KlineUtil.computeSelectedHorizontalValue(
+                                  maxMinValue: maxMinValue,
+                                  height: widget.size.height,
+                                  selectedY: selectedXY.dy);
+
+                          KlineUtil.logd("副图十字线绘制，选中的横轴值：$selectedHorizontalValue");
+                          return CustomPaint(
+                            size: widget.size,
+                            painter: CrossCurvePainter(
+                                selectedXY: Pair(
+                                    left: selectedXY.dx, right: selectedXY.dy),
+                                pointWidth: widget.pointWidth,
+                                pointGap: widget.pointGap,
+                                selectedHorizontalValue: selectedHorizontalValue),
+                          );
+                        }),
+                  ),
+
+                  /// badge
+                  for (BadgeChartVo vo in _badgeChartVoList)
+                    BadgeWidget(
+                      badgeChartVo: vo,
+                      pointWidth: widget.pointWidth,
+                      pointGap: widget.pointGap ?? 0,
+                      maxMinValue: maxMinValue,
+                    ),
+
+                  /// 遮罩层
+                  if (widget.maskLayer != null && widget.maskLayer?.percent != 0)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: MaskLayerWidget(
+                        width: widget.size.width * widget.maskLayer!.percent,
+                        height: widget.size.height,
+                        onTap: widget.maskLayer?.onTap,
+                      ),
+                    )
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     });
   }

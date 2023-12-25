@@ -71,8 +71,6 @@ class _ExampleMinuteNetworkWidgetState
   @override
   Widget build(BuildContext context) {
     return KMinuteChartWidget(
-      size: Size(MediaQuery.of(context).size.width - 20,
-          MediaQuery.of(context).size.height * 0.6),
       source: _source,
       middleNum: 11.39,
       differenceNumbers: const [11.42, 11.36],

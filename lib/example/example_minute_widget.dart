@@ -53,8 +53,6 @@ class _ExampleMinuteWidgetState extends State<ExampleMinuteWidget> {
         child: ListView(
           children: [
             KMinuteChartWidget(
-              size: Size(MediaQuery.of(context).size.width - 20,
-                  MediaQuery.of(context).size.height * 0.6),
               source: _source,
               middleNum: 11.39,
               differenceNumbers: const [11.48, 11.30],

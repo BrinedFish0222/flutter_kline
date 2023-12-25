@@ -80,10 +80,6 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
   @override
   Widget build(BuildContext context) {
     return KChartWidget(
-      size: Size(
-        MediaQuery.of(context).size.width,
-        MediaQuery.of(context).size.height * .6,
-      ),
       source: _source,
       onTapIndicator: (val) {
         KlineUtil.showToast(context: context, text: '指标索引位置：$val');
