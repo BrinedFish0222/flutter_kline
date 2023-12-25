@@ -147,11 +147,11 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           widget.onHorizontalDragStart!(details);
         },
         onHorizontalDragUpdate: (details) {
-          KlineUtil.logd('onHorizontalDragUpdate ...');
           _horizontalDragThreshold += (details.delta.dx).abs();
+
+          KlineUtil.logd('onHorizontalDragUpdate _horizontalDragThreshold $_horizontalDragThreshold ...');
           // 达到横向拖动阈值才放行
-          if ((_horizontalDragThreshold <
-              120 / (widget.showDataNum + 1)) && widget.showDataNum < KlineConfig.showDataMaxLength / 2) {
+          if (_horizontalDragThreshold < 120 / (widget.showDataNum + 1)) {
             KlineUtil.logd('未达到横向拖动阈值，拦截');
             return;
           }
