@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../common/pair.dart';
@@ -16,6 +17,7 @@ class KlineGestureDetector extends StatefulWidget {
     required this.child,
     this.pointWidth = 0,
     this.pointGap = 0,
+    required this.showDataNum,
   });
 
   /// 数据点宽度
@@ -23,6 +25,9 @@ class KlineGestureDetector extends StatefulWidget {
 
   /// 数据点间隔
   final double pointGap;
+
+  /// 显示的数据点
+  final int showDataNum;
 
   final Widget child;
 
@@ -142,10 +147,12 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           widget.onHorizontalDragStart!(details);
         },
         onHorizontalDragUpdate: (details) {
+          KlineUtil.logd('onHorizontalDragUpdate ...');
           _horizontalDragThreshold += (details.delta.dx).abs();
           // 达到横向拖动阈值才放行
-          if (_horizontalDragThreshold <
-              (widget.pointWidth + widget.pointGap) / 3) {
+          if ((_horizontalDragThreshold <
+              120 / (widget.showDataNum + 1)) && widget.showDataNum < KlineConfig.showDataMaxLength / 2) {
+            KlineUtil.logd('未达到横向拖动阈值，拦截');
             return;
           }
           _horizontalDragThreshold = 0;
@@ -170,6 +177,10 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
             return;
           }
           var delta = details.delta;
+          KlineUtil.logd('单指放大小：delta $delta');
+          if (delta.dy == 0) {
+            return;
+          }
 
           if (delta.dy < 0) {
             KlineUtil.logd("单指放大");

@@ -170,6 +170,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
                     onTap: _onTap,
+                    showDataNum: _showDataNum,
                     onHorizontalDragStart: _onHorizontalDragStart,
                     onHorizontalDragUpdate: _onHorizontalDragUpdate,
                     onHorizontalDragEnd: (details) =>
