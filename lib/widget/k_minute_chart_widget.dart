@@ -178,8 +178,10 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
       child: LayoutBuilder(builder: (context, constraints) {
         _computeLayout(constraints);
-        return ListenableBuilder(
-            listenable: widget.source,
+
+        /// TODO 原使用 ListenableBuilder，改成 AnimatedBuilder 是为了兼容旧版本sdk 3.7.7
+        return AnimatedBuilder(
+            animation: widget.source,
             builder: (context, _) {
 
               /// 副图显示数据

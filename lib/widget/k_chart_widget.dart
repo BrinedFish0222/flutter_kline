@@ -153,8 +153,9 @@ class _KChartWidgetState extends State<KChartWidget> {
     return GestureDetector(
       onLongPressStart: _onLongPressStart,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
-      child: ListenableBuilder(
-          listenable: widget.source,
+      /// TODO 原使用 ListenableBuilder，改成 AnimatedBuilder 是为了兼容旧版本sdk 3.7.7
+      child: AnimatedBuilder(
+          animation: widget.source,
           builder: (context, _) {
             KlineUtil.logd("KChartWidget ValueListenableBuilder run ...");
             widget.source.resetShowData(startIndex: _showDataStartIndex);
