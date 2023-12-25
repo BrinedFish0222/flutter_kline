@@ -11,7 +11,7 @@ class MaskLayer {
   /// 遮罩点击事件
   GestureTapCallback? onTap;
 
-  MaskLayer({this.percent = 0, this.onTap}) {
+  MaskLayer({this.percent = 0.3, this.widget, this.onTap}) {
     // 处理数值不合规的情况。
     percent = percent < 0 ? 0 : percent;
     percent = percent > 1 ? 1 : percent;

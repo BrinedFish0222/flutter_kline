@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/vo/mask_layer.dart';
 
 /// 遮罩层
 class MaskLayerWidget extends StatelessWidget {
-  const MaskLayerWidget({super.key, this.width, this.height, this.onTap});
+  const MaskLayerWidget({
+    super.key,
+    required this.maskLayer,
+  });
 
-  final double? width;
-  final double? height;
-  final GestureTapCallback? onTap;
+  final MaskLayer maskLayer;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: width,
-        height: height,
+      onTap: maskLayer.onTap,
+      child: LayoutBuilder(builder: _builderWidget),
+    );
+  }
+
+  Widget _builderWidget(BuildContext context, BoxConstraints constraints) {
+    double width = constraints.maxWidth * maskLayer.percent;
+    double height = constraints.maxHeight;
+
+    return SizedBox(
+      width: width,
+      height: height,
+      child: maskLayer.widget ??  Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,

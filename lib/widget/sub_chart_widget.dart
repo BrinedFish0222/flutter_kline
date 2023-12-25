@@ -170,9 +170,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: MaskLayerWidget(
-                        width: widget.size.width * widget.maskLayer!.percent,
-                        height: widget.size.height,
-                        onTap: widget.maskLayer?.onTap,
+                        maskLayer: widget.maskLayer!,
                       ),
                     )
                 ],

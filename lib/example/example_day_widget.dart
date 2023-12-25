@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/example/example_badge_data.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
+import 'package:flutter_kline/vo/mask_layer.dart';
 
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
@@ -83,11 +84,11 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
               KlineUtil.showToast(context: context, text: '点击指标索引：$index');
             },
             margin: const EdgeInsets.all(5),
-            /* subChartMaskList: [
+            subChartMaskList: [
               null,
               MaskLayer(percent: 0.3),
               // MaskLayer(percent: 0.8)
-            ], */
+            ],
             overlayEntryLocationKey: widget.overlayEntryLocationKey,
             onHorizontalDragUpdate: (details, location) {
               KlineUtil.logd('移动的位置：$location');

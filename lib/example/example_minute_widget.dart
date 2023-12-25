@@ -3,6 +3,7 @@ import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
+import 'package:flutter_kline/vo/mask_layer.dart';
 
 import '../utils/kline_util.dart';
 import '../widget/k_minute_chart_widget.dart';
@@ -56,6 +57,12 @@ class _ExampleMinuteWidgetState extends State<ExampleMinuteWidget> {
               source: _source,
               middleNum: 11.39,
               differenceNumbers: const [11.48, 11.30],
+              subChartMaskList: [
+                null,
+                MaskLayer(
+                  widget: Container(color: Colors.blue,)
+                ),
+              ],
               onTapIndicator: (int index) {
                 KlineUtil.showToast(context: context, text: '点击指标索引：$index');
               },
