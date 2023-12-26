@@ -25,13 +25,18 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
 
   @override
   BaseChartVo copy() {
+    List<BarChartData<E>?> newData = [];
+    if (data.isNotEmpty) {
+      newData = data.sublist(0);
+    }
     return BarChartVo(
-        id: id,
-        name: name,
-        maxValue: maxValue,
-        minValue: minValue,
-        barWidth: barWidth,
-        data: KlineCollectionUtil.sublist(list: data, start: 0) ?? []);
+      id: id,
+      name: name,
+      maxValue: maxValue,
+      minValue: minValue,
+      barWidth: barWidth,
+      data: newData,
+    );
   }
 
   @override
