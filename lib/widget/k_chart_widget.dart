@@ -216,7 +216,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                           chartData: subChartsShow[i].baseCharts,
                           pointWidth: _pointWidth,
                           pointGap: _pointGap,
-                          maskLayer: _subChartMaskList[i],
+                          maskLayer: _getSubChartMaskByIndex(i),
                           crossCurveStream: _crossCurveStreamList[i + 1],
                           selectedChartDataIndexStream:
                               _selectedIndexStream,
@@ -231,6 +231,11 @@ class _KChartWidgetState extends State<KChartWidget> {
             });
           }),
     );
+  }
+
+  MaskLayer? _getSubChartMaskByIndex(int index) {
+    bool hasMaskLayer = _subChartMaskList.hasIndex(index);
+    return hasMaskLayer ? _subChartMaskList[index] : null;
   }
 
   /// 更新显示的数据数量
