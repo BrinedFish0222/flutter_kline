@@ -172,6 +172,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                   KlineGestureDetector(
                     pointWidth: _pointWidth,
                     pointGap: _pointGap,
+                    isShowCrossCurve: _isShowCrossCurve,
                     onTap: _onTap,
                     showDataNum: _showDataNum,
                     onHorizontalDragStart: _onHorizontalDragStart,

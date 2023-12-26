@@ -17,6 +17,7 @@ class KlineGestureDetector extends StatefulWidget {
     this.pointWidth = 0,
     this.pointGap = 0,
     required this.showDataNum,
+    this.isShowCrossCurve = false,
   });
 
   /// 数据点宽度
@@ -27,6 +28,9 @@ class KlineGestureDetector extends StatefulWidget {
 
   /// 显示的数据点
   final int showDataNum;
+
+  /// 是否显示十字线
+  final bool isShowCrossCurve;
 
   final Widget child;
 
@@ -150,7 +154,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
 
           KlineUtil.logd('onHorizontalDragUpdate _horizontalDragThreshold $_horizontalDragThreshold ...');
           // 达到横向拖动阈值才放行
-          if (_horizontalDragThreshold < 120 / (widget.showDataNum + 1)) {
+          if (!widget.isShowCrossCurve && _horizontalDragThreshold < 120 / (widget.showDataNum + 1)) {
             KlineUtil.logd('未达到横向拖动阈值，拦截');
             return;
           }
