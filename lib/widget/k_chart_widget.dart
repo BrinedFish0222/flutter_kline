@@ -263,12 +263,14 @@ class _KChartWidgetState extends State<KChartWidget> {
     KlineUtil.logd("k_chart_widget _onTap");
     // 取消选中的十字线
     if (_cancelCrossCurve()) {
+      setState(() {});
       return;
     }
 
     _resetCrossCurve(Pair(
         left: pointerInfo.globalPosition.dx,
         right: pointerInfo.globalPosition.dy));
+    setState(() {});
   }
 
   void _onHorizontalDragStart(details) {
