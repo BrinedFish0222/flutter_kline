@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../common/pair.dart';
@@ -37,10 +36,10 @@ class KlineGestureDetector extends StatefulWidget {
   final void Function(DragEndDetails)? onHorizontalDragEnd;
 
   /// 放大
-  final void Function() onZoomIn;
+  final void Function({DragUpdateDetails? details}) onZoomIn;
 
   /// 缩小
-  final void Function() onZoomOut;
+  final void Function({DragUpdateDetails? details}) onZoomOut;
 
   @override
   State<KlineGestureDetector> createState() => _KlineGestureDetectorState();
@@ -184,10 +183,10 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
 
           if (delta.dy < 0) {
             KlineUtil.logd("单指放大");
-            widget.onZoomIn();
+            widget.onZoomIn(details: details);
           } else {
             KlineUtil.logd("单指缩小");
-            widget.onZoomOut();
+            widget.onZoomOut(details: details);
           }
         },
         child: widget.child,

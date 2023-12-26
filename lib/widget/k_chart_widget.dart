@@ -178,12 +178,26 @@ class _KChartWidgetState extends State<KChartWidget> {
                     onHorizontalDragUpdate: _onHorizontalDragUpdate,
                     onHorizontalDragEnd: (details) =>
                         _isOnHorizontalDragStart = false,
-                    onZoomIn: () {
+                    onZoomIn: ({DragUpdateDetails? details}) {
+                      // 如果十字线显示的状态，则拖动操作是移动十字线。
+                      if (_isShowCrossCurve && details != null) {
+                        _resetCrossCurve(Pair(
+                            left: details.globalPosition.dx, right: details.globalPosition.dy));
+                        return;
+                      }
+
                       int endIndex = (_showDataStartIndex + _showDataNum)
                           .clamp(0, widget.source.dataMaxIndex);
                       _onZoom(endIndex: endIndex, zoomIn: true);
                     },
-                    onZoomOut: () {
+                    onZoomOut: ({DragUpdateDetails? details}) {
+                      // 如果十字线显示的状态，则拖动操作是移动十字线。
+                      if (_isShowCrossCurve && details != null) {
+                        _resetCrossCurve(Pair(
+                            left: details.globalPosition.dx, right: details.globalPosition.dy));
+                        return;
+                      }
+
                       int endIndex = (_showDataStartIndex + _showDataNum)
                           .clamp(0, widget.source.dataMaxIndex);
                       _onZoom(endIndex: endIndex, zoomIn: false);
