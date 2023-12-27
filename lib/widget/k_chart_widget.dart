@@ -135,9 +135,9 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 初始化十字线 StreamController
   void _initCrossCurveStream() {
     _crossCurveStreamList = [];
-    _crossCurveStreamList.add(StreamController());
+    _crossCurveStreamList.add(StreamController.broadcast());
     for (int i = 0; i < _subChartData.length; ++i) {
-      _crossCurveStreamList.add(StreamController());
+      _crossCurveStreamList.add(StreamController.broadcast());
     }
   }
 
@@ -145,6 +145,9 @@ class _KChartWidgetState extends State<KChartWidget> {
   void dispose() {
     _hideCandlestickOverlay();
     _selectedIndexStream?.close();
+    for (var con in _crossCurveStreamList) {
+      con.close();
+    }
     super.dispose();
   }
 
@@ -210,7 +213,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                       margin: widget.margin,
                       pointWidth: _pointWidth,
                       pointGap: _pointGap,
-                      crossCurveStream: _crossCurveStreamList[0],
+                      crossCurveStream: _getCrossCurveStreamByIndex(0),
                       selectedChartDataIndexStream: _selectedIndexStream,
                       onTapIndicator: () {
                         widget.onTapIndicator(0);
@@ -232,7 +235,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                           pointWidth: _pointWidth,
                           pointGap: _pointGap,
                           maskLayer: _getSubChartMaskByIndex(i),
-                          crossCurveStream: _crossCurveStreamList[i + 1],
+                          crossCurveStream: _getCrossCurveStreamByIndex(i + 1),
                           selectedChartDataIndexStream:
                               _selectedIndexStream,
                           onTapIndicator: () {
@@ -246,6 +249,20 @@ class _KChartWidgetState extends State<KChartWidget> {
             });
           }),
     );
+  }
+
+
+  /// 根据索引获取十字线流
+  StreamController<Pair<double?, double?>> _getCrossCurveStreamByIndex(int index) {
+    bool hasStream = _crossCurveStreamList.hasIndex(index);
+    if (hasStream) {
+      return _crossCurveStreamList[index];
+    }
+
+    StreamController<Pair<double?, double?>> streamController = StreamController.broadcast();
+    _crossCurveStreamList.add(streamController);
+
+    return streamController;
   }
 
   MaskLayer? _getSubChartMaskByIndex(int index) {
