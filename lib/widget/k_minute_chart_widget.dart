@@ -176,81 +176,97 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     return GestureDetector(
       onLongPressStart: _onLongPressStart,
       onLongPressMoveUpdate: _onLongPressMoveUpdate,
-      child: LayoutBuilder(builder: (context, constraints) {
-        _computeLayout(constraints);
-
-        /// TODO 原使用 ListenableBuilder，改成 AnimatedBuilder 是为了兼容旧版本sdk 3.7.7
-        return AnimatedBuilder(
-            animation: widget.source,
-            builder: (context, _) {
-
-              /// 副图显示数据
-              var subChartsShow = widget.source.subChartsShow;
-
-              return Column(
-                children: [
-                  Listener(
-                    // 记录点击的位置
-                    onPointerDown: (event) => onTapGlobalPointer =
-                        Offset(event.position.dx, event.position.dy),
-                    child: ValueListenableBuilder(
-                        valueListenable: _isShowCrossCurve,
-                        builder: (context, data, _) {
-                          return GestureDetector(
-                            onTap: _onTap,
-                            onHorizontalDragStart:
-                                data ? _onHorizontalDragStart : null,
-                            onHorizontalDragUpdate:
-                                data ? _onHorizontalDragUpdate : null,
-                            onHorizontalDragEnd: data
-                                ? (details) =>
-                                    _isOnHorizontalDragStart = false
-                                : null,
-                            child: MinuteChartWidget(
-                              size: _mainChartSize,
-                              name: widget.source.mainChartShow?.name,
-                              minuteChartData: _minuteChartData,
-                              minuteChartSubjoinData: _minuteChartSubjoinData,
-                              middleNum: widget.middleNum,
-                              differenceNumbers: widget.differenceNumbers,
-                              pointWidth: _pointWidth,
-                              pointGap: _pointGap,
-                              crossCurveStream: _crossCurveStreamList[0],
-                              selectedChartDataIndexStream:
-                                  _selectedIndexStream,
-                              dataNum: _showDataNum,
-                              onTapIndicator: () {
-                                widget.onTapIndicator(0);
-                              },
-                            ),
-                          );
-                        }),
-                  ),
-                  for (int i = 0; i < subChartsShow.length; ++i)
-                    SizedBox.fromSize(
-                      size: _subChartSize,
-                      child: GestureDetector(
-                        onTapDown: (details) => _cancelCrossCurve(),
-                        child: SubChartWidget(
-                          size: _subChartSize,
-                          name: subChartsShow[i].name,
-                          chartData: subChartsShow[i].baseCharts,
-                          pointWidth: _pointWidth,
-                          pointGap: _pointGap,
-                          maskLayer: _subChartMaskList[i],
-                          crossCurveStream: _crossCurveStreamList[i + 1],
-                          selectedChartDataIndexStream: _selectedIndexStream,
-                          onTapIndicator: () {
-                            widget.onTapIndicator(i + 1);
-                          },
+      child: AnimatedBuilder(
+          animation: widget.source,
+          builder: (context, _) {
+            /// 副图显示数据
+            var subChartsShow = widget.source.subChartsShow;
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                _computeLayout(constraints);
+                return Column(
+                  children: [
+                    Listener(
+                      // 记录点击的位置
+                      onPointerDown: (event) => onTapGlobalPointer =
+                          Offset(event.position.dx, event.position.dy),
+                      child: ValueListenableBuilder(
+                          valueListenable: _isShowCrossCurve,
+                          builder: (context, data, _) {
+                            return GestureDetector(
+                              onTap: _onTap,
+                              onHorizontalDragStart:
+                                  data ? _onHorizontalDragStart : null,
+                              onHorizontalDragUpdate:
+                                  data ? _onHorizontalDragUpdate : null,
+                              onHorizontalDragEnd: data
+                                  ? (details) =>
+                                      _isOnHorizontalDragStart = false
+                                  : null,
+                              child: MinuteChartWidget(
+                                size: _mainChartSize,
+                                name: widget.source.mainChartShow?.name,
+                                minuteChartData: _minuteChartData,
+                                minuteChartSubjoinData: _minuteChartSubjoinData,
+                                middleNum: widget.middleNum,
+                                differenceNumbers: widget.differenceNumbers,
+                                pointWidth: _pointWidth,
+                                pointGap: _pointGap,
+                                crossCurveStream: _crossCurveStreamList[0],
+                                selectedChartDataIndexStream:
+                                    _selectedIndexStream,
+                                dataNum: _showDataNum,
+                                onTapIndicator: () {
+                                  widget.onTapIndicator(0);
+                                },
+                              ),
+                            );
+                          }),
+                    ),
+                    for (int i = 0; i < subChartsShow.length; ++i)
+                      SizedBox.fromSize(
+                        size: _subChartSize,
+                        child: GestureDetector(
+                          onTapDown: (details) => _cancelCrossCurve(),
+                          child: SubChartWidget(
+                            size: _subChartSize,
+                            name: subChartsShow[i].name,
+                            chartData: subChartsShow[i].baseCharts,
+                            pointWidth: _pointWidth,
+                            pointGap: _pointGap,
+                            maskLayer: _getSubChartMaskByIndex(i),
+                            crossCurveStream: _getCrossCurveStreamByIndex(i + 1),
+                            selectedChartDataIndexStream: _selectedIndexStream,
+                            onTapIndicator: () {
+                              widget.onTapIndicator(i + 1);
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              );
-            });
-      }),
+                  ],
+                );
+              }
+            );
+          }),
     );
+  }
+
+  MaskLayer? _getSubChartMaskByIndex(int index) {
+    bool hasMaskLayer = _subChartMaskList.hasIndex(index);
+    return hasMaskLayer ? _subChartMaskList[index] : null;
+  }
+
+  /// 根据索引获取十字线流
+  StreamController<Pair<double?, double?>> _getCrossCurveStreamByIndex(int index) {
+    bool hasStream = _crossCurveStreamList.hasIndex(index);
+    if (hasStream) {
+      return _crossCurveStreamList[index];
+    }
+
+    StreamController<Pair<double?, double?>> streamController = StreamController.broadcast();
+    _crossCurveStreamList.add(streamController);
+
+    return streamController;
   }
 
   void _onTap() {

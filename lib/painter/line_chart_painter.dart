@@ -51,7 +51,13 @@ class LineChartPainter extends CustomPainter {
     paint.color = lineChartData.color;
 
     var convertDataList = KlineUtil.convertDataToChartData(
-      lineChartData.data.map((e) => e?.value).toList(),
+      lineChartData.data.map((e) {
+        if (e?.value == 0) {
+          return null;
+        }
+
+        return e?.value;
+      }).toList(),
       size.height,
       maxMinValue: maxMinValue,
     );
@@ -72,6 +78,7 @@ class LineChartPainter extends CustomPainter {
           index: j, pointWidth: pointWidth, pointGap: pointGap);
       double y = data;
 
+      // KlineUtil.logd('LineChartPainter lastX $lastX, lastY $lastY, x $x, y $y, j $j, data $data, originData: ${lineChartData.data[j]?.value}');
       canvas.drawLine(Offset(lastX, lastY), Offset(x, y), paint);
       lastX = x;
       lastY = y;

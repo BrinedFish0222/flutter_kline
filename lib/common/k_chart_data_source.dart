@@ -11,6 +11,7 @@ import '../utils/kline_util.dart';
 /// k线图数据源
 class KChartDataSource extends ChangeNotifier {
   KChartDataSource({
+    this.id = '0',
     required this.originCharts,
     int showDataNum = KlineConfig.showDataDefaultLength,
   }) {
@@ -21,6 +22,8 @@ class KChartDataSource extends ChangeNotifier {
     resetShowData(startIndex: showDataStartIndex);
     KlineUtil.logd('KChartDataSource 初始化 - 结束');
   }
+
+  String id;
 
   /// 原始图数据，并非页面显示的数据
   late final List<ChartData> originCharts;
@@ -222,7 +225,33 @@ class KChartDataSource extends ChangeNotifier {
       return;
     }
 
-    for (ChartData chart in newCharts) {
+    // 新数据应该与原数据保持同一个格式，否则表示有的图被替换/移除了
+    if (originCharts.length > newCharts.length) {
+      originCharts.length = newCharts.length;
+    } else if (originCharts.length < newCharts.length) {
+      for (int i = 0; i < (newCharts.length - originCharts.length); ++i) {
+        originCharts.add(ChartData(id: (originCharts.length - 1).toString(), baseCharts: []));
+      }
+    }
+
+    for (int i = 0; i < newCharts.length; ++i) {
+      bool hasOriginChart = originCharts.hasIndex(i);
+      if (!hasOriginChart) {
+        originCharts.add(newCharts[i]);
+        continue;
+      }
+
+      if (originCharts[i].id != newCharts[i].id) {
+        // 图被替换了，数据直接替换
+        originCharts[i] = newCharts[i];
+        continue;
+      }
+
+      // 同一张图
+      originCharts[i].updateDataBy(newCharts[i], isEnd: isEnd);
+    }
+
+    /*for (ChartData chart in newCharts) {
       // 源数据
       ChartData? originChart = KlineCollectionUtil.firstWhere(originCharts, (element) => element.id == chart.id);
 
@@ -233,7 +262,7 @@ class KChartDataSource extends ChangeNotifier {
       }
 
       originChart.updateDataBy(chart, isEnd: isEnd);
-    }
+    }*/
   }
 
 

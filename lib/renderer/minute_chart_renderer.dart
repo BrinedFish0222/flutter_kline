@@ -42,6 +42,8 @@ class MinuteChartRenderer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     LineChartVo minuteChartVo = _initData();
+    List<BaseChartVo>? minuteChartSubjoinData = _initSubData();
+
     // 统计所有数据的最大最小值
     Pair<double, double> maxMinValue = _computeMaxMinValue();
 
@@ -60,6 +62,8 @@ class MinuteChartRenderer extends CustomPainter {
       ChartRenderer(
         chartData: minuteChartSubjoinData!,
         rectSetting: const RectSetting(isShow: false),
+        maxMinValue: maxMinValue,
+
       ).paint(canvas, size);
     }
 
@@ -83,11 +87,25 @@ class MinuteChartRenderer extends CustomPainter {
       return minuteChartVo;
     }
 
-    for (int i = 0; i < (dataNum - minuteChartVo.data.length); ++i) {
+    int diff = dataNum - minuteChartVo.data.length;
+    for (int i = 0; i < diff; ++i) {
       minuteChartVo.data.add(LineChartData());
     }
 
     return minuteChartVo;
+  }
+
+  List<BaseChartVo<BaseChartData>>? _initSubData() {
+    if (minuteChartSubjoinData?.isEmpty ?? true) {
+      return null;
+    }
+
+    List<BaseChartVo<BaseChartData>> result = [];
+    for (BaseChartVo subData in minuteChartSubjoinData!) {
+      var newSubData = subData.subData(start: 0, end: dataNum);
+      result.add(newSubData);
+    }
+    return result;
   }
 
   /// 计算最大最小值
@@ -111,4 +129,6 @@ class MinuteChartRenderer extends CustomPainter {
 
     return maxMinValue;
   }
+
+
 }

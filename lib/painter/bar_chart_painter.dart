@@ -35,6 +35,12 @@ class BarChartPainter extends CustomPainter {
     }
     // 数据份额
     final dataShare = _getDataShare();
+
+    // 所有数据都是0的情况
+    if (dataShare == 0) {
+      return;
+    }
+
     // 数据图高度份额
     final dataChartHeightShare = size.height / dataShare;
 
@@ -90,11 +96,14 @@ class BarChartPainter extends CustomPainter {
 
   /// 获取数据份额
   double _getDataShare() {
+    late double result;
     if (maxMinValue != null) {
-      return (maxMinValue?.left ?? 0) - (maxMinValue?.right ?? 0);
+      result = (maxMinValue?.left ?? 0) - (maxMinValue?.right ?? 0);
+    } else {
+      var maxMinData = barData.getMaxMinData();
+      return maxMinData.left - maxMinData.right;
     }
 
-    var maxMinData = barData.getMaxMinData();
-    return maxMinData.left - maxMinData.right;
+    return result;
   }
 }
