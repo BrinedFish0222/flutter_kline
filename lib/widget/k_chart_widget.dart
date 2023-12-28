@@ -154,8 +154,10 @@ class _KChartWidgetState extends State<KChartWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPressStart: _onLongPressStart,
-      onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      onLongPressStart: _globalOnLongPressStart,
+      onLongPressMoveUpdate: _globalOnLongPressMoveUpdate,
+      onHorizontalDragUpdate: _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
+      onVerticalDragUpdate: _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
       /// TODO 原使用 ListenableBuilder，改成 AnimatedBuilder 是为了兼容旧版本sdk 3.7.7
       child: AnimatedBuilder(
           animation: widget.source,
@@ -434,13 +436,13 @@ class _KChartWidgetState extends State<KChartWidget> {
   set _showDataStartIndex(int index) =>
       widget.source.showDataStartIndex = index;
 
-  _onLongPressStart(LongPressStartDetails details) {
+  _globalOnLongPressStart(LongPressStartDetails details) {
     _resetCrossCurve(Pair(
         left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 
   /// 长按移动事件
-  _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+  _globalOnLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     KlineUtil.logd(
         "_onLongPressMoveUpdate, dx: ${details.localPosition.dx}, dy ${details.localPosition.dy}");
 
@@ -490,6 +492,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
     _isShowCrossCurve = crossCurveXY != null;
+    setState(() {});
 
     for (var element in _crossCurveStreamList) {
       element.add(crossCurveXY ?? Pair(left: null, right: null));
@@ -504,5 +507,14 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     widget.onHorizontalDragUpdate!(details, widget.source.chartLocation);
+  }
+
+  void _globalOnHorizontalDragUpdate(DragUpdateDetails details) {
+    if (!_isShowCrossCurve) {
+      return;
+    }
+
+    _resetCrossCurve(Pair(
+        left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 }

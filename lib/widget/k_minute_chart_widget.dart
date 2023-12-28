@@ -174,8 +174,10 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPressStart: _onLongPressStart,
-      onLongPressMoveUpdate: _onLongPressMoveUpdate,
+      onLongPressStart: _globalOnLongPressStart,
+      onLongPressMoveUpdate: _globalOnLongPressMoveUpdate,
+      onHorizontalDragUpdate: _isShowCrossCurve.value ? _globalOnHorizontalDragUpdate : null,
+      onVerticalDragUpdate: _isShowCrossCurve.value ? _globalOnHorizontalDragUpdate : null,
       child: AnimatedBuilder(
           animation: widget.source,
           builder: (context, _) {
@@ -249,6 +251,16 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
             );
           }),
     );
+  }
+
+
+  void _globalOnHorizontalDragUpdate(DragUpdateDetails details) {
+    if (!_isShowCrossCurve.value) {
+      return;
+    }
+
+    _resetCrossCurve(Pair(
+        left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 
   MaskLayer? _getSubChartMaskByIndex(int index) {
@@ -387,7 +399,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   }
 
   /// 长按移动事件
-  _onLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+  _globalOnLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
     _resetCrossCurve(Pair(
         left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
@@ -428,7 +440,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     }
   }
 
-  void _onLongPressStart(LongPressStartDetails details) {
+  void _globalOnLongPressStart(LongPressStartDetails details) {
     _resetCrossCurve(Pair(
         left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
