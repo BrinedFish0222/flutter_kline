@@ -3,6 +3,7 @@ import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/example/example_badge_data.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/vo/mask_layer.dart';
+import 'package:flutter_kline/widget/k_line_chart_widget.dart';
 
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
@@ -44,7 +45,9 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
         ExampleBadgeData.badgeChartVo,
       ]),
       ChartData(
-          id: '2', name: 'RMO', baseCharts: [ExampleRmoData.barChartData..barWidth = 4]),
+          id: '2',
+          name: 'RMO',
+          baseCharts: [ExampleRmoData.barChartData..barWidth = 4]),
       ChartData(id: '3', name: 'MACD', baseCharts: ExampleMacdData.macd),
       ChartData(id: '4', name: 'ESS', baseCharts: [
         ExampleEssData.barChartData
@@ -66,7 +69,6 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     BarChartVo barChartVo = ExampleVolData.barChartData..barWidth = 2;
     for (var element in barChartVo.data) {
       element?.isFill = true;
@@ -94,11 +96,59 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
               KlineUtil.logd('移动的位置：$location');
             },
           ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 100,
+            width: 300,
+            child: KLineChartWidget(
+              chart: ExampleVolData.lineChartData.first
+                ..color = Colors.blue
+                ..gradient = const LinearGradient(colors: [
+                  Colors.blue,
+                  Colors.transparent,
+                ]),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              SizedBox(
+                height: 100,
+                width: MediaQuery.of(context).size.width * .5,
+                child: Stack(
+                  children: [
+                    KLineChartWidget(
+                      chart: ExampleVolData.lineChartData.first
+                        ..color = Colors.red
+                        ..gradient = const LinearGradient(
+                          colors: [
+                            Colors.red,
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                    ),
+                    KLineChartWidget(
+                      chart: ExampleVolData.lineChartData.last
+                        ..color = Colors.yellow
+                        ..gradient = const LinearGradient(
+                          colors: [
+                            Colors.yellow,
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
           const ColorBlockWidget(),
         ],
       ),
     );
   }
 }
-
-
