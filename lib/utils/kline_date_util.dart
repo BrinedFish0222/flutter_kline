@@ -8,7 +8,7 @@ class KlineDateUtil {
     if (date == null) {
       return '';
     }
-    return '${date.year}$spaceCharacter${date.month}$spaceCharacter${date.day}';
+    return '${date.year}$spaceCharacter${date.month}$spaceCharacter${date.day} ${date.hour}:${date.minute}';
   }
 
   /// 格式化时间
