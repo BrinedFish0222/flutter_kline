@@ -111,17 +111,22 @@ class _SubChartWidgetState extends State<SubChartWidget> {
             Expanded(
               child: Stack(
                 children: [
-                  RepaintBoundary(
-                    child: CustomPaint(
-                      key: _chartKey,
-                      size: widget.size,
-                      painter: ChartRenderer(
-                          chartData: widget.chartData,
-                          pointWidth: widget.pointWidth,
-                          pointGap: widget.pointGap,
-                          maxMinValue: maxMinValue,
-                          rectSetting: const RectSetting(transverseLineNum: 0)),
-                    ),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      KlineUtil.logd("sub chart total height ${widget.size.height}, single height ${constraints.maxHeight}");
+                      return RepaintBoundary(
+                        child: CustomPaint(
+                          key: _chartKey,
+                          size: Size(constraints.maxWidth, constraints.maxHeight),
+                          painter: ChartRenderer(
+                              chartData: widget.chartData,
+                              pointWidth: widget.pointWidth,
+                              pointGap: widget.pointGap,
+                              maxMinValue: maxMinValue,
+                              rectSetting: const RectSetting(transverseLineNum: 0)),
+                        ),
+                      );
+                    }
                   ),
                   RepaintBoundary(
                     child: StreamBuilder(

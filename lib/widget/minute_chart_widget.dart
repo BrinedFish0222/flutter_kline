@@ -111,117 +111,127 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
   Widget build(BuildContext context) {
     var maxMinValue = _computeMaxMinValue();
 
-    return Column(
-      children: [
-        // 信息栏
-        SizedBox(
-          height: KlineConfig.showDataSpaceSize,
-          child: Row(children: [
-            InkWell(
-              onTap: widget.onTapIndicator,
-              child: Row(
-                children: [
-                  Text(
-                    widget.name,
-                    style:
-                        const TextStyle(fontSize: KlineConfig.showDataFontSize),
-                  ),
-                  const Icon(
-                    Icons.arrow_drop_down,
-                    size: KlineConfig.showDataIconSize,
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: StreamBuilder<MinuteChartSelectedDataVo>(
-                  initialData: MinuteChartSelectedDataVo.getLastShowData(
-                      minuteChartData: widget.minuteChartData,
-                      minuteChartSubjoinData: widget.minuteChartSubjoinData),
-                  stream: _minuteChartSelectedDataStream.stream,
-                  builder: (context, snapshot) {
-                    var data = snapshot.data;
-
-                    return ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: data?.indicatorsData
-                              ?.where((element) => element?.value != null)
-                              .map((e) => Padding(
-                                    padding: const EdgeInsets.only(right: 5),
-                                    child: Center(
-                                      child: Text(
-                                        '${e?.name} ${e?.value?.toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                            color: e?.color,
-                                            fontSize:
-                                                KlineConfig.showDataFontSize),
-                                      ),
-                                    ),
-                                  ))
-                              .toList() ??
-                          [],
-                    );
-                  }),
-            )
-          ]),
-        ),
-
-        Stack(
-          children: [
-            RepaintBoundary(
-              child: CustomPaint(
-                key: _chartKey,
-                size: widget.size,
-                painter: MinuteChartRenderer(
-                  minuteChartVo: widget.minuteChartData,
-                  minuteChartSubjoinData: widget.minuteChartSubjoinData,
-                  middleNum: widget.middleNum,
-                  differenceNumbers: widget.differenceNumbers,
-                  // maxMinValue: maxMinValue,
+    return SizedBox(
+      width: widget.size.width,
+      height: widget.size.height,
+      child: Column(
+        children: [
+          // 信息栏
+          SizedBox(
+            height: KlineConfig.showDataSpaceSize,
+            child: Row(children: [
+              InkWell(
+                onTap: widget.onTapIndicator,
+                child: Row(
+                  children: [
+                    Text(
+                      widget.name,
+                      style:
+                          const TextStyle(fontSize: KlineConfig.showDataFontSize),
+                    ),
+                    const Icon(
+                      Icons.arrow_drop_down,
+                      size: KlineConfig.showDataIconSize,
+                    ),
+                  ],
                 ),
               ),
+              Expanded(
+                child: StreamBuilder<MinuteChartSelectedDataVo>(
+                    initialData: MinuteChartSelectedDataVo.getLastShowData(
+                        minuteChartData: widget.minuteChartData,
+                        minuteChartSubjoinData: widget.minuteChartSubjoinData),
+                    stream: _minuteChartSelectedDataStream.stream,
+                    builder: (context, snapshot) {
+                      var data = snapshot.data;
+    
+                      return ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: data?.indicatorsData
+                                ?.where((element) => element?.value != null)
+                                .map((e) => Padding(
+                                      padding: const EdgeInsets.only(right: 5),
+                                      child: Center(
+                                        child: Text(
+                                          '${e?.name} ${e?.value?.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                              color: e?.color,
+                                              fontSize:
+                                                  KlineConfig.showDataFontSize),
+                                        ),
+                                      ),
+                                    ))
+                                .toList() ??
+                            [],
+                      );
+                    }),
+              )
+            ]),
+          ),
+    
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    RepaintBoundary(
+                      child: CustomPaint(
+                        key: _chartKey,
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+                        painter: MinuteChartRenderer(
+                          minuteChartVo: widget.minuteChartData,
+                          minuteChartSubjoinData: widget.minuteChartSubjoinData,
+                          middleNum: widget.middleNum,
+                          differenceNumbers: widget.differenceNumbers,
+                          // maxMinValue: maxMinValue,
+                        ),
+                      ),
+                    ),
+                    RepaintBoundary(
+                      child: StreamBuilder(
+                          stream: widget.crossCurveStream?.stream,
+                          builder: (context, snapshot) {
+                            Pair<double?, double?> selectedXY =
+                                Pair(left: null, right: null);
+                            if (snapshot.data != null && !snapshot.data!.isNull()) {
+                              RenderBox renderBox = _chartKey.currentContext!
+                                  .findRenderObject() as RenderBox;
+          
+                              Offset? selectedOffset =
+                                  snapshot.data == null || snapshot.data!.isNull()
+                                      ? null
+                                      : renderBox.globalToLocal(Offset(
+                                          snapshot.data?.left ?? 0,
+                                          snapshot.data?.right ?? 0));
+                              selectedXY.left = selectedOffset?.dx;
+                              selectedXY.right = selectedOffset?.dy;
+                            }
+          
+                            double? selectedHorizontalValue =
+                                KlineUtil.computeSelectedHorizontalValue(
+                                    maxMinValue: maxMinValue,
+                                    height: widget.size.height,
+                                    selectedY: selectedXY.right);
+          
+                            return CustomPaint(
+                              size: widget.size,
+                              painter: CrossCurvePainter(
+                                  selectedXY: selectedXY,
+                                  selectedHorizontalValue: selectedHorizontalValue,
+                                  selectedDataIndexStream:
+                                      widget.selectedChartDataIndexStream,
+                                  pointWidth: widget.pointWidth,
+                                  pointGap: widget.pointGap),
+                            );
+                          }),
+                    )
+                  ],
+                );
+              }
             ),
-            RepaintBoundary(
-              child: StreamBuilder(
-                  stream: widget.crossCurveStream?.stream,
-                  builder: (context, snapshot) {
-                    Pair<double?, double?> selectedXY =
-                        Pair(left: null, right: null);
-                    if (snapshot.data != null && !snapshot.data!.isNull()) {
-                      RenderBox renderBox = _chartKey.currentContext!
-                          .findRenderObject() as RenderBox;
-
-                      Offset? selectedOffset =
-                          snapshot.data == null || snapshot.data!.isNull()
-                              ? null
-                              : renderBox.globalToLocal(Offset(
-                                  snapshot.data?.left ?? 0,
-                                  snapshot.data?.right ?? 0));
-                      selectedXY.left = selectedOffset?.dx;
-                      selectedXY.right = selectedOffset?.dy;
-                    }
-
-                    double? selectedHorizontalValue =
-                        KlineUtil.computeSelectedHorizontalValue(
-                            maxMinValue: maxMinValue,
-                            height: widget.size.height,
-                            selectedY: selectedXY.right);
-
-                    return CustomPaint(
-                      size: widget.size,
-                      painter: CrossCurvePainter(
-                          selectedXY: selectedXY,
-                          selectedHorizontalValue: selectedHorizontalValue,
-                          selectedDataIndexStream:
-                              widget.selectedChartDataIndexStream,
-                          pointWidth: widget.pointWidth,
-                          pointGap: widget.pointGap),
-                    );
-                  }),
-            )
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
