@@ -46,7 +46,7 @@ class ChartData {
     return ChartData(
       id: id ?? this.id,
       name: name ?? this.name,
-      baseCharts: charts ?? KlineCollectionUtil.sublist(list: this.baseCharts, start: 0) ?? [],
+      baseCharts: charts ?? KlineCollectionUtil.sublist(list: baseCharts, start: 0) ?? [],
     );
   }
 

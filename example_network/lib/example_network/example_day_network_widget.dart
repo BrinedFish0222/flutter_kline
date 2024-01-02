@@ -37,10 +37,10 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
       originCharts: [
         ChartData(id: '0', name: 'MA', baseCharts: [
           CandlestickChartVo(data: []),
-          ...ExampleLineData.getLineChartMA13(),
-          ExampleBadgeData.badgeChartVo,
+          // ...ExampleLineData.getLineChartMA13(),
+          // ExampleBadgeData.badgeChartVo,
         ]),
-        ChartData(id: '1', name: 'VOL', baseCharts: [
+        /* ChartData(id: '1', name: 'VOL', baseCharts: [
           ExampleVolData.barChartData..minValue = 0,
           ...ExampleVolData.lineChartData,
           ExampleBadgeData.badgeChartVo,
@@ -53,7 +53,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
             ..minValue = 0,
           ExampleEssData.lineChartA,
           ExampleEssData.lineChartB
-        ]),
+        ]), */
       ],
     );
 
@@ -64,7 +64,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
 
       ResponseResult responseResult = responseResultFromJson(data);
       // KlineUtil.logd('日K initState responseResult type：${responseResult.type}');
-      List<BaseChartVo> dataList = responseResult.parseDayData();
+      List<BaseChartVo> dataList = responseResult.parseDayData(type: 'daySingle');
       if (dataList.isEmpty) {
         return;
       }
