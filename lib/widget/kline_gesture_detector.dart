@@ -16,9 +16,12 @@ class KlineGestureDetector extends StatefulWidget {
     required this.child,
     this.pointWidth = 0,
     this.pointGap = 0,
+    required this.totalDataNum,
+    required this.maxWidth,
     required this.showDataNum,
     this.isShowCrossCurve = false,
-  });
+    EdgeInsets? padding,
+  }) : padding = padding ?? const EdgeInsets.only(right: 5);
 
   /// 数据点宽度
   final double pointWidth;
@@ -26,8 +29,17 @@ class KlineGestureDetector extends StatefulWidget {
   /// 数据点间隔
   final double pointGap;
 
+  /// 数据总数量
+  final int totalDataNum;
+
   /// 显示的数据点
   final int showDataNum;
+
+  /// 图的左右间隔
+  final EdgeInsets padding;
+
+  /// 显示图的最大宽度
+  final double maxWidth;
 
   /// 是否显示十字线
   final bool isShowCrossCurve;
@@ -69,8 +81,37 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
 
   double _horizontalDragThreshold = 0;
 
+
+  /// 卷轴宽度 卷轴最小宽度，代表最左边
+  late double _minScrollWidth;
+
+  /// 卷轴宽度 卷轴最大宽度，代表最右边
+  /// 目前固定为0代表最右边
+  final double _maxScrollWidth = 0;
+
+  /// 卷轴显示的宽度
+  /// [_minScrollWidthShow] 卷轴显示的宽度 左边的宽度
+  /// [_maxScrollWidthShow] 卷轴显示的宽度 右边的宽度
+  late double _minScrollWidthShow, _maxScrollWidthShow = 0;
+
+  /// 显示的数据范围
+  /// [_startDataIndex] 数据开始的索引
+  /// [_endDataIndex]   数据结束的索引
+  late int _startDataIndex = widget.totalDataNum - 1 - widget.showDataNum,
+      _endDataIndex = widget.totalDataNum - 1;
+
+  @override
+  void initState() {
+    KlineUtil.logd('KlineGestureDetector initState');
+    _resetMinScrollWidth();
+    // 卷轴显示左范围初始值：最右范围 - 最大显示范围
+    _minScrollWidthShow = _maxScrollWidthShow - widget.maxWidth;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    KlineUtil.logd('KlineGestureDetector build');
     return Listener(
       onPointerDown: (event) {
         pointerCount += 1;
@@ -198,7 +239,27 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
     );
   }
 
-//  释放点信息
+  @override
+  void didUpdateWidget(covariant KlineGestureDetector oldWidget) {
+    double lastMinScrollWidth = _minScrollWidth;
+    _resetMinScrollWidth();
+
+    // 如果卷轴显示区域目前在最右边，则不做任何变动
+    if (_endDataIndex == widget.totalDataNum - 1) {
+      // 重新计算最右边
+      
+    }
+
+    KlineUtil.logd('KlineGestureDetector didUpdateWidget, dataNum ${widget.totalDataNum}, _minScrollWidth $_minScrollWidth');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  /// 重置卷轴最小宽度
+  void _resetMinScrollWidth() {
+    _minScrollWidth = -(widget.totalDataNum * (widget.pointGap + widget.pointWidth) + widget.padding.right);
+  }
+
+  ///  释放点信息
   void _undoPointer({required int pointer}) {
     if (doublePointerInfo.left?.pointer == pointer) {
       doublePointerInfo.left = null;
