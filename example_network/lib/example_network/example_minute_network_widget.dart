@@ -5,8 +5,6 @@ import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/example/example_macd_data.dart';
-import 'package:flutter_kline/example/example_rmo_data.dart';
 import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
