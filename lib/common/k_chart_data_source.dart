@@ -17,8 +17,7 @@ class KChartDataSource extends ChangeNotifier {
   }) {
     KlineUtil.logd('KChartDataSource 初始化 - 开始');
     _showDataNum = showDataNum;
-    var maxIndex = dataMaxIndex;
-    showDataStartIndex = (maxIndex - _showDataNum).clamp(0, maxIndex);
+    _resetChartRightmost();
     resetShowData(startIndex: showDataStartIndex);
     KlineUtil.logd('KChartDataSource 初始化 - 结束');
   }
@@ -39,6 +38,14 @@ class KChartDataSource extends ChangeNotifier {
 
   /// 图的位置
   ChartLocation chartLocation = ChartLocation.rightmost;
+
+
+  /// 重置图在最右边
+  void _resetChartRightmost() {
+    var maxIndex = dataMaxIndex;
+    showDataStartIndex = (maxIndex - _showDataNum).clamp(0, maxIndex);
+    chartLocation = ChartLocation.rightmost;
+  }
 
   int get showDataNum => _showDataNum;
 
@@ -120,6 +127,11 @@ class KChartDataSource extends ChangeNotifier {
     }
 
     super.notifyListeners();
+  }
+
+  void clearCharts() {
+    originCharts.clear();
+    showCharts.clear();
   }
 
   /// 清除数据 - 全部
@@ -222,6 +234,7 @@ class KChartDataSource extends ChangeNotifier {
     // 原副数据为空，直接新增
     if (originCharts.isEmpty) {
       originCharts.addAll(newCharts);
+      _resetChartRightmost();
       return;
     }
 
