@@ -44,8 +44,8 @@ class CandlestickChartPainter extends CustomPainter {
         rect: Rect.fromLTRB(x, element.open, x + pointWidth, element.close),
         top: element.high,
         bottom: element.low,
-        lineColor: isUp ? Colors.red : Colors.green,
-        rectFillColor: isUp ? null : Colors.green,
+        lineColor: element.color ?? (isUp ? Colors.red : Colors.green),
+        rectFillColor: isUp ? null : element.color ?? Colors.green,
       ).paint(canvas, size);
 
       index += 1;
@@ -82,12 +82,7 @@ class CandlestickChartPainter extends CustomPainter {
               .abs()
               .toDouble();
 
-      return CandlestickChartData(
-          dateTime: data.dateTime,
-          open: open,
-          close: close,
-          high: high,
-          low: low);
+      return data.copyWith(open: open, close: close, high: high, low: low);
     }).toList();
 
     return result;

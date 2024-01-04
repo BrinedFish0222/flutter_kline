@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
@@ -197,10 +198,12 @@ abstract class BaseChartVo<T extends BaseChartData> {
 /// 使用场景：一根线上一个点的信息
 abstract class BaseChartData<T> {
   String? id;
+  Color? color;
   T? extrasData;
 
   BaseChartData({
     this.id,
+    this.color,
     this.extrasData,
   });
 }

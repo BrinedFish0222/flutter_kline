@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
@@ -92,6 +93,29 @@ class CandlestickChartData<E> extends BaseChartData<E> {
     required this.close,
     required this.high,
     required this.low,
+    super.color,
     super.extrasData,
   });
+
+  CandlestickChartData copyWith({
+    String? id,
+    DateTime? dateTime,
+    double? open,
+    double? close,
+    double? high,
+    double? low,
+    Color? color,
+    Map<String, dynamic>? extrasData,
+  }) {
+    return CandlestickChartData(
+      id: id ?? this.id,
+      dateTime: dateTime ?? this.dateTime,
+      open: open ?? this.open,
+      close: close ?? this.close,
+      high: high ?? this.high,
+      low: low ?? this.low,
+      color: color ?? this.color,
+      extrasData: extrasData ?? this.extrasData,
+    );
+  }
 }

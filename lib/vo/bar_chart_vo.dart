@@ -96,13 +96,12 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
 class BarChartData<E> extends BaseChartData<E> {
   double value;
   bool isFill;
-  Color color;
 
   BarChartData({
     super.id,
     this.value = 0,
     this.isFill = false,
-    this.color = Colors.black,
+    super.color = Colors.black,
     super.extrasData,
   });
 }

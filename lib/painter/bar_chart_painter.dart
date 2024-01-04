@@ -54,7 +54,7 @@ class BarChartPainter extends CustomPainter {
         continue;
       }
 
-      paint.color = data.color;
+      paint.color = data.color ?? Colors.black;
       paint.style = data.isFill ? PaintingStyle.fill : PaintingStyle.stroke;
 
       // 左边坐标点
