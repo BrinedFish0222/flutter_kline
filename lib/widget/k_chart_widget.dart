@@ -124,7 +124,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   void initState() {
-    _controller = widget.controller ?? KChartController();
+    _controller = widget.controller ?? KChartController(source: widget.source);
     _initSubChartMaskList();
 
     _initCrossCurveStream();
@@ -421,6 +421,9 @@ class _KChartWidgetState extends State<KChartWidget> {
         _hideCandlestickOverlay();
         return;
       }
+
+      _controller.updateOverlayEntryDataByIndex(index);
+
       var overlayLocation = _getCandlestickOverlayLocation();
       _showCandlestickOverlay(
         context: context,
@@ -503,6 +506,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _chartLocation(details);
 
     _sameTimeLastHorizontalDragX = dx;
+    _controller.updateOverlayEntryDataByIndex(-1);
     widget.source.notifyListeners();
   }
 
@@ -516,6 +520,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _resetCrossCurve(null);
     _hideCandlestickOverlay();
 
+    KlineUtil.logd('取消十字线，传输-1');
     _selectedIndexStream?.add(-1);
     return true;
   }

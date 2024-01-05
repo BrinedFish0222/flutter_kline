@@ -113,7 +113,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   void initState() {
-    _controller = widget.controller ?? KChartController();
+    _controller = widget.controller ?? KChartController(source: widget.source);
     _initSubChartMaskList();
     _initCrossCurveStream();
     _initSelectedIndexStream();
@@ -135,6 +135,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
         return;
       }
 
+      _controller.updateOverlayEntryDataByIndex(index);
+      // TODO 看data是否能用上面的数据
       LineChartData data = _minuteChartData.data[index]!;
       _showCandlestickOverlay(context: context, data: data);
     });
