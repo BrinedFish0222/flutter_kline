@@ -35,11 +35,16 @@ class KChartWidget extends StatefulWidget {
     this.overlayEntryBuilder,
     this.realTimePrice,
     this.onHorizontalDragUpdate,
-  });
+    this.chartNum,
+  }) : assert(chartNum == null || chartNum > 0, "chartNum is null or gt 1");
 
   final KChartController? controller;
 
   final KChartDataSource source;
+
+  /// 限制图数量，不设置表示等于 [source.originCharts.length]
+  /// 值等于空或大于0
+  final int? chartNum;
 
   /// 副图遮罩
   final List<MaskLayer?>? subChartMaskList;
@@ -113,6 +118,9 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 副图遮罩
   List<MaskLayer?> _subChartMaskList = [];
+  
+  /// 副图显示数量
+  get _subChartShowLength => widget.chartNum == null ? _subChartData.length : (widget.chartNum! - 1).clamp(0, _subChartData.length);
 
   @override
   void initState() {
@@ -183,6 +191,8 @@ class _KChartWidgetState extends State<KChartWidget> {
                   /// 副图显示的数据
                   List<ChartData> subChartsShow = widget.source.subChartsShow;
 
+                  int subChartsShowLength = _subChartShowLength;
+
                   return Column(
                     children: [
 
@@ -238,7 +248,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                       ),
 
                       /// 副图
-                      for (int i = 0; i < subChartsShow.length; ++i)
+                      for (int i = 0; i < subChartsShowLength; ++i)
                         GestureDetector(
                           onTapDown: (details) => _cancelCrossCurve(),
                           child: SizedBox.fromSize(
@@ -330,7 +340,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
         totalHeight: height,
         subChartRatio: widget.subChartRatio,
-        subChartNum: _subChartData.length);
+        subChartNum: _subChartShowLength);
     _mainChartSize = Size(width, heightPair.left);
     _subChartSize = Size(width, heightPair.right);
 

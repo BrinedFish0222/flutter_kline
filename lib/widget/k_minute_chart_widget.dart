@@ -29,12 +29,17 @@ class KMinuteChartWidget extends StatefulWidget {
     required this.onTapIndicator,
     required this.overlayEntryLocationKey,
     this.overlayEntryBuilder,
-  });
+    this.chartNum,
+  }) : assert(chartNum == null || chartNum > 0, "chartNum is null or gt 1");
 
   final KChartController? controller;
 
   /// 数据源
   final KChartDataSource source;
+
+  /// 限制图数量，不设置表示等于 [source.originCharts.length]
+  /// 值等于空或大于0
+  final int? chartNum;
 
   /// 分时图：中间值
   final double middleNum;
@@ -102,6 +107,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
     return widget.source.mainChartBaseChartsShow.sublist(1);
   }
+  
+  /// 副图显示数量
+  get _subChartShowLength => widget.chartNum == null ? _subChartData.length : (widget.chartNum! - 1).clamp(0, _subChartData.length);
 
   @override
   void initState() {
@@ -189,6 +197,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
               builder: (context, _) {
                 /// 副图显示数据
                 var subChartsShow = widget.source.subChartsShow;
+                int subChartsShowLength = _subChartShowLength;
+
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     _computeLayout(constraints);
@@ -227,7 +237,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                             ),
                           ),
                         ),
-                        for (int i = 0; i < subChartsShow.length; ++i)
+                        for (int i = 0; i < subChartsShowLength; ++i)
                           SizedBox.fromSize(
                             size: _subChartSize,
                             child: GestureDetector(
@@ -314,9 +324,10 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
         : defaultSize.height;
 
     Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
-        totalHeight: height,
-        subChartRatio: widget.subChartRatio,
-        subChartNum: _subChartData.length);
+      totalHeight: height,
+      subChartRatio: widget.subChartRatio,
+      subChartNum: _subChartShowLength,
+    );
     _mainChartSize = Size(width, heightPair.left);
     _subChartSize = Size(width, heightPair.right);
 
