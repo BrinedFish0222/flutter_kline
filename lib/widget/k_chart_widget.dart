@@ -64,7 +64,7 @@ class KChartWidget extends StatefulWidget {
   final void Function(int index) onTapIndicator;
 
   /// 悬浮层位置Key
-  final GlobalKey overlayEntryLocationKey;
+  final GlobalKey? overlayEntryLocationKey;
 
   /// 悬浮层自定义组件
   final Widget Function(CandlestickChartData)? overlayEntryBuilder;
@@ -353,8 +353,13 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   /// 获取蜡烛浮层地址
-  Pair<double, double> _getCandlestickOverlayLocation() {
-    RenderBox? renderBox = widget.overlayEntryLocationKey.currentContext
+  Pair<double, double>? _getCandlestickOverlayLocation() {
+    if (widget.overlayEntryLocationKey == null) {
+      // 没有key，不显示
+      return null;
+    }
+
+    RenderBox? renderBox = widget.overlayEntryLocationKey!.currentContext
         ?.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       // 获取组件在页面中的位置信息
@@ -424,7 +429,10 @@ class _KChartWidgetState extends State<KChartWidget> {
 
       _controller.updateOverlayEntryDataByIndex(index);
 
-      var overlayLocation = _getCandlestickOverlayLocation();
+      Pair<double, double>? overlayLocation = _getCandlestickOverlayLocation();
+      if (overlayLocation == null) {
+        return;
+      }
       _showCandlestickOverlay(
         context: context,
         left: 0,

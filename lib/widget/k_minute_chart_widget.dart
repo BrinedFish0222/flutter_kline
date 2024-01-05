@@ -57,7 +57,7 @@ class KMinuteChartWidget extends StatefulWidget {
   /// 点击股票指标事件
   final void Function(int index) onTapIndicator;
 
-  final GlobalKey overlayEntryLocationKey;
+  final GlobalKey? overlayEntryLocationKey;
 
   /// 悬浮层自定义组件
   final Widget Function(LineChartData)? overlayEntryBuilder;
@@ -339,8 +339,12 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   /// 获取蜡烛浮层地址
   /// @return left 是x轴，right 是y轴
-  Pair<double, double> _getCandlestickOverlayLocation() {
-    RenderBox? renderBox = widget.overlayEntryLocationKey.currentContext
+  Pair<double, double>? _getCandlestickOverlayLocation() {
+    if (widget.overlayEntryLocationKey == null) {
+      return null;
+    }
+
+    RenderBox? renderBox = widget.overlayEntryLocationKey!.currentContext
         ?.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       // 获取组件在页面中的位置信息
@@ -357,7 +361,12 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
       double left = 0,
       double? top,
       required LineChartData data}) {
-    top ??= _getCandlestickOverlayLocation().right;
+    Pair<double, double>? overlayLocation = _getCandlestickOverlayLocation();
+    if (overlayLocation == null) {
+      return;
+    }
+
+    top ??= overlayLocation.right;
     if (_controller.overlayEntry != null) {
       _controller.overlayEntry?.remove();
     }
