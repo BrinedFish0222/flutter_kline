@@ -85,7 +85,6 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
             onTapIndicator: (index) {
               KlineUtil.showToast(context: context, text: '点击指标索引：$index');
             },
-            margin: const EdgeInsets.all(5),
             subChartMaskList: [
               null,
               MaskLayer(percent: 0.3),

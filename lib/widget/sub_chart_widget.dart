@@ -29,6 +29,7 @@ class SubChartWidget extends StatefulWidget {
     this.crossCurveStream,
     this.selectedChartDataIndexStream,
     required this.onTapIndicator,
+    this.padding = EdgeInsets.zero,
   });
 
   final Size size;
@@ -45,6 +46,8 @@ class SubChartWidget extends StatefulWidget {
 
   /// 点击股票指标事件
   final void Function() onTapIndicator;
+
+  final EdgeInsets padding;
 
   @override
   State<SubChartWidget> createState() => _SubChartWidgetState();

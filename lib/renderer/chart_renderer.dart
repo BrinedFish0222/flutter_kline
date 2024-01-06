@@ -25,8 +25,7 @@ class ChartRenderer extends CustomPainter {
   /// 数据宽度和空间间隔比
   final double candlestickGapRatio;
 
-  /// TODO 目前只有 right 生效。
-  final EdgeInsets? margin;
+  final EdgeInsets padding;
   final double? pointWidth;
   final double? pointGap;
 
@@ -39,25 +38,24 @@ class ChartRenderer extends CustomPainter {
     required this.chartData,
     this.rectSetting = const RectSetting(),
     this.candlestickGapRatio = 3,
-    this.margin,
+    EdgeInsets? padding,
     this.pointWidth,
     this.pointGap,
     this.maxMinValue,
     this.realTimePrice,
-  });
+  }) : padding = padding ?? EdgeInsets.zero;
 
   @override
   void paint(Canvas canvas, Size size) {
     KlineUtil.logd("KChartRenderer paint run ...");
 
-    Size marginSize =
-        margin == null ? size : Size(size.width - margin!.right, size.height);
+    Size paddingSize = Size(size.width - padding.right - padding.left, size.height);
 
     Pair<double, double> maxMinValue =
         this.maxMinValue ?? BaseChartVo.maxMinValue(chartData);
     double pointWidth = this.pointWidth ??
         KlineUtil.getPointWidth(
-          width: marginSize.width,
+          width: paddingSize.width,
           dataLength: chartData.first.dataLength,
           gapRatio: candlestickGapRatio,
         );
@@ -80,6 +78,8 @@ class ChartRenderer extends CustomPainter {
       ).paint(canvas, size);
     }
 
+    // 画完矩形，将画笔移到对应的画图起点
+    canvas.translate(padding.left, 0);
     for (var data in chartData) {
       if (data is CandlestickChartVo) {
         // 画蜡烛图
@@ -88,7 +88,7 @@ class ChartRenderer extends CustomPainter {
           maxMinHeight: maxMinValue,
           pointWidth: pointWidth,
           pointGap: pointGap,
-        ).paint(canvas, marginSize);
+        ).paint(canvas, paddingSize);
 
         continue;
       }
@@ -100,7 +100,7 @@ class ChartRenderer extends CustomPainter {
           maxMinValue: maxMinValue,
           pointWidth: pointWidth,
           pointGap: pointGap,
-        ).paint(canvas, marginSize);
+        ).paint(canvas, paddingSize);
 
         continue;
       }
@@ -112,7 +112,7 @@ class ChartRenderer extends CustomPainter {
           pointWidth: pointWidth,
           pointGap: pointGap,
           maxMinValue: maxMinValue,
-        ).paint(canvas, size);
+        ).paint(canvas, paddingSize);
 
         continue;
       }
@@ -129,7 +129,7 @@ class ChartRenderer extends CustomPainter {
             : const PriceLinePainterStyle(
                 color: KlineConfig.realTimeLineColor2,
               ),
-      ).paint(canvas, size);
+      ).paint(canvas, paddingSize);
     }
   }
 

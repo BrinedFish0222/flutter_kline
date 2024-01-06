@@ -18,7 +18,7 @@ class MainChartWidget extends StatefulWidget {
   const MainChartWidget({
     super.key,
     required this.size,
-    this.margin,
+    this.padding,
     required this.chartData,
     this.infoBarName,
     this.crossCurveStream,
@@ -31,7 +31,7 @@ class MainChartWidget extends StatefulWidget {
   });
 
   final Size size;
-  final EdgeInsets? margin;
+  final EdgeInsets? padding;
 
   /// 信息栏名称
   final String? infoBarName;
@@ -122,7 +122,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                     size: widget.size,
                     painter: ChartRenderer(
                       chartData: widget.chartData,
-                      margin: widget.margin,
+                      padding: widget.padding,
                       pointWidth: widget.pointWidth,
                       pointGap: widget.pointGap,
                       maxMinValue: maxMinValue,
@@ -161,7 +161,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                           size: widget.size,
                           painter: CrossCurvePainter(
                               selectedXY: selectedXY,
-                              margin: widget.margin,
+                              margin: widget.padding,
                               selectedHorizontalValue: selectedHorizontalValue,
                               selectedDataIndexStream:
                                   widget.selectedChartDataIndexStream,

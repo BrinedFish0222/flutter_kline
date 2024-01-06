@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/constants/chart_location.dart';
@@ -27,6 +28,9 @@ class KChartDataSource extends ChangeNotifier {
   /// 原始图数据，并非页面显示的数据
   late final List<ChartData> originCharts;
 
+  /// 上一次[originCharts]的长度
+  int _dataMaxLengthLast = 0;
+
   /// 显示的图数据
   final List<ChartData> showCharts = [];
 
@@ -39,6 +43,10 @@ class KChartDataSource extends ChangeNotifier {
   /// 图的位置
   ChartLocation chartLocation = ChartLocation.rightmost;
 
+  /// 上一次更新数据的方向
+  ValueNotifier<bool>  isEndLast = ValueNotifier(true);
+
+  int get dataMaxLengthLast => _dataMaxLengthLast;
 
   /// 重置图在最右边
   void _resetChartRightmost() {
@@ -183,7 +191,7 @@ class KChartDataSource extends ChangeNotifier {
 
     showCharts.clear();
     for (ChartData chartData in originCharts) {
-      showCharts.add(chartData.subData(start: showDataStartIndex, end: endIndex + 1));
+      showCharts.add(chartData.subData(start: showDataStartIndex + 1, end: endIndex + 1));
     }
 
     // 不可设置，需要更新调用 [notifyListeners()]
@@ -227,41 +235,49 @@ class KChartDataSource extends ChangeNotifier {
     required List<ChartData> newCharts,
     required bool isEnd,
   }) {
-    if (newCharts.isEmpty) {
-      return;
-    }
-
-    // 原副数据为空，直接新增
-    if (originCharts.isEmpty) {
-      originCharts.addAll(newCharts);
-      _resetChartRightmost();
-      return;
-    }
-
-    // 新数据应该与原数据保持同一个格式，否则表示有的图被替换/移除了
-    if (originCharts.length > newCharts.length) {
-      originCharts.length = newCharts.length;
-    } else if (originCharts.length < newCharts.length) {
-      for (int i = 0; i < (newCharts.length - originCharts.length); ++i) {
-        originCharts.add(ChartData(id: (originCharts.length - 1).toString(), baseCharts: []));
-      }
-    }
-
-    for (int i = 0; i < newCharts.length; ++i) {
-      bool hasOriginChart = originCharts.hasIndex(i);
-      if (!hasOriginChart) {
-        originCharts.add(newCharts[i]);
-        continue;
+    try {
+      if (newCharts.isEmpty) {
+        return;
       }
 
-      if (originCharts[i].id != newCharts[i].id) {
-        // 图被替换了，数据直接替换
-        originCharts[i] = newCharts[i];
-        continue;
+      // 记录旧长度
+      _dataMaxLengthLast = dataMaxLength;
+      isEndLast.value = isEnd;
+
+      // 原副数据为空，直接新增
+      if (originCharts.isEmpty) {
+        originCharts.addAll(newCharts);
+        _resetChartRightmost();
+        return;
       }
 
-      // 同一张图
-      originCharts[i].updateDataBy(newCharts[i], isEnd: isEnd);
+      // 新数据应该与原数据保持同一个格式，否则表示有的图被替换/移除了
+      if (originCharts.length > newCharts.length) {
+        originCharts.length = newCharts.length;
+      } else if (originCharts.length < newCharts.length) {
+        for (int i = 0; i < (newCharts.length - originCharts.length); ++i) {
+          originCharts.add(ChartData(id: (originCharts.length - 1).toString(), baseCharts: []));
+        }
+      }
+
+      for (int i = 0; i < newCharts.length; ++i) {
+        bool hasOriginChart = originCharts.hasIndex(i);
+        if (!hasOriginChart) {
+          originCharts.add(newCharts[i]);
+          continue;
+        }
+
+        if (originCharts[i].id != newCharts[i].id) {
+          // 图被替换了，数据直接替换
+          originCharts[i] = newCharts[i];
+          continue;
+        }
+
+        // 同一张图
+        originCharts[i].updateDataBy(newCharts[i], isEnd: isEnd);
+      }
+    } finally {
+      isEndLast.notifyListeners();
     }
 
     /*for (ChartData chart in newCharts) {
