@@ -8,6 +8,7 @@ import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
+import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
 import '../common/k_chart_data_source.dart';
@@ -22,6 +23,7 @@ import 'main_chart_widget.dart';
 class KChartWidget extends StatefulWidget {
   const KChartWidget({
     super.key,
+    this.controller,
     required this.source,
     this.subChartMaskList,
     this.showDataNum = KlineConfig.showDataDefaultLength,
@@ -33,10 +35,16 @@ class KChartWidget extends StatefulWidget {
     this.overlayEntryBuilder,
     this.realTimePrice,
     this.onHorizontalDragUpdate,
-  });
+    this.chartNum,
+  }) : assert(chartNum == null || chartNum > 0, "chartNum is null or gt 1");
 
+  final KChartController? controller;
 
   final KChartDataSource source;
+
+  /// 限制图数量，不设置表示等于 [source.originCharts.length]
+  /// 值等于空或大于0
+  final int? chartNum;
 
   /// 副图遮罩
   final List<MaskLayer?>? subChartMaskList;
@@ -56,7 +64,7 @@ class KChartWidget extends StatefulWidget {
   final void Function(int index) onTapIndicator;
 
   /// 悬浮层位置Key
-  final GlobalKey overlayEntryLocationKey;
+  final GlobalKey? overlayEntryLocationKey;
 
   /// 悬浮层自定义组件
   final Widget Function(CandlestickChartData)? overlayEntryBuilder;
@@ -74,6 +82,8 @@ class KChartWidget extends StatefulWidget {
 }
 
 class _KChartWidgetState extends State<KChartWidget> {
+  late KChartController _controller;
+
   /// 主图size
   late Size _mainChartSize;
 
@@ -93,7 +103,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   StreamController<int>? _selectedIndexStream;
 
   /// 十字线是否显示
-  bool _isShowCrossCurve = false;
+  // bool _isShowCrossCurve = false;
   bool _isOnHorizontalDragStart = true;
 
   /// [widget.showDataNum]
@@ -104,13 +114,17 @@ class _KChartWidgetState extends State<KChartWidget> {
   late double _sameTimeLastHorizontalDragX;
 
   /// 蜡烛选中数据悬浮层
-  OverlayEntry? _candlestickOverlayEntry;
+  // OverlayEntry? _candlestickOverlayEntry;
 
   /// 副图遮罩
   List<MaskLayer?> _subChartMaskList = [];
+  
+  /// 副图显示数量
+  get _subChartShowLength => widget.chartNum == null ? _subChartData.length : (widget.chartNum! - 1).clamp(0, _subChartData.length);
 
   @override
   void initState() {
+    _controller = widget.controller ?? KChartController(source: widget.source);
     _initSubChartMaskList();
 
     _initCrossCurveStream();
@@ -148,113 +162,126 @@ class _KChartWidgetState extends State<KChartWidget> {
     for (var con in _crossCurveStreamList) {
       con.close();
     }
+
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPressStart: _globalOnLongPressStart,
-      onLongPressMoveUpdate: _globalOnLongPressMoveUpdate,
-      onHorizontalDragUpdate: _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
-      onVerticalDragUpdate: _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
-      /// TODO 原使用 ListenableBuilder，改成 AnimatedBuilder 是为了兼容旧版本sdk 3.7.7
-      child: AnimatedBuilder(
-          animation: widget.source,
-          builder: (context, _) {
-            KlineUtil.logd("KChartWidget ValueListenableBuilder run ...");
-            widget.source.resetShowData(startIndex: _showDataStartIndex);
-            return LayoutBuilder(builder: (context, constraints) {
-              _computeLayout(constraints);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return GestureDetector(
+          onLongPressStart: _globalOnLongPressStart,
+          onLongPressMoveUpdate: _globalOnLongPressMoveUpdate,
+          onHorizontalDragUpdate: _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
+          onVerticalDragUpdate: _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
+          /// TODO 原使用 ListenableBuilder，改成 AnimatedBuilder 是为了兼容旧版本sdk 3.7.7
+          child: AnimatedBuilder(
+              animation: widget.source,
+              builder: (context, _) {
+                KlineUtil.logd("KChartWidget ValueListenableBuilder run ...");
+                widget.source.resetShowData(startIndex: _showDataStartIndex);
+                return LayoutBuilder(builder: (context, constraints) {
+                  _computeLayout(constraints);
 
-              /// 副图显示的数据
-              List<ChartData> subChartsShow = widget.source.subChartsShow;
+                  /// 副图显示的数据
+                  List<ChartData> subChartsShow = widget.source.subChartsShow;
 
-              return Column(
-                children: [
+                  int subChartsShowLength = _subChartShowLength;
 
-                  /// 主图
-                  KlineGestureDetector(
-                    pointWidth: _pointWidth,
-                    pointGap: _pointGap,
-                    maxWidth: _mainChartSize.width,
+                  return Column(
+                    children: [
+
+                      /// 主图
+                      KlineGestureDetector(
+                        pointWidth: _pointWidth,
+                        pointGap: _pointGap,
+                        maxWidth: _mainChartSize.width,
                     isShowCrossCurve: _isShowCrossCurve,
-                    onTap: _onTap,
-                    totalDataNum: widget.source.dataMaxLength,
+                        onTap: _onTap,
+                        totalDataNum: widget.source.dataMaxLength,
                     showDataNum: _showDataNum,
-                    onHorizontalDragStart: _onHorizontalDragStart,
-                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                    onHorizontalDragEnd: (details) =>
-                        _isOnHorizontalDragStart = false,
-                    onZoomIn: ({DragUpdateDetails? details}) {
-                      // 如果十字线显示的状态，则拖动操作是移动十字线。
-                      if (_isShowCrossCurve && details != null) {
-                        _resetCrossCurve(Pair(
-                            left: details.globalPosition.dx, right: details.globalPosition.dy));
-                        return;
-                      }
+                        onHorizontalDragStart: _onHorizontalDragStart,
+                        onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                        onHorizontalDragEnd: (details) =>
+                            _isOnHorizontalDragStart = false,
+                        onZoomIn: ({DragUpdateDetails? details}) {
+                          // 如果十字线显示的状态，则拖动操作是移动十字线。
+                          if (_isShowCrossCurve && details != null) {
+                            _resetCrossCurve(Pair(
+                                left: details.globalPosition.dx, right: details.globalPosition.dy));
+                            return;
+                          }
 
-                      int endIndex = (_showDataStartIndex + _showDataNum)
-                          .clamp(0, widget.source.dataMaxIndex);
-                      _onZoom(endIndex: endIndex, zoomIn: true);
-                    },
-                    onZoomOut: ({DragUpdateDetails? details}) {
-                      // 如果十字线显示的状态，则拖动操作是移动十字线。
-                      if (_isShowCrossCurve && details != null) {
-                        _resetCrossCurve(Pair(
-                            left: details.globalPosition.dx, right: details.globalPosition.dy));
-                        return;
-                      }
+                          int endIndex = (_showDataStartIndex + _showDataNum)
+                              .clamp(0, widget.source.dataMaxIndex);
+                          _onZoom(endIndex: endIndex, zoomIn: true);
+                        },
+                        onZoomOut: ({DragUpdateDetails? details}) {
+                          // 如果十字线显示的状态，则拖动操作是移动十字线。
+                          if (_isShowCrossCurve && details != null) {
+                            _resetCrossCurve(Pair(
+                                left: details.globalPosition.dx, right: details.globalPosition.dy));
+                            return;
+                          }
 
-                      int endIndex = (_showDataStartIndex + _showDataNum)
-                          .clamp(0, widget.source.dataMaxIndex);
-                      _onZoom(endIndex: endIndex, zoomIn: false);
-                    },
-                    child: MainChartWidget(
-                      chartData: _showMainChartData,
-                      size: _mainChartSize,
-                      infoBarName: widget.source.mainChartShow?.name ?? '无指标',
-                      margin: widget.margin,
-                      pointWidth: _pointWidth,
-                      pointGap: _pointGap,
-                      crossCurveStream: _getCrossCurveStreamByIndex(0),
-                      selectedChartDataIndexStream: _selectedIndexStream,
-                      onTapIndicator: () {
-                        widget.onTapIndicator(0);
-                      },
-                      realTimePrice: widget.realTimePrice,
-                    ),
-                  ),
-
-                  /// 副图
-                  for (int i = 0; i < subChartsShow.length; ++i)
-                    GestureDetector(
-                      onTapDown: (details) => _cancelCrossCurve(),
-                      child: SizedBox.fromSize(
-                        size: _subChartSize,
-                        child: SubChartWidget(
-                          size: _subChartSize,
-                          name: subChartsShow[i].name,
-                          chartData: subChartsShow[i].baseCharts,
+                          int endIndex = (_showDataStartIndex + _showDataNum)
+                              .clamp(0, widget.source.dataMaxIndex);
+                          _onZoom(endIndex: endIndex, zoomIn: false);
+                        },
+                        child: MainChartWidget(
+                          chartData: _showMainChartData,
+                          size: _mainChartSize,
+                          infoBarName: widget.source.mainChartShow?.name ?? '无指标',
+                          margin: widget.margin,
                           pointWidth: _pointWidth,
                           pointGap: _pointGap,
-                          maskLayer: _getSubChartMaskByIndex(i),
-                          crossCurveStream: _getCrossCurveStreamByIndex(i + 1),
-                          selectedChartDataIndexStream:
-                              _selectedIndexStream,
+                          crossCurveStream: _getCrossCurveStreamByIndex(0),
+                          selectedChartDataIndexStream: _selectedIndexStream,
                           onTapIndicator: () {
-                            widget.onTapIndicator(i + 1);
+                            widget.onTapIndicator(0);
                           },
+                          realTimePrice: widget.realTimePrice,
                         ),
                       ),
-                    ),
-                ],
-              );
-            });
-          }),
+
+                      /// 副图
+                      for (int i = 0; i < subChartsShowLength; ++i)
+                        GestureDetector(
+                          onTapDown: (details) => _cancelCrossCurve(),
+                          child: SizedBox.fromSize(
+                            size: _subChartSize,
+                            child: SubChartWidget(
+                              size: _subChartSize,
+                              name: subChartsShow[i].name,
+                              chartData: subChartsShow[i].baseCharts,
+                              pointWidth: _pointWidth,
+                              pointGap: _pointGap,
+                              maskLayer: _getSubChartMaskByIndex(i),
+                              crossCurveStream: _getCrossCurveStreamByIndex(i + 1),
+                              selectedChartDataIndexStream:
+                                  _selectedIndexStream,
+                              onTapIndicator: () {
+                                widget.onTapIndicator(i + 1);
+                              },
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                });
+              }),
+        );
+      }
     );
   }
 
+
+  bool get _isShowCrossCurve => _controller.isShowCrossCurve;
 
   /// 根据索引获取十字线流
   StreamController<Pair<double?, double?>> _getCrossCurveStreamByIndex(int index) {
@@ -315,7 +342,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     Pair<double, double> heightPair = KlineUtil.autoAllotChartHeight(
         totalHeight: height,
         subChartRatio: widget.subChartRatio,
-        subChartNum: _subChartData.length);
+        subChartNum: _subChartShowLength);
     _mainChartSize = Size(width, heightPair.left);
     _subChartSize = Size(width, heightPair.right);
 
@@ -328,8 +355,13 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   /// 获取蜡烛浮层地址
-  Pair<double, double> _getCandlestickOverlayLocation() {
-    RenderBox? renderBox = widget.overlayEntryLocationKey.currentContext
+  Pair<double, double>? _getCandlestickOverlayLocation() {
+    if (widget.overlayEntryLocationKey == null) {
+      // 没有key，不显示
+      return null;
+    }
+
+    RenderBox? renderBox = widget.overlayEntryLocationKey!.currentContext
         ?.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       // 获取组件在页面中的位置信息
@@ -340,6 +372,11 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
     return Pair(left: 0, right: 0);
   }
+
+  OverlayEntry? get _candlestickOverlayEntry => _controller.overlayEntry;
+
+  set _candlestickOverlayEntry(OverlayEntry? overlayEntry) =>
+      _controller.overlayEntry = overlayEntry;
 
   void _showCandlestickOverlay({
     required BuildContext context,
@@ -367,8 +404,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   void _hideCandlestickOverlay() {
-    _candlestickOverlayEntry?.remove();
-    _candlestickOverlayEntry = null;
+    _controller.hideOverlayEntry();
   }
 
   _initSelectedIndexStream() {
@@ -392,7 +428,13 @@ class _KChartWidgetState extends State<KChartWidget> {
         _hideCandlestickOverlay();
         return;
       }
-      var overlayLocation = _getCandlestickOverlayLocation();
+
+      _controller.updateOverlayEntryDataByIndex(index);
+
+      Pair<double, double>? overlayLocation = _getCandlestickOverlayLocation();
+      if (overlayLocation == null) {
+        return;
+      }
       _showCandlestickOverlay(
         context: context,
         left: 0,
@@ -474,6 +516,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _chartLocation(details);
 
     _sameTimeLastHorizontalDragX = dx;
+    _controller.updateOverlayEntryDataByIndex(-1);
     widget.source.notifyListeners();
   }
 
@@ -487,14 +530,14 @@ class _KChartWidgetState extends State<KChartWidget> {
     _resetCrossCurve(null);
     _hideCandlestickOverlay();
 
+    KlineUtil.logd('取消十字线，传输-1');
     _selectedIndexStream?.add(-1);
     return true;
   }
 
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
-    _isShowCrossCurve = crossCurveXY != null;
-    setState(() {});
+    _controller.isShowCrossCurve = crossCurveXY != null;
 
     for (var element in _crossCurveStreamList) {
       element.add(crossCurveXY ?? Pair(left: null, right: null));
