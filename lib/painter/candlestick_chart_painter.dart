@@ -19,41 +19,50 @@ class CandlestickChartPainter extends CustomPainter {
 
   final Pair<num, num>? maxMinValue;
 
-  const CandlestickChartPainter(
-      {required this.data,
-      required this.maxMinHeight,
-      required this.pointWidth,
-      required this.pointGap,
-      this.maxMinValue});
+  const CandlestickChartPainter({
+    required this.data,
+    required this.maxMinHeight,
+    required this.pointWidth,
+    required this.pointGap,
+    this.maxMinValue,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     List<CandlestickChartData?> chartData =
-        convertDataToChartData(canvasMaxHeight: size.height);
+        _convertDataToChartData(canvasMaxHeight: size.height);
 
     int index = 0;
-    double x = 0;
+
+    double pointWidthGap = pointWidth + pointGap;
+    CandlestickChartData? lastElement;
     for (var element in chartData) {
       if (element == null) {
         continue;
       }
 
+      double translateY = lastElement == null ? element.high : element.high - lastElement.high;
+      canvas.translate(0, translateY);
+
+      Size candlestickSize = Size(pointWidth, element.low - element.high);
       bool isUp =
           data.data[index]!.open > data.data[index]!.close ? false : true;
       CandlestickPainter(
-        rect: Rect.fromLTRB(x, element.open, x + pointWidth, element.close),
-        top: element.high,
-        bottom: element.low,
+        open: element.open - element.high,
+        close: element.close - element.high,
         lineColor: element.color ?? (isUp ? Colors.red : Colors.green),
         rectFillColor: isUp ? null : element.color ?? Colors.green,
-      ).paint(canvas, size);
+      ).paint(canvas, candlestickSize);
+
+      canvas.translate(pointWidthGap, 0);
 
       index += 1;
-      x = x + pointWidth + pointGap;
+      lastElement = element;
+
     }
   }
 
-  List<CandlestickChartData?> convertDataToChartData(
+  List<CandlestickChartData?> _convertDataToChartData(
       {required double canvasMaxHeight}) {
     // 找出非空数据数组中的最大值和最小值
     Pair<num, num> maxMinValue = this.maxMinValue ?? data.getMaxMinData();

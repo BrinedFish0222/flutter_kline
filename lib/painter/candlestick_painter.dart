@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 
 /// 画蜡烛
 class CandlestickPainter extends CustomPainter {
-  final Rect rect;
-  final double top;
-  final double bottom;
+  final double open;
+  final double close;
   final Color lineColor;
   final Color? rectFillColor;
 
   const CandlestickPainter({
-    required this.rect,
-    required this.top,
-    required this.bottom,
+    required this.open,
+    required this.close,
     this.lineColor = Colors.black,
     this.rectFillColor,
   });
@@ -28,23 +26,30 @@ class CandlestickPainter extends CustomPainter {
         ..style = PaintingStyle.fill;
     }
 
-    double lineX = rect.left + ((rect.right - rect.left).abs()) / 2;
-    canvas.drawRect(rect, paint);
+
+    canvas.drawRect(Rect.fromLTRB(0, open, size.width, close), paint);
 
     paint
       ..color = lineColor
       ..style = PaintingStyle.stroke;
 
-    double topY = rect.top > rect.bottom ? rect.bottom : rect.top;
-    double bottomY = rect.top > rect.bottom ? rect.top : rect.bottom;
+    double middleX = size.width / 2;
+    double topLine = open > close ? close : open;
+    double bottomLine = open > close ? open : close;
     // 最高线
-    canvas.drawLine(Offset(lineX, top), Offset(lineX, topY), paint);
+    canvas.drawLine(Offset(middleX, 0), Offset(middleX, topLine), paint);
     // 最低线
-    canvas.drawLine(Offset(lineX, bottom), Offset(lineX, bottomY), paint);
+    canvas.drawLine(Offset(middleX, bottomLine), Offset(middleX, size.height), paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    if (oldDelegate is CandlestickPainter) {
+      return open != oldDelegate.open ||
+          close != oldDelegate.close ||
+          lineColor != oldDelegate.lineColor ||
+          rectFillColor != oldDelegate.rectFillColor;
+    }
+    return true;
   }
 }

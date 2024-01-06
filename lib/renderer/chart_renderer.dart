@@ -66,6 +66,7 @@ class ChartRenderer extends CustomPainter {
 
     // 画矩形
     if (rectSetting.isShow) {
+      canvas.save();
       RectPainter(
         transverseLineNum: rectSetting.transverseLineNum,
         maxValue: maxMinValue.left,
@@ -76,6 +77,7 @@ class ChartRenderer extends CustomPainter {
           fontSize: KlineConfig.rectFontSize,
         ),
       ).paint(canvas, size);
+      canvas.restore();
     }
 
     // 画完矩形，将画笔移到对应的画图起点
@@ -83,13 +85,14 @@ class ChartRenderer extends CustomPainter {
     for (var data in chartData) {
       if (data is CandlestickChartVo) {
         // 画蜡烛图
+        canvas.save();
         CandlestickChartPainter(
           data: data,
           maxMinHeight: maxMinValue,
           pointWidth: pointWidth,
           pointGap: pointGap,
         ).paint(canvas, paddingSize);
-
+        canvas.restore();
         continue;
       }
 
