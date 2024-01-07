@@ -17,8 +17,7 @@ class CrossCurvePainter extends CustomPainter {
   /// 数据点间隔。
   final double? pointGap;
 
-  /// 图 margin 信息
-  final EdgeInsets? margin;
+  final EdgeInsets padding;
 
   /// 选中的y轴值
   final double? selectedHorizontalValue;
@@ -40,14 +39,14 @@ class CrossCurvePainter extends CustomPainter {
     required this.selectedXY,
     this.pointWidth,
     this.pointGap,
-    this.margin,
+    EdgeInsets? padding,
     this.selectedHorizontalValue,
     this.selectedDataIndexStream,
     this.isDrawX = true,
     this.isDrawY = true,
     this.isDrawText = true,
     this.selectedDataIndexAxis = Axis.horizontal,
-  });
+  }) : padding = padding ?? EdgeInsets.zero;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -58,6 +57,11 @@ class CrossCurvePainter extends CustomPainter {
       selectedDataIndexStream?.add(-1);
       return;
     }
+
+    if (padding.left != 0) {
+      canvas.translate(padding.left, 0);
+    }
+
 
     Pair<double?, double?>? newSelectedXY = _computeSelectedX();
 

@@ -126,6 +126,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                               pointWidth: widget.pointWidth,
                               pointGap: widget.pointGap,
                               maxMinValue: maxMinValue,
+                              padding: widget.padding,
                               rectSetting: const RectSetting(transverseLineNum: 0)),
                         ),
                       );
@@ -159,6 +160,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                                     left: selectedXY.dx, right: selectedXY.dy),
                                 pointWidth: widget.pointWidth,
                                 pointGap: widget.pointGap,
+                                padding: widget.padding,
                                 selectedHorizontalValue: selectedHorizontalValue),
                           );
                         }),

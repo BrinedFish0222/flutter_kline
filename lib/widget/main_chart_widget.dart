@@ -161,7 +161,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                           size: widget.size,
                           painter: CrossCurvePainter(
                               selectedXY: selectedXY,
-                              margin: widget.padding,
+                              padding: widget.padding,
                               selectedHorizontalValue: selectedHorizontalValue,
                               selectedDataIndexStream:
                                   widget.selectedChartDataIndexStream,
