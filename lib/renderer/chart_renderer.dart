@@ -121,6 +121,8 @@ class ChartRenderer extends CustomPainter {
       }
     }
 
+    // 将画笔移回原位
+    canvas.translate(-padding.left, 0);
     // 实时价格线
     if (realTimePrice != null && candlestickChartVo != null) {
       bool isRealTime = candlestickChartVo.data.last?.close == realTimePrice;
@@ -132,7 +134,7 @@ class ChartRenderer extends CustomPainter {
             : const PriceLinePainterStyle(
                 color: KlineConfig.realTimeLineColor2,
               ),
-      ).paint(canvas, paddingSize);
+      ).paint(canvas, size);
     }
   }
 
