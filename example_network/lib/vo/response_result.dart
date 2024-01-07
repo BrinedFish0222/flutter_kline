@@ -70,7 +70,7 @@ class ResponseResult {
     if (candlestickList != null) {
       List<CandlestickChartData?> dataList = [];
       for (var data in candlestickList) {
-        if (data is List? && (data?.isEmpty ?? true)) {
+        if ((data is List?) && (data?.isEmpty ?? true)) {
           dataList.add(null);
           continue;
         }
