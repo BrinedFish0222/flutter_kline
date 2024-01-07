@@ -51,7 +51,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       ChartData(id: '3', name: 'MACD', baseCharts: ExampleMacdData.macd),
       ChartData(id: '4', name: 'ESS', baseCharts: [
         ExampleEssData.barChartData
-          ..barWidth = 2
+          // ..barWidth = 2
           ..minValue = 0,
         ExampleEssData.lineChartA,
         ExampleEssData.lineChartB
@@ -75,7 +75,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
       child: ListView(
         children: [
           KChartWidget(
