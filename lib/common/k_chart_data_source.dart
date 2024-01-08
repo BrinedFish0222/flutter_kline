@@ -146,29 +146,51 @@ class KChartDataSource extends ChangeNotifier {
   }
 
   /// 清除数据 - 全部
-  void clearChartData() {
-    clearMainChartData();
-    clearSubChartData();
+  /// [index] -1表示清除所有
+  void clearChartData({int index = -1}) {
+    if (index == -1 || index == 0) {
+      _clearMainChartData();
+    }
+
+    if (index > 0) {
+      _clearSubChartData(index: index - 1);
+    }
+
+    notifyListeners();
   }
 
   /// 清除数据 - 主图
-  void clearMainChartData() {
+  void _clearMainChartData() {
     if (originCharts.isNotEmpty) {
       originCharts.first.clearChartData();
     }
 
-    clearShowMainChartData();
+    _clearShowMainChartData();
   }
 
   /// 清除数据 - 显示的主图
-  void clearShowMainChartData() {
+  void _clearShowMainChartData() {
     if (showCharts.isNotEmpty) {
       showCharts.first.clearChartData();
     }
   }
 
   /// 清除数据 - 副图
-  void clearSubChartData() {
+  void _clearSubChartData({int index = -1}) {
+    // 按索引清除源数据
+    if (index != -1 && originCharts.isNotEmpty && originCharts.hasIndex(index + 1)) {
+      originCharts.sublist(1)[index].clearChartData();
+    }
+    // 按索引清除显示数据
+    if (index != -1 && showCharts.isNotEmpty && showCharts.hasIndex(index + 1)) {
+      showCharts.sublist(1)[index].clearChartData();
+    }
+
+    if (index != -1) {
+      return;
+    }
+
+    // 清除全部
     if (originCharts.isNotEmpty && originCharts.length != 1) {
       originCharts.sublist(1).forEach((subChart) {
         subChart.clearChartData();
