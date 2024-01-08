@@ -129,9 +129,20 @@ class KChartDataSource extends ChangeNotifier {
     super.notifyListeners();
   }
 
-  void clearCharts() {
-    originCharts.clear();
-    showCharts.clear();
+  /// 清除图
+  /// [index] -1表示清除所有
+  void clearCharts({int index = -1}) {
+    if (index == -1) {
+      originCharts.clear();
+      showCharts.clear();  
+    }
+
+    if (index != -1 && originCharts.hasIndex(index)) {
+      originCharts.removeAt(index);
+      showCharts.removeAt(index);
+    }
+    
+    notifyListeners();
   }
 
   /// 清除数据 - 全部
