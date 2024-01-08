@@ -94,7 +94,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
       StreamController();
 
   /// 副图遮罩
-  List<MaskLayer?> _subChartMaskList = [];
+  // List<MaskLayer?> _subChartMaskList = [];
 
   /// 点击全局坐标
   Offset? onTapGlobalPointer;
@@ -114,7 +114,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   @override
   void initState() {
     _controller = widget.controller ?? KChartController(source: widget.source);
-    _initSubChartMaskList();
     _initCrossCurveStream();
     _initSelectedIndexStream();
 
@@ -140,15 +139,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
       LineChartData data = _minuteChartData.data[index]!;
       _showCandlestickOverlay(context: context, data: data);
     });
-  }
-
-  /// 初始化副图遮罩列表
-  void _initSubChartMaskList() {
-    if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
-      _subChartMaskList = widget.subChartMaskList!;
-    }
-
-    _subChartMaskList.length = _showDataNum;
   }
 
   int get _showDataNum => widget.source.showDataNum;
@@ -271,10 +261,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   void didUpdateWidget(covariant KMinuteChartWidget oldWidget) {
-    // 副图遮罩层
-    if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
-      _subChartMaskList = widget.subChartMaskList!;
-    }
     super.didUpdateWidget(oldWidget);
   }
 
@@ -288,8 +274,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   }
 
   MaskLayer? _getSubChartMaskByIndex(int index) {
-    bool hasMaskLayer = _subChartMaskList.hasIndex(index);
-    return hasMaskLayer ? _subChartMaskList[index] : null;
+    bool hasMaskLayer = widget.subChartMaskList?.hasIndex(index) ?? false;
+    return hasMaskLayer ? widget.subChartMaskList![index] : null;
   }
 
   /// 根据索引获取十字线流

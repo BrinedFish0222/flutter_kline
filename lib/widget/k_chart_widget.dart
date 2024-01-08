@@ -116,17 +116,13 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 蜡烛选中数据悬浮层
   // OverlayEntry? _candlestickOverlayEntry;
 
-  /// 副图遮罩
-  List<MaskLayer?> _subChartMaskList = [];
-  
+
   /// 副图显示数量
   get _subChartShowLength => widget.chartNum == null ? _subChartData.length : (widget.chartNum! - 1).clamp(0, _subChartData.length);
 
   @override
   void initState() {
     _controller = widget.controller ?? KChartController(source: widget.source);
-    _initSubChartMaskList();
-
     _initCrossCurveStream();
     _updateShowDataNum(widget.showDataNum);
     _showDataStartIndex = (widget.source.dataMaxIndex - _showDataNum)
@@ -137,14 +133,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     super.initState();
   }
 
-  /// 初始化副图遮罩列表
-  void _initSubChartMaskList() {
-    if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
-      _subChartMaskList = widget.subChartMaskList!;
-    }
-
-    _subChartMaskList.length = _subChartData.length;
-  }
 
   /// 初始化十字线 StreamController
   void _initCrossCurveStream() {
@@ -281,10 +269,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   @override
   void didUpdateWidget(covariant KChartWidget oldWidget) {
     KlineUtil.logd('k_chart_widget didUpdateWidget');
-    // 副图遮罩层
-    if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
-      _subChartMaskList = widget.subChartMaskList!;
-    }
     super.didUpdateWidget(oldWidget);
   }
 
@@ -305,8 +289,8 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   MaskLayer? _getSubChartMaskByIndex(int index) {
-    bool hasMaskLayer = _subChartMaskList.hasIndex(index);
-    return hasMaskLayer ? _subChartMaskList[index] : null;
+    bool hasMaskLayer = widget.subChartMaskList?.hasIndex(index) ?? false;
+    return hasMaskLayer ? widget.subChartMaskList![index] : null;
   }
 
   /// 更新显示的数据数量
