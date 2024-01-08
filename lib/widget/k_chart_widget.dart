@@ -278,6 +278,16 @@ class _KChartWidgetState extends State<KChartWidget> {
     );
   }
 
+  @override
+  void didUpdateWidget(covariant KChartWidget oldWidget) {
+    KlineUtil.logd('k_chart_widget didUpdateWidget');
+    // 副图遮罩层
+    if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
+      _subChartMaskList = widget.subChartMaskList!;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
 
   bool get _isShowCrossCurve => _controller.isShowCrossCurve;
 

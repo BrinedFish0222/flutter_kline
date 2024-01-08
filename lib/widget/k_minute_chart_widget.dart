@@ -269,6 +269,14 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     );
   }
 
+  @override
+  void didUpdateWidget(covariant KMinuteChartWidget oldWidget) {
+    // 副图遮罩层
+    if (KlineCollectionUtil.isNotEmpty(widget.subChartMaskList)) {
+      _subChartMaskList = widget.subChartMaskList!;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
 
   void _globalOnHorizontalDragUpdate(DragUpdateDetails details) {
     if (!_controller.isShowCrossCurve) {
