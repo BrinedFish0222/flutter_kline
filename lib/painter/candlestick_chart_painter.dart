@@ -56,7 +56,7 @@ class CandlestickChartPainter extends CustomPainter {
   List<CandlestickChartData?> convertDataToChartData(
       {required double canvasMaxHeight}) {
     // 找出非空数据数组中的最大值和最小值
-    Pair<num, num> maxMinValue = this.maxMinValue ?? data.getMaxMinData();
+    Pair<num, num> maxMinValue = maxMinHeight;
 
     // 计算数据在 maxHeight 范围内的高度比例
     double scaleFactor =

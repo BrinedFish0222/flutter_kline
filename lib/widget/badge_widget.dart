@@ -92,9 +92,18 @@ class _BadgePositionedWidget extends StatelessWidget {
 
     Size size = _getSize(yAxis: yAxis);
 
-    yAxis = (yAxis - size.height - badgeChartData.padding.bottom)
-        .clamp(0, maxHeight - size.height)
-        .toDouble();
+    if (badgeChartData.invert) {
+      yAxis = (yAxis - badgeChartData.padding.bottom)
+          .clamp(0, maxHeight - size.height)
+          .toDouble();
+    } else {
+      yAxis = (yAxis - size.height - badgeChartData.padding.bottom)
+          .clamp(0, maxHeight - size.height)
+          .toDouble();
+    }
+
+
+
 
     var xAxis =
         (pointWidth + pointGap) * index - ((size.width - pointWidth) / 2);
