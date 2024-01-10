@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 /// 买卖点
@@ -57,8 +59,9 @@ class BsPointWidget extends StatelessWidget {
 
       return Transform(
         alignment: Alignment.center,
-        transform: Matrix4.rotationX(3.14 * rotation),
+        transform: Matrix4.rotationX(pi * rotation),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
               decoration: BoxDecoration(

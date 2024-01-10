@@ -149,7 +149,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                           double? selectedHorizontalValue =
                               KlineUtil.computeSelectedHorizontalValue(
                                   maxMinValue: maxMinValue,
-                                  height: widget.size.height,
+                                  height: renderBox.size.height,
                                   selectedY: selectedXY.dy);
 
                           KlineUtil.logd("副图十字线绘制，选中的横轴值：$selectedHorizontalValue");

@@ -35,7 +35,7 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
         }
 
         double? maxValue = KlineNumUtil.maxMinValue(
-                chartData.map((e) => e.getDataMaxValueByIndex(i)).toList())
+            chartData.map((e) => e.getDataMaxValueByIndex(i)).toList())
             ?.left
             .toDouble();
         data?.value = maxValue;
@@ -60,13 +60,38 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
       return Pair.defaultMaxMinValue;
     }
 
-    List<num> valueList = data
-        .where((element) => element?.value != null)
-        .map((e) => e!.value!)
-        .cast<num>()
-        .toList();
+    if (maxValue != null && minValue != null) {
+      return Pair<double, double>(left: maxValue!, right: minValue!);
+    }
 
-    var maxMinValue = KlineNumUtil.maxMinValueDouble(valueList);
+    List<num> valueList = [];
+    for (BadgeChartData? d in data) {
+      if (d == null) {
+        continue;
+      }
+
+      if (d.value != null) {
+        valueList.add(d.value!);
+      }
+
+      if (d.maxValue != null) {
+        valueList.add(d.maxValue!);
+      }
+
+      if (d.minValue != null) {
+        valueList.add(d.minValue!);
+      }
+    }
+
+
+    Pair<double, double> maxMinValue = KlineNumUtil.maxMinValueDouble(valueList);
+    if (maxValue != null) {
+      maxMinValue.left = maxValue!;
+    }
+    if (minValue != null) {
+      maxMinValue.right = minValue!;
+    }
+
     return maxMinValue;
   }
 
@@ -94,7 +119,7 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
 
 /// <E> 是扩展数据
 class BadgeChartData<E> extends BaseChartData<E> {
-  static const EdgeInsets defaultPadding = EdgeInsets.only(bottom: 4);
+  static const EdgeInsets defaultPadding = EdgeInsets.only(bottom: 0);
 
   /// 显示的组件，没有则不显示
   Widget? widget;
@@ -109,6 +134,15 @@ class BadgeChartData<E> extends BaseChartData<E> {
   /// 如果[value]为空，会默认设置为当前y轴数据点最大值
   double? value;
 
+  /// 是否颠倒
+  final bool invert;
+
+  /// 最大值
+  double? maxValue;
+
+  /// 最小值
+  double? minValue;
+
   BadgeChartData({
     super.id,
     required this.widget,
@@ -116,5 +150,8 @@ class BadgeChartData<E> extends BaseChartData<E> {
     this.minSize,
     this.value,
     super.extrasData,
+    this.invert = false,
+    this.maxValue,
+    this.minValue,
   });
 }

@@ -135,18 +135,22 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                   child: StreamBuilder(
                       stream: widget.crossCurveStream?.stream,
                       builder: (context, snapshot) {
+                        if (snapshot.data?.isNull() ?? true) {
+                          return const SizedBox();
+                        }
+
                         Pair<double?, double?> selectedXY =
                             Pair(left: null, right: null);
-                        if (snapshot.data != null && !snapshot.data!.isNull()) {
-                          RenderBox renderBox = _chartKey.currentContext!
-                              .findRenderObject() as RenderBox;
 
+                        RenderBox renderBox = _chartKey.currentContext!
+                            .findRenderObject() as RenderBox;
+                        if (snapshot.data != null && !snapshot.data!.isNull()) {
                           Offset? selectedOffset =
                               snapshot.data == null || snapshot.data!.isNull()
                                   ? null
                                   : renderBox.globalToLocal(Offset(
                                       snapshot.data?.left ?? 0,
-                                      snapshot.data?.right ?? 0));
+                                      snapshot.data?.right ?? 0),);
                           selectedXY.left = selectedOffset?.dx;
                           selectedXY.right = selectedOffset?.dy;
                         }
@@ -154,7 +158,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                         double? selectedHorizontalValue =
                             KlineUtil.computeSelectedHorizontalValue(
                                 maxMinValue: maxMinValue,
-                                height: widget.size.height,
+                                height: renderBox.size.height,
                                 selectedY: selectedXY.right);
 
                         return CustomPaint(
