@@ -135,6 +135,10 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                   child: StreamBuilder(
                       stream: widget.crossCurveStream?.stream,
                       builder: (context, snapshot) {
+                        if (snapshot.data?.isNull() ?? true) {
+                          return const SizedBox();
+                        }
+
                         Pair<double?, double?> selectedXY =
                             Pair(left: null, right: null);
 
