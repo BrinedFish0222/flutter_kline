@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/badge_chart_vo.dart';
@@ -64,7 +66,7 @@ class _BadgePositionedWidget extends StatelessWidget {
 
   Size _getSize({required double yAxis}) {
     double width = pointWidth;
-    double height = pointWidth;
+    double height = pointWidth * badgeChartData.heighMultiple;
     if (badgeChartData.minSize != null) {
       width = badgeChartData.minSize!.width > width
           ? badgeChartData.minSize!.width
@@ -82,17 +84,21 @@ class _BadgePositionedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 判断是否需要颠倒
+    bool invert = badgeChartData.invert(maxMinValue: maxMinValue);
+    double? autoValue = invert ? badgeChartData.invertValue : badgeChartData.value;
+
     // TODO 目前只支持 padding bottom
     // 高度
     var yAxis = KlineUtil.computeYAxis(
       maxHeight: maxHeight,
       maxMinValue: maxMinValue,
-      value: badgeChartData.value ?? 0,
+      value: autoValue ?? 0,
     );
 
     Size size = _getSize(yAxis: yAxis);
 
-    if (badgeChartData.invert) {
+    if (invert) {
       yAxis = (yAxis - badgeChartData.padding.bottom)
           .clamp(0, maxHeight - size.height)
           .toDouble();
@@ -102,11 +108,17 @@ class _BadgePositionedWidget extends StatelessWidget {
           .toDouble();
     }
 
-
-
-
     var xAxis =
         (pointWidth + pointGap) * index - ((size.width - pointWidth) / 2);
+
+
+    Widget? badge = invert ? badgeChartData.invertWidget : badgeChartData.widget;
+    if (invert && badgeChartData.invertWidget == null && badgeChartData.widget != null) {
+      badge = Transform(
+        transform: Matrix4.rotationX(pi),
+        child: badgeChartData.widget,
+      );
+    }
 
     return Positioned(
       left: xAxis,
@@ -114,7 +126,7 @@ class _BadgePositionedWidget extends StatelessWidget {
       child: SizedBox(
         width: size.width,
         height: size.height,
-        child: badgeChartData.widget,
+        child: badge,
       ),
     );
   }
