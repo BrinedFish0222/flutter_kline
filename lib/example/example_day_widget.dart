@@ -42,7 +42,6 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       ChartData(id: '1', name: 'VOL', baseCharts: [
         ExampleVolData.barChartData..minValue = 0,
         ...ExampleVolData.lineChartData,
-        ExampleBadgeData.badgeChartVo,
       ]),
       ChartData(
           id: '2',

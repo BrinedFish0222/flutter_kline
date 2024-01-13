@@ -10,33 +10,21 @@ class ExampleBadgeData {
     }
     dataList.addAll([
       BadgeChartData(
-        minSize: const Size(20, 50),
+        minSize: const Size(20, 30),
         widget: const BsPointWidget.buy(),
+        invertWidget: const BsPointWidget.buy(invert: true,),
+        value: 11.80,
+        invertValue: 11.60,
       ),
       null,
       null,
       BadgeChartData(
-        minSize: const Size(12, 12),
-        widget: LayoutBuilder(builder: (context, constraints) {
-          double size = constraints.maxWidth > constraints.maxHeight
-              ? constraints.maxHeight
-              : constraints.maxWidth;
-          return Container(
-            color: Colors.blue,
-            width: size,
-            height: size,
-            child: Center(
-              child: Text(
-                "卖",
-                style: TextStyle(
-                  fontSize: constraints.maxWidth / 2,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          );
-        }),
-      )
+        minSize: const Size(20, 30),
+        widget: const BsPointWidget.sell(),
+        invertWidget: const BsPointWidget.sell(invert: true,),
+        value: 11.74,
+        invertValue: 11.53,
+      ),
     ]);
 
     return BadgeChartVo(data: dataList);
