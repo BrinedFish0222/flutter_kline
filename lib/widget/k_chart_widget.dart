@@ -106,14 +106,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 同一时间上一个拖动的x轴坐标
   late double _sameTimeLastHorizontalDragX;
 
-  /// 蜡烛选中数据悬浮层
-  // OverlayEntry? _candlestickOverlayEntry;
-
-  /// 副图遮罩
-  List<MaskLayer?> _subChartMaskList = [];
-
-  EdgeInsets _chartPadding = EdgeInsets.zero;
-
   /// 副图显示数量
   get _subChartShowLength => widget.chartNum == null
       ? _subChartData.length
@@ -236,7 +228,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                             size: _mainChartSize,
                             infoBarName:
                                 widget.source.mainChartShow?.name ?? '无指标',
-                            padding: _chartPadding,
+                            padding: gestureDetectorController.padding,
                             pointWidth: gestureDetectorController.pointWidth,
                             pointGap: gestureDetectorController.pointGap,
                             crossCurveStream: _getCrossCurveStreamByIndex(0),
@@ -260,7 +252,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                                 chartData: subChartsShow[i].baseCharts,
                                 pointWidth: gestureDetectorController.pointWidth,
                                 pointGap: gestureDetectorController.pointGap,
-                                padding: _chartPadding,
+                                padding: gestureDetectorController.padding,
                                 maskLayer: _getSubChartMaskByIndex(i),
                                 crossCurveStream:
                                     _getCrossCurveStreamByIndex(i + 1),
@@ -508,7 +500,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     var dx = details.localPosition.dx;
     widget.source
         .resetShowData(startIndex: horizontalDrawChartDetails.startIndex);
-    _chartPadding = horizontalDrawChartDetails.padding;
 
     // 图位置
     _chartLocation(details);

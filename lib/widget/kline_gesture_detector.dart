@@ -273,10 +273,11 @@ class KlineGestureDetectorController extends ChangeNotifier {
     // 卷轴显示左范围初始值：最右范围 - 最大显示范围
     _minScrollWidthShow = _maxScrollWidthShow - screenMaxWidth;
 
-    double pointWidthGap = _minScrollWidth.abs() / (dataMaxLength + 1);
+    double pointWidthGap = _minScrollWidth.abs() / dataMaxLength;
     _pointWidth = pointWidthGap * .8;
     _pointGap = pointWidthGap * .2;
 
+    _padding = EdgeInsets.only(left: scrollWidthShow - pointWidthGap * source.showDataNum);
     _initScrollListener();
   }
 
@@ -317,6 +318,10 @@ class KlineGestureDetectorController extends ChangeNotifier {
   /// [_maxScrollWidthShow] 卷轴显示的宽度 右边的宽度
   late double _minScrollWidthShow, _maxScrollWidthShow = 0;
 
+  late EdgeInsets _padding;
+
+  EdgeInsets get padding => _padding;
+
   double get screenMaxWidth => _screenMaxWidth;
 
   KChartDataSource get source => _source;
@@ -332,6 +337,14 @@ class KlineGestureDetectorController extends ChangeNotifier {
   double get minScrollWidthShow => _minScrollWidthShow;
 
   double get maxScrollWidthShow => _maxScrollWidthShow;
+
+  /// 总宽度
+  double get scrollWidth => maxScrollWidth - minScrollWidth;
+
+  /// 显示的宽度
+  double get scrollWidthShow => _maxScrollWidthShow - _minScrollWidthShow;
+
+
 
   /// 横向滑动画图请求
   /// 返回值空表示不满足触发条件
@@ -357,27 +370,30 @@ class KlineGestureDetectorController extends ChangeNotifier {
 
     // 这一帧滑动的dx可能超过界限了，需要进行矫正
     double dx = details.delta.dx;
-    if (_minScrollWidthShow - dx < _minScrollWidth) {
-      KlineUtil.logd('左矫正前dx：$dx');
-      dx -= (_minScrollWidthShow - dx) - _minScrollWidth;
-      KlineUtil.logd('左矫正后dx：$dx');
-    } else if (_maxScrollWidthShow - dx > _maxScrollWidth) {
-      KlineUtil.logd('右矫正前dx：$dx');
-      dx += (_maxScrollWidthShow - dx) - _maxScrollWidth;
-      KlineUtil.logd('右矫正后dx：$dx');
-    }
+    _minScrollWidthShow = _minScrollWidthShow - dx;
+    _maxScrollWidthShow = _maxScrollWidthShow - dx;
 
-    _minScrollWidthShow =
-        (_minScrollWidthShow - dx).clamp(_minScrollWidth, _maxScrollWidth);
-    _maxScrollWidthShow =
-        (_maxScrollWidthShow - dx).clamp(_minScrollWidth, _maxScrollWidth);
+    if (_maxScrollWidthShow > _maxScrollWidth) {
+      // 最右边
+      _maxScrollWidthShow = _maxScrollWidth;
+      _minScrollWidthShow = _maxScrollWidthShow - screenMaxWidth;
+    } else if (_minScrollWidthShow < _minScrollWidth) {
+      // 最左边
+      _minScrollWidthShow = _minScrollWidth;
+      _maxScrollWidthShow = _minScrollWidthShow + screenMaxWidth;
+    }
 
     double pointGapWidth = pointWidth + pointGap;
     int startIndex = (_minScrollWidthShow - _minScrollWidth) ~/ pointGapWidth;
     int endIndex = startIndex + source.showDataNum;
-    double leftPadding =
-        pointGapWidth - (_minScrollWidthShow - _minScrollWidth) % pointGapWidth;
-    EdgeInsets padding = EdgeInsets.only(left: leftPadding);
+    int dataMaxIndex = source.dataMaxIndex;
+    if (endIndex > dataMaxIndex) {
+      endIndex = dataMaxIndex;
+      startIndex = dataMaxIndex - source.showDataNum;
+    }
+
+    double leftPadding = pointGapWidth - (_minScrollWidthShow - scrollWidth) % pointGapWidth;
+    _padding = EdgeInsets.only(left: leftPadding);
 
     HorizontalDrawChartDetails horizontalDrawChartDetails =
         HorizontalDrawChartDetails(

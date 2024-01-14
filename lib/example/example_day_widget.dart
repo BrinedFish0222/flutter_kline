@@ -37,7 +37,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       ChartData(id: '0', name: 'MA', baseCharts: [
         candlestickData,
         ...ExampleLineData.getLineChartMA13(),
-        ExampleBadgeData.badgeChartVo,
+        // ExampleBadgeData.badgeChartVo,
       ]),
       ChartData(id: '1', name: 'VOL', baseCharts: [
         ExampleVolData.barChartData..minValue = 0,
