@@ -73,8 +73,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
   /// 双指首个手指空开时间
   int doublePointerFirstPutdownMilliseconds = 0;
 
-  double _horizontalDragThreshold = 0;
-
   @override
   Widget build(BuildContext context) {
     KlineUtil.logd('KlineGestureDetector build');
@@ -157,19 +155,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           widget.onHorizontalDragStart!(details);
         },
         onHorizontalDragUpdate: (details) {
-          _horizontalDragThreshold += (details.delta.dx).abs();
-
-          KlineUtil.logd(
-              'onHorizontalDragUpdate _horizontalDragThreshold $_horizontalDragThreshold ...');
-          // 达到横向拖动阈值才放行
-          /*if (!widget.isShowCrossCurve &&
-              widget.showDataNum < 26 &&
-              _horizontalDragThreshold < 120 / (widget.showDataNum + 1)) {
-            KlineUtil.logd('未达到横向拖动阈值，拦截');
-            return;
-          }*/
-          _horizontalDragThreshold = 0;
-
           if (_isDoublePointer()) {
             return;
           }
@@ -178,7 +163,17 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
             widget.onHorizontalDragUpdate!(details);
           }
 
-          _onHorizontalDrawChart(details);
+          if (widget.onHorizontalDrawChart == null) {
+            return;
+          }
+
+          HorizontalDrawChartDetails? horizontalDrawChartDetails =
+              widget.controller.onHorizontalDrawChart(details);
+          if (horizontalDrawChartDetails == null) {
+            return;
+          }
+
+          widget.onHorizontalDrawChart!(horizontalDrawChartDetails);
         },
         onHorizontalDragEnd: (details) {
           if (_isDoublePointer() || widget.onHorizontalDragEnd == null) {
@@ -263,23 +258,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
   }
 
   double get screenMaxWidth => widget.controller.screenMaxWidth;
-
-  /// 横向滑动画图请求
-  void _onHorizontalDrawChart(DragUpdateDetails details) {
-    if (widget.onHorizontalDrawChart == null) {
-      return;
-    }
-
-    HorizontalDrawChartDetails? horizontalDrawChartDetails =
-        widget.controller.onHorizontalDrawChart(details);
-    if (horizontalDrawChartDetails == null) {
-      return;
-    }
-
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    widget.controller.notifyListeners();
-    widget.onHorizontalDrawChart!(horizontalDrawChartDetails);
-  }
 }
 
 /// 手势控制器
