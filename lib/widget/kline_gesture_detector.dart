@@ -163,7 +163,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
             widget.onHorizontalDragUpdate!(details);
           }
 
-          if (widget.onHorizontalDrawChart == null) {
+          if (widget.onHorizontalDrawChart == null || widget.isShowCrossCurve) {
             return;
           }
 

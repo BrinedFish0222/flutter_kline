@@ -104,7 +104,13 @@ class _KChartWidgetState extends State<KChartWidget> {
   late int _showDataNum;
 
   /// 同一时间上一个拖动的x轴坐标
+  @deprecated
   late double _sameTimeLastHorizontalDragX;
+
+  KlineGestureDetectorController? _gestureDetectorController;
+
+  KlineGestureDetectorController get gestureDetectorController =>
+      _gestureDetectorController!;
 
   /// 副图显示数量
   get _subChartShowLength => widget.chartNum == null
@@ -151,9 +157,11 @@ class _KChartWidgetState extends State<KChartWidget> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       _computeLayout(constraints);
-      KlineGestureDetectorController gestureDetectorController =
-          KlineGestureDetectorController(
-              screenMaxWidth: _mainChartSize.width, source: widget.source);
+
+      _gestureDetectorController ??= KlineGestureDetectorController(
+        screenMaxWidth: _mainChartSize.width,
+        source: widget.source,
+      );
       return AnimatedBuilder(
           animation: _controller,
           builder: (context, _) {
@@ -250,7 +258,8 @@ class _KChartWidgetState extends State<KChartWidget> {
                                 size: _subChartSize,
                                 name: subChartsShow[i].name,
                                 chartData: subChartsShow[i].baseCharts,
-                                pointWidth: gestureDetectorController.pointWidth,
+                                pointWidth:
+                                    gestureDetectorController.pointWidth,
                                 pointGap: gestureDetectorController.pointGap,
                                 padding: gestureDetectorController.padding,
                                 maskLayer: _getSubChartMaskByIndex(i),
@@ -511,8 +520,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
-    return;
-
     KlineUtil.logd("k线图横向滑动");
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
@@ -521,6 +528,9 @@ class _KChartWidgetState extends State<KChartWidget> {
       return;
     }
 
+    return;
+
+    // TODO DELETE
     // 滑动更新数据。
     var dx = details.localPosition.dx;
     if (_sameTimeLastHorizontalDragX > dx) {
