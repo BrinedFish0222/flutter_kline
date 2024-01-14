@@ -9,7 +9,7 @@ import '../vo/pointer_info.dart';
 class KlineGestureDetector extends StatefulWidget {
   const KlineGestureDetector({
     super.key,
-    required this.source,
+    required this.controller,
     this.onTap,
     this.onHorizontalDragStart,
     this.onHorizontalDragUpdate,
@@ -18,22 +18,12 @@ class KlineGestureDetector extends StatefulWidget {
     required this.onZoomIn,
     required this.onZoomOut,
     required this.child,
-    this.pointWidth = 0,
-    this.pointGap = 0,
     required this.totalDataNum,
-    required this.maxWidth,
     this.isShowCrossCurve = false,
     EdgeInsets? padding,
   }) : padding = padding ?? const EdgeInsets.only(right: 5);
 
-  /// 数据源
-  final KChartDataSource source;
-
-  /// 数据点宽度
-  final double pointWidth;
-
-  /// 数据点间隔
-  final double pointGap;
+  final KlineGestureDetectorController controller;
 
   /// 数据总数量
   final int totalDataNum;
@@ -41,9 +31,6 @@ class KlineGestureDetector extends StatefulWidget {
   /// 图的左右间隔
   @Deprecated("目前暂不支持")
   final EdgeInsets padding;
-
-  /// 显示图的最大宽度
-  final double maxWidth;
 
   /// 是否显示十字线
   final bool isShowCrossCurve;
@@ -87,45 +74,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
   int doublePointerFirstPutdownMilliseconds = 0;
 
   double _horizontalDragThreshold = 0;
-
-  /// 卷轴宽度
-  /// [_minScrollWidth] 卷轴最小宽度，代表最左边
-  /// [_maxScrollWidth] 卷轴最大宽度，代表最右边，默认是0
-  late double _minScrollWidth, _maxScrollWidth = 0;
-
-  /// 卷轴显示的宽度，范围在 [_minScrollWidth] 和 [_maxScrollWidth] 之间
-  /// [_minScrollWidthShow] 卷轴显示的宽度 左边的宽度
-  /// [_maxScrollWidthShow] 卷轴显示的宽度 右边的宽度
-  late double _minScrollWidthShow, _maxScrollWidthShow = 0;
-
-  @override
-  void initState() {
-    KlineUtil.logd('KlineGestureDetector initState');
-    // 初始化卷轴最小宽度，默认情况是 -n~0，0表示最右边
-    _minScrollWidth =
-        -(widget.totalDataNum * (widget.pointGap + widget.pointWidth));
-    // 卷轴显示左范围初始值：最右范围 - 最大显示范围
-    _minScrollWidthShow = (_maxScrollWidthShow - widget.maxWidth).clamp(_minScrollWidth, 0);
-
-    _initScrollListener();
-
-    super.initState();
-  }
-
-  /// 初始化卷轴监听
-  void _initScrollListener() {
-    widget.source.isEndLast.addListener(() {
-      // 右增数据，加大卷轴最大值；左增数据，加大卷轴最小值
-      int diffNum = widget.source.dataMaxLength - widget.source.dataMaxLengthLast;
-      double diffWidth = diffNum * (widget.pointWidth + widget.pointGap);
-      bool isEnd = widget.source.isEndLast.value;
-      if (isEnd) {
-        _maxScrollWidth += diffWidth;
-      } else {
-        _minScrollWidth -= diffWidth;
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +179,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           }
 
           _onHorizontalDrawChart(details);
-
         },
         onHorizontalDragEnd: (details) {
           if (_isDoublePointer() || widget.onHorizontalDragEnd == null) {
@@ -262,30 +209,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
       ),
     );
   }
-
-  int get _showDataNum => widget.source.showDataNum;
-
-  @override
-  void didUpdateWidget(covariant KlineGestureDetector oldWidget) {
-    double lastMinScrollWidth = _minScrollWidth;
-    // _resetMinScrollWidth();
-
-    // 如果卷轴显示区域目前在最右边，则不做任何变动
-    if (widget.source.showDataStartIndex + _showDataNum == widget.totalDataNum - 1) {
-      // 重新计算最右边
-    }
-
-    KlineUtil.logd(
-        'KlineGestureDetector didUpdateWidget, dataNum ${widget.totalDataNum}, _minScrollWidth $_minScrollWidth');
-    super.didUpdateWidget(oldWidget);
-  }
-
-  /// 重置卷轴最小宽度
-  /*void _resetMinScrollWidth() {
-    _minScrollWidth =
-        -(widget.totalDataNum * (widget.pointGap + widget.pointWidth) +
-            widget.padding.right);
-  }*/
 
   ///  释放点信息
   void _undoPointer({required int pointer}) {
@@ -339,30 +262,119 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
     return null;
   }
 
+  double get screenMaxWidth => widget.controller.screenMaxWidth;
+
   /// 横向滑动画图请求
   void _onHorizontalDrawChart(DragUpdateDetails details) {
     if (widget.onHorizontalDrawChart == null) {
       return;
     }
 
-    // 数据不足一屏幕，中断画图请求
-    if (_minScrollWidth.abs() <= widget.maxWidth) {
-      KlineUtil.logd("横向滑动画图请求 数据不足一屏幕中断");
+    HorizontalDrawChartDetails? horizontalDrawChartDetails =
+        widget.controller.onHorizontalDrawChart(details);
+    if (horizontalDrawChartDetails == null) {
       return;
     }
 
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    widget.controller.notifyListeners();
+    widget.onHorizontalDrawChart!(horizontalDrawChartDetails);
+  }
+}
+
+/// 手势控制器
+class KlineGestureDetectorController extends ChangeNotifier {
+  KlineGestureDetectorController({
+    required double screenMaxWidth,
+    required KChartDataSource source,
+  })  : _screenMaxWidth = screenMaxWidth,
+        _source = source {
+    var dataMaxLength = source.dataMaxLength;
+    // 初始化卷轴总长度
+    _minScrollWidth = -(dataMaxLength / source.showDataNum * screenMaxWidth);
+    // 卷轴显示左范围初始值：最右范围 - 最大显示范围
+    _minScrollWidthShow = _maxScrollWidthShow - screenMaxWidth;
+
+    double pointWidthGap = _minScrollWidth.abs() / (dataMaxLength + 1);
+    _pointWidth = pointWidthGap * .8;
+    _pointGap = pointWidthGap * .2;
+
+    _initScrollListener();
+  }
+
+  /// 初始化卷轴监听
+  void _initScrollListener() {
+    source.isEndLast.addListener(() {
+      // 右增数据，加大卷轴最大值；左增数据，加大卷轴最小值
+      int diffNum = source.dataMaxLength - source.dataMaxLengthLast;
+      double diffWidth = diffNum * (_pointWidth + _pointGap);
+      bool isEnd = source.isEndLast.value;
+      if (isEnd) {
+        _maxScrollWidth += diffWidth;
+      } else {
+        _minScrollWidth -= diffWidth;
+      }
+    });
+  }
+
+  /// 显示图的最大宽度
+  final double _screenMaxWidth;
+
+  /// 数据源
+  final KChartDataSource _source;
+
+  /// 数据点宽度
+  late double _pointWidth;
+
+  /// 数据点间隔
+  late double _pointGap;
+
+  /// 卷轴宽度
+  /// [_minScrollWidth] 卷轴最小宽度，代表最左边
+  /// [_maxScrollWidth] 卷轴最大宽度，代表最右边，默认是0
+  late double _minScrollWidth, _maxScrollWidth = 0;
+
+  /// 卷轴显示的宽度，范围在 [_minScrollWidth] 和 [_maxScrollWidth] 之间
+  /// [_minScrollWidthShow] 卷轴显示的宽度 左边的宽度
+  /// [_maxScrollWidthShow] 卷轴显示的宽度 右边的宽度
+  late double _minScrollWidthShow, _maxScrollWidthShow = 0;
+
+  double get screenMaxWidth => _screenMaxWidth;
+
+  KChartDataSource get source => _source;
+
+  double get pointWidth => _pointWidth;
+
+  double get pointGap => _pointGap;
+
+  double get minScrollWidth => _minScrollWidth;
+
+  double get maxScrollWidth => _maxScrollWidth;
+
+  double get minScrollWidthShow => _minScrollWidthShow;
+
+  double get maxScrollWidthShow => _maxScrollWidthShow;
+
+  /// 横向滑动画图请求
+  /// 返回值空表示不满足触发条件
+  HorizontalDrawChartDetails? onHorizontalDrawChart(DragUpdateDetails details) {
+    // 数据不足一屏幕，中断画图请求
+    if (_minScrollWidth.abs() <= screenMaxWidth) {
+      KlineUtil.logd("横向滑动画图请求 数据不足一屏幕中断");
+      return null;
+    }
+
     // 是否是左滑动
-    KlineUtil.logd("横向滑动画图请求 滑动信息 ${details.delta}, ${details.localPosition}, ${details.globalPosition}");
     bool leftDir = details.delta.dx > 0;
     if (leftDir && _minScrollWidthShow == _minScrollWidth) {
       // 左边滑动尽头结束
       KlineUtil.logd("横向滑动画图请求 左边尽头中断");
-      return;
+      return null;
     }
     if (!leftDir && _maxScrollWidthShow == _maxScrollWidth) {
       // 右边滑动尽头结束
       KlineUtil.logd("横向滑动画图请求 右边尽头中断");
-      return;
+      return null;
     }
 
     // 这一帧滑动的dx可能超过界限了，需要进行矫正
@@ -377,25 +389,26 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
       KlineUtil.logd('右矫正后dx：$dx');
     }
 
-    _minScrollWidthShow = (_minScrollWidthShow - dx).clamp(_minScrollWidth, _maxScrollWidth);
-    _maxScrollWidthShow = (_maxScrollWidthShow - dx).clamp(_minScrollWidth, _maxScrollWidth);
+    _minScrollWidthShow =
+        (_minScrollWidthShow - dx).clamp(_minScrollWidth, _maxScrollWidth);
+    _maxScrollWidthShow =
+        (_maxScrollWidthShow - dx).clamp(_minScrollWidth, _maxScrollWidth);
 
-    double pointGapWidth = _pointGapWidth;
+    double pointGapWidth = pointWidth + pointGap;
     int startIndex = (_minScrollWidthShow - _minScrollWidth) ~/ pointGapWidth;
-    int endIndex = startIndex + _showDataNum;
-    double leftPadding = _pointGapWidth - (_minScrollWidthShow - _minScrollWidth) % pointGapWidth;
+    int endIndex = startIndex + source.showDataNum;
+    double leftPadding =
+        pointGapWidth - (_minScrollWidthShow - _minScrollWidth) % pointGapWidth;
     EdgeInsets padding = EdgeInsets.only(left: leftPadding);
 
-    HorizontalDrawChartDetails horizontalDrawChartDetails = HorizontalDrawChartDetails(
+    HorizontalDrawChartDetails horizontalDrawChartDetails =
+        HorizontalDrawChartDetails(
       startIndex: startIndex,
       endIndex: endIndex,
       padding: padding,
       details: details,
     );
-    
-    KlineUtil.logd("横向滑动画图请求 _minScrollWidthShow $_minScrollWidthShow, _maxScrollWidthShow $_maxScrollWidthShow, 信息 $horizontalDrawChartDetails");
-    widget.onHorizontalDrawChart!(horizontalDrawChartDetails);
-  }
 
-  double get _pointGapWidth => widget.pointGap + widget.pointWidth;
+    return horizontalDrawChartDetails;
+  }
 }
