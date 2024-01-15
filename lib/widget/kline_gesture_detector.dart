@@ -12,7 +12,7 @@ class KlineGestureDetector extends StatefulWidget {
     required this.controller,
     this.onTap,
     this.onHorizontalDragStart,
-    this.onHorizontalDragUpdate,
+    required this.onHorizontalDragUpdate,
     this.onHorizontalDragEnd,
     this.onHorizontalDrawChart,
     required this.onZoomIn,
@@ -39,13 +39,14 @@ class KlineGestureDetector extends StatefulWidget {
 
   final void Function(PointerInfo)? onTap;
   final void Function(DragStartDetails)? onHorizontalDragStart;
-  final void Function(DragUpdateDetails)? onHorizontalDragUpdate;
+  final void Function(DragUpdateDetails) onHorizontalDragUpdate;
   final void Function(DragEndDetails)? onHorizontalDragEnd;
 
   /// 画图请求，横向滑动时触发
   final void Function(HorizontalDrawChartDetails)? onHorizontalDrawChart;
 
   /// 放大
+  /// TODO details存在空值情况，需要统一
   final void Function({DragUpdateDetails? details}) onZoomIn;
 
   /// 缩小
@@ -159,9 +160,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
             return;
           }
           KlineUtil.logd("单指水平移动");
-          if (widget.onHorizontalDragUpdate != null) {
-            widget.onHorizontalDragUpdate!(details);
-          }
+          widget.onHorizontalDragUpdate(details);
 
           if (widget.onHorizontalDrawChart == null || widget.isShowCrossCurve) {
             return;
@@ -189,6 +188,11 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           var delta = details.delta;
           KlineUtil.logd('单指放大小：delta $delta');
           if (delta.dy == 0) {
+            return;
+          }
+
+          if (widget.isShowCrossCurve) {
+            widget.onHorizontalDragUpdate(details);
             return;
           }
 
