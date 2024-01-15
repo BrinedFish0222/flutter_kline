@@ -431,7 +431,8 @@ class _KChartWidgetState extends State<KChartWidget> {
         return;
       }
 
-      _controller.updateOverlayEntryDataByIndex(index);
+      // TODO 202401160117 为何 updateOverlayEntryDataByIndex notifyListeners 会和当前方法进入死循环
+      // _controller.updateOverlayEntryDataByIndex(index);
 
       Pair<double, double>? overlayLocation = _getCandlestickOverlayLocation();
       if (overlayLocation == null) {

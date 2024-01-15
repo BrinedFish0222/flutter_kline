@@ -65,7 +65,7 @@ class KChartController extends ChangeNotifier {
       }
 
       overlayEntryData = source.showCharts.first.baseCharts.first.data[index];
-      // notifyListeners();
+      notifyListeners();
     } on Exception catch (e) {
       KlineUtil.loge(e.toString());
     } on Error catch (e) {

@@ -134,7 +134,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
         return;
       }
 
-      _controller.updateOverlayEntryDataByIndex(index);
+      // TODO 202401160117 为何 updateOverlayEntryDataByIndex notifyListeners 会和当前方法进入死循环
+      // _controller.updateOverlayEntryDataByIndex(index);
       // TODO 看data是否能用上面的数据
       LineChartData data = _minuteChartData.data[index]!;
       _showCandlestickOverlay(context: context, data: data);

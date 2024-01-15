@@ -14,7 +14,6 @@ class KLineChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      debugPrint("KLineChartWidget constraints ${constraints.maxWidth}, ${constraints.maxHeight}");
       return CustomPaint(
         size: Size(constraints.maxWidth, constraints.maxHeight),
         painter: LineChartPainter(lineChartData: chart),

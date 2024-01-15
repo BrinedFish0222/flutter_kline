@@ -92,7 +92,8 @@ class _MainChartWidgetState extends State<MainChartWidget> {
   @override
   Widget build(BuildContext context) {
     var maxMinValue = BaseChartVo.maxMinValue(widget.chartData);
-    widget.selectedChartDataIndexStream?.add(-1);
+    // TODO 202401160117 当前调用处于build的合理性
+    // widget.selectedChartDataIndexStream?.add(-1);
 
     _badgeList = widget.chartData.whereType<BadgeChartVo>().toList();
 
