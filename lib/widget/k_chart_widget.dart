@@ -564,6 +564,10 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
+    if (crossCurveXY != null && !crossCurveXY.isNull()) {
+      _controller.crossCurveGlobalPosition = Offset(crossCurveXY.left!, crossCurveXY.right!);
+    }
+
     _controller.isShowCrossCurve = crossCurveXY != null;
 
     for (var element in _crossCurveStreamList) {

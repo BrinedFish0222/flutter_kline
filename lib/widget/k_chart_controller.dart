@@ -15,6 +15,10 @@ class KChartController extends ChangeNotifier {
   /// 显示十字线
   bool _isShowCrossCurve = false;
 
+  /// 十字线全局坐标
+  Offset crossCurveGlobalPosition = const Offset(0, 0);
+
+
   /// 悬浮层数据
   /// 不显示悬浮层是，默认是最后一根
   BaseChartData? overlayEntryData;
