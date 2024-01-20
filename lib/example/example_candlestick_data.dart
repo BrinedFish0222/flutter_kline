@@ -3626,8 +3626,10 @@ class ExampleCandlestickData {
         return null;
       }
 
+      var dateTime = KlineUtil.parseIntDateToDateTime(e[0].toInt());
       return CandlestickChartData(
-          dateTime: KlineUtil.parseIntDateToDateTime(e[0].toInt()),
+          id: dateTime.toString(),
+          dateTime: dateTime,
           open: e[2],
           close: e[5],
           high: e[3],

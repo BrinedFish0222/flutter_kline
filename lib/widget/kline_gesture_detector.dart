@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
+import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/horizontal_draw_chart_details.dart';
 
@@ -197,11 +198,21 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           }
 
           if (delta.dy < 0) {
-            KlineUtil.logd("单指放大");
-            widget.onZoomIn(details: details);
+            // 单指放大
+            // 如果十字线显示的状态，则拖动操作是移动十字线。
+            if (widget.isShowCrossCurve) {
+              widget.onHorizontalDragUpdate(details);
+            } else {
+              widget.onZoomIn(details: details);
+              widget.controller.zoomIn();
+            }
           } else {
-            KlineUtil.logd("单指缩小");
-            widget.onZoomOut(details: details);
+            // 单指缩小
+            if (widget.isShowCrossCurve) {
+              widget.onHorizontalDragUpdate(details);
+            } else {
+              widget.onZoomOut(details: details);
+            }
           }
         },
         child: widget.child,
@@ -278,10 +289,11 @@ class KlineGestureDetectorController extends ChangeNotifier {
     _minScrollWidthShow = _maxScrollWidthShow - screenMaxWidth;
 
     double pointWidthGap = _minScrollWidth.abs() / dataMaxLength;
-    _pointWidth = pointWidthGap * .8;
-    _pointGap = pointWidthGap * .2;
+    _pointWidth = pointWidthGap * KlineConfig.pointWidthRatio;
+    _pointGap = pointWidthGap * (1 - KlineConfig.pointWidthRatio);
 
-    _padding = EdgeInsets.only(left: scrollWidthShow - pointWidthGap * source.showDataNum);
+    _padding = EdgeInsets.only(
+        left: scrollWidthShow - pointWidthGap * source.showDataNum);
     _initScrollListener();
   }
 
@@ -348,11 +360,67 @@ class KlineGestureDetectorController extends ChangeNotifier {
   /// 显示的宽度
   double get scrollWidthShow => _maxScrollWidthShow - _minScrollWidthShow;
 
+  /// 放大
+  void zoomIn({int zoomValue = 1}) {
+    int showDataNum = source.showDataNum;
+    var dataMaxIndex = source.dataMaxIndex;
 
+    int endIndex =
+        (source.showDataStartIndex + showDataNum).clamp(0, dataMaxIndex);
+    if (showDataNum == KlineConfig.showDataMinLength) {
+      return;
+    }
+
+    KlineUtil.logd(
+        'zoom in before startIndex ${source.showDataStartIndex}, padding $padding');
+    KlineUtil.logd(
+        'zoom in before pointWidthGap ${pointWidth + pointGap}, showDataNum $showDataNum,');
+    KlineUtil.logd(
+        'zoom in before _minScrollWidth $_minScrollWidth, _maxScrollWidth $_maxScrollWidth,');
+    KlineUtil.logd(
+        'zoom in before _minScrollWidthShow $_minScrollWidthShow, _maxScrollWidthShow $_maxScrollWidthShow,');
+
+    int showDataNumOld = showDataNum;
+    showDataNum = (showDataNum - zoomValue)
+        .clamp(KlineConfig.showDataMinLength, KlineConfig.showDataMaxLength);
+    // 真正的放大数量
+    zoomValue = showDataNumOld - showDataNum;
+
+    // 重新计算卷轴信息
+    double pointWidthGapOld = _pointWidth + _pointGap;
+    double pointWidthGap = screenMaxWidth / showDataNum;
+    _pointWidth = pointWidthGap * KlineConfig.pointWidthRatio;
+    _pointGap = pointWidthGap * (1 - KlineConfig.pointWidthRatio);
+    double multiple = (pointWidthGap - pointWidthGapOld) / pointWidthGapOld;
+    _minScrollWidth = _minScrollWidth * (1 + multiple);
+    _maxScrollWidth = _maxScrollWidth * (1 + multiple);
+
+    KlineUtil.logd(
+        'zoom in after pointWidthGap ${pointWidth + pointGap}, showDataNum $showDataNum,');
+    KlineUtil.logd(
+        'zoom in after _minScrollWidth $_minScrollWidth, _maxScrollWidth $_maxScrollWidth,');
+    KlineUtil.logd(
+        'zoom in after _minScrollWidthShow $_minScrollWidthShow, _maxScrollWidthShow $_maxScrollWidthShow,');
+    KlineUtil.logd('zoom in after showDataStartIndex ${source.showDataStartIndex}');
+
+    int startIndex = (endIndex - showDataNum).clamp(0, dataMaxIndex);
+    source.showDataNum = showDataNum;
+    source.resetShowData(startIndex: startIndex);
+
+    _updateScrollWidthShowByStartDataIndex(
+      startIndex: startIndex,
+      showDataNum: showDataNum,
+      pointerWidthGap: pointWidthGap,
+    );
+
+    source.notifyListeners();
+    notifyListeners();
+  }
 
   /// 横向滑动画图请求
   /// 返回值空表示不满足触发条件
   HorizontalDrawChartDetails? onHorizontalDrawChart(DragUpdateDetails details) {
+    KlineUtil.logd('horizontal update ============');
     // 数据不足一屏幕，中断画图请求
     if (_minScrollWidth.abs() <= screenMaxWidth) {
       KlineUtil.logd("横向滑动画图请求 数据不足一屏幕中断");
@@ -396,7 +464,18 @@ class KlineGestureDetectorController extends ChangeNotifier {
       startIndex = dataMaxIndex - source.showDataNum;
     }
 
-    double leftPadding = pointGapWidth - (_minScrollWidthShow - scrollWidth) % pointGapWidth;
+    KlineUtil.logd(
+        'horizontal update, pointGapWidth $pointGapWidth, _minScrollWidthShow $_minScrollWidthShow, scrollWidth $scrollWidth');
+    KlineUtil.logd(
+        'horizontal update, f(x) ${(_minScrollWidthShow - scrollWidth) % pointGapWidth}');
+    double leftPadding = pointGapWidth -
+        double.parse(((_minScrollWidthShow - scrollWidth) % pointGapWidth)
+            .toStringAsFixed(2));
+    KlineUtil.logd(
+        'horizontal update, leftPadding >= pointGapWidth ${leftPadding >= pointGapWidth}, leftPadding $leftPadding, pointGapWidth $pointGapWidth');
+    if (leftPadding >= pointGapWidth) {
+      leftPadding = 0;
+    }
     _padding = EdgeInsets.only(left: leftPadding);
 
     HorizontalDrawChartDetails horizontalDrawChartDetails =
@@ -407,6 +486,29 @@ class KlineGestureDetectorController extends ChangeNotifier {
       details: details,
     );
 
+    KlineUtil.logd(
+        'horizontal update, pointGapWidth $pointGapWidth, showDataNum ${source.showDataNum}');
+    KlineUtil.logd(
+        'horizontal update, startIndex $startIndex, endIndex $endIndex, padding $padding,');
+    KlineUtil.logd(
+        'horizontal update, screenMaxWidth $screenMaxWidth, minScrollWidthShow $minScrollWidthShow, maxScrollWidthShow $maxScrollWidthShow');
+    KlineUtil.logd(
+        'horizontal update, last data ${source.originCharts[0].baseCharts[0].data[endIndex]?.id}');
+
     return horizontalDrawChartDetails;
+  }
+
+  /// 根据[startIndex]更新卷轴显示区域值
+  /// @param [startIndex] 数据显示的起始索引位置
+  void _updateScrollWidthShowByStartDataIndex({
+    required int startIndex,
+    required int showDataNum,
+    required double pointerWidthGap,
+  }) {
+    int end = startIndex + showDataNum + 1;
+
+    _minScrollWidthShow =
+        end * pointerWidthGap + _minScrollWidth - screenMaxWidth;
+    _maxScrollWidthShow = _minScrollWidthShow + screenMaxWidth;
   }
 }

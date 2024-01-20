@@ -48,4 +48,8 @@ class KlineConfig {
 
   /// 默认数据最大最小值
   static final Pair<double, double> defaultMaxMinValue = Pair(left: 1, right: 0);
+
+  /// 数据点像素占比
+  static const double pointWidthRatio = .8;
+
 }
