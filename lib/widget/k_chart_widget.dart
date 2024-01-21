@@ -415,28 +415,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     });
   }
 
-  /// 放大缩小
-  /// [endIndex] 结束索引位置
-  /// [zoomIn] 是否放大
-  _onZoom({required int endIndex, required bool zoomIn}) {
-    if (_showDataNum == KlineConfig.showDataMinLength && zoomIn) {
-      return;
-    }
-
-    if (_showDataNum == KlineConfig.showDataMaxLength && !zoomIn) {
-      return;
-    }
-
-    int addVal = zoomIn ? -1 : 1;
-    _updateShowDataNum((_showDataNum + addVal)
-        .clamp(KlineConfig.showDataMinLength, KlineConfig.showDataMaxLength));
-    int startIndex =
-        (endIndex - _showDataNum).clamp(0, widget.source.dataMaxIndex);
-    KlineUtil.logd("最后的数据索引： _onZoom to _resetShowData");
-    widget.source.showDataNum = _showDataNum;
-    widget.source.resetShowData(startIndex: startIndex);
-    widget.source.notifyListeners();
-  }
 
   List<List<BaseChartVo>> get _subChartData => widget.source.subChartBaseCharts;
 
