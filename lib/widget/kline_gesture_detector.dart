@@ -153,7 +153,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           if (_isDoublePointer()) {
             return;
           }
-          KlineUtil.logd("单指水平移动");
           widget.onHorizontalDragUpdate(details);
 
           if (widget.onHorizontalDrawChart == null || widget.isShowCrossCurve) {
@@ -394,7 +393,7 @@ class KlineGestureDetectorController extends ChangeNotifier {
 
     int startIndex = (endIndex - showDataNum).clamp(0, dataMaxIndex);
     source.showDataNum = showDataNum;
-    source.resetShowData(startIndex: startIndex);
+    source.resetShowData(start: startIndex);
 
     _updateScrollWidthShowByStartDataIndex(
       startIndex: startIndex,
@@ -445,12 +444,24 @@ class KlineGestureDetectorController extends ChangeNotifier {
     }
 
     double pointGapWidth = pointWidth + pointGap;
-    int startIndex = (_minScrollWidthShow - _minScrollWidth) ~/ pointGapWidth;
-    int endIndex = startIndex + source.showDataNum;
-    int dataMaxIndex = source.dataMaxIndex;
-    if (endIndex > dataMaxIndex) {
-      endIndex = dataMaxIndex;
-      startIndex = dataMaxIndex - source.showDataNum;
+    int startIndex;
+    int endIndex;
+    var dataMaxLength = source.dataMaxLength;
+    if (_maxScrollWidthShow >= _maxScrollWidth) {
+      // 最右边，单独处理
+      startIndex =
+          (dataMaxLength - source.showDataNum).clamp(0, dataMaxLength - 1);
+      endIndex = startIndex + source.showDataNum - 1;
+      KlineUtil.logd('horizontal update, rightmost $startIndex, endIndex $endIndex');
+    } else {
+      startIndex = (_minScrollWidthShow - _minScrollWidth) ~/ pointGapWidth;
+      KlineUtil.logd('horizontal update, startIndex $startIndex');
+      endIndex = startIndex + source.showDataNum - 1;
+      int dataMaxIndex = source.dataMaxIndex;
+      if (endIndex > dataMaxIndex) {
+        endIndex = dataMaxIndex;
+        startIndex = dataMaxIndex - source.showDataNum + 1;
+      }
     }
 
     KlineUtil.logd(
@@ -475,6 +486,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
       details: details,
     );
 
+    KlineUtil.logd(
+        'horizontal update, minScrollWidth $minScrollWidth, maxScrollWidth $maxScrollWidth');
     KlineUtil.logd(
         'horizontal update, pointGapWidth $pointGapWidth, showDataNum ${source.showDataNum}');
     KlineUtil.logd(

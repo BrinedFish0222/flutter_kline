@@ -124,7 +124,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _updateShowDataNum(widget.showDataNum);
     _showDataStartIndex = (widget.source.dataMaxIndex - _showDataNum)
         .clamp(0, widget.source.dataMaxIndex);
-    widget.source.resetShowData(startIndex: _showDataStartIndex);
+    widget.source.resetShowData(start: _showDataStartIndex);
     _initSelectedIndexStream();
 
     super.initState();
@@ -184,8 +184,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     List<ChartData> subChartsShow = widget.source.subChartsShow;
                     int subChartsShowLength = _subChartShowLength;
 
-                    widget.source
-                        .resetShowData(startIndex: _showDataStartIndex);
+                    widget.source.resetShowData(start: _showDataStartIndex);
                     return Column(
                       children: [
                         /// 主图
@@ -385,7 +384,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _selectedIndexStream = StreamController<int>.broadcast();
     // 处理悬浮层。
     _selectedIndexStream?.stream.listen((index) {
-      KlineUtil.logd('触发悬浮层监听');
+      KlineUtil.logd('index stream listen, index $index');
       if (index == -1) {
         _hideCandlestickOverlay();
         return;
@@ -415,7 +414,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     });
   }
 
-
   List<List<BaseChartVo>> get _subChartData => widget.source.subChartBaseCharts;
 
   List<BaseChartVo<BaseChartData>> get _showMainChartData =>
@@ -443,7 +441,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   void _onHorizontalDrawChart(
       HorizontalDrawChartDetails horizontalDrawChartDetails) {
-    KlineUtil.logd("k线图横向滑动");
     var details = horizontalDrawChartDetails.details;
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
@@ -454,8 +451,13 @@ class _KChartWidgetState extends State<KChartWidget> {
 
     // 滑动更新数据。
     var dx = details.localPosition.dx;
-    widget.source
-        .resetShowData(startIndex: horizontalDrawChartDetails.startIndex);
+    KlineUtil.logd(
+        'k_chart_widget _onHorizontalDrawChart, startIndex ${horizontalDrawChartDetails.startIndex}');
+    widget.source.resetShowData(start: horizontalDrawChartDetails.startIndex);
+    KlineUtil.logd(
+        'k_chart_widget _onHorizontalDrawChart, widget source first data ${widget.source.showCharts[0].baseCharts[0].data[0]?.id}');
+    KlineUtil.logd(
+        'k_chart_widget _onHorizontalDrawChart, widget source last data ${widget.source.showCharts[0].baseCharts[0].data.last?.id}');
 
     // 图位置
     _chartLocation(details);
@@ -467,7 +469,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 拖动事件
   _onHorizontalDragUpdate(DragUpdateDetails details) {
-    KlineUtil.logd("k线图横向滑动");
     // 如果十字线显示的状态，则拖动操作是移动十字线。
     if (_isShowCrossCurve) {
       _resetCrossCurve(Pair(
@@ -481,9 +482,9 @@ class _KChartWidgetState extends State<KChartWidget> {
     // 滑动更新数据。
     var dx = details.localPosition.dx;
     if (_sameTimeLastHorizontalDragX > dx) {
-      widget.source.resetShowData(startIndex: _showDataStartIndex + 1);
+      widget.source.resetShowData(start: _showDataStartIndex + 1);
     } else {
-      widget.source.resetShowData(startIndex: _showDataStartIndex - 1);
+      widget.source.resetShowData(start: _showDataStartIndex - 1);
     }
 
     // 图位置

@@ -18,7 +18,6 @@ class KChartController extends ChangeNotifier {
   /// 十字线全局坐标
   Offset crossCurveGlobalPosition = const Offset(0, 0);
 
-
   /// 悬浮层数据
   /// 不显示悬浮层是，默认是最后一根
   BaseChartData? overlayEntryData;
@@ -58,7 +57,6 @@ class KChartController extends ChangeNotifier {
   /// [index] 等于-1，表示设置当前显示的最后一根数据
   void updateOverlayEntryDataByIndex(int index) {
     try {
-      KlineUtil.logd('悬浮层数据：index $index');
       if (index == -1) {
         overlayEntryData = source.showCharts.first.baseCharts.first.data.last;
         return;

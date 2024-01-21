@@ -18,7 +18,7 @@ class KChartDataSource extends ChangeNotifier {
     KlineUtil.logd('KChartDataSource 初始化 - 开始');
     _showDataNum = showDataNum;
     _resetChartRightmost();
-    resetShowData(startIndex: showDataStartIndex);
+    resetShowData(start: showDataStartIndex);
     KlineUtil.logd('KChartDataSource 初始化 - 结束');
   }
 
@@ -43,14 +43,15 @@ class KChartDataSource extends ChangeNotifier {
   ChartLocation chartLocation = ChartLocation.rightmost;
 
   /// 上一次更新数据的方向
-  ValueNotifier<bool>  isEndLast = ValueNotifier(true);
+  ValueNotifier<bool> isEndLast = ValueNotifier(true);
 
   int get dataMaxLengthLast => _dataMaxLengthLast;
 
   /// 重置图在最右边
   void _resetChartRightmost() {
-    var maxIndex = dataMaxIndex;
-    showDataStartIndex = (maxIndex - _showDataNum).clamp(0, maxIndex);
+    var maxLength = dataMaxLength;
+    _resetShowDataStartIndexByEnd(maxLength);
+
     chartLocation = ChartLocation.rightmost;
   }
 
@@ -58,9 +59,11 @@ class KChartDataSource extends ChangeNotifier {
 
   ChartData? get mainChartShow => showCharts.isEmpty ? null : showCharts.first;
 
-  List<BaseChartVo<BaseChartData>> get mainChartBaseCharts => originCharts.isEmpty ? [] : originCharts.first.baseCharts;
+  List<BaseChartVo<BaseChartData>> get mainChartBaseCharts =>
+      originCharts.isEmpty ? [] : originCharts.first.baseCharts;
 
-  List<BaseChartVo<BaseChartData>> get mainChartBaseChartsShow => showCharts.isEmpty ? [] : showCharts.first.baseCharts;
+  List<BaseChartVo<BaseChartData>> get mainChartBaseChartsShow =>
+      showCharts.isEmpty ? [] : showCharts.first.baseCharts;
 
   List<ChartData> get subChartsShow {
     if (showCharts.isEmpty || showCharts.length == 1) {
@@ -111,7 +114,7 @@ class KChartDataSource extends ChangeNotifier {
     BaseChartData? originDataFirst = ChartData.firstDataBatch(originCharts);
     BaseChartData? showDataFirst = ChartData.firstDataBatch(showCharts);
 
-    if (showDataFirst == originDataFirst)  {
+    if (showDataFirst == originDataFirst) {
       // 最左
       chartLocation = ChartLocation.leftmost;
       leftmost();
@@ -129,11 +132,19 @@ class KChartDataSource extends ChangeNotifier {
   void notifyListeners() {
     if (chartLocation == ChartLocation.rightmost) {
       KlineUtil.logd('KChartDataSource notifyListeners rightmost');
-      showDataStartIndex = (dataMaxIndex - _showDataNum).clamp(0, dataMaxIndex);
-      resetShowData(startIndex: showDataStartIndex);
+      _resetShowDataStartIndexByEnd(dataMaxLength);
+      resetShowData(start: showDataStartIndex);
     }
 
     super.notifyListeners();
+  }
+
+  /// 开始索引位置重置，位置依据end
+  _resetShowDataStartIndexByEnd(int end) {
+    showDataStartIndex = end - showDataNum;
+    if (showDataStartIndex < 0) {
+      showDataStartIndex = 0;
+    }
   }
 
   /// 清除图
@@ -141,14 +152,14 @@ class KChartDataSource extends ChangeNotifier {
   void clearCharts({int index = -1}) {
     if (index == -1) {
       originCharts.clear();
-      showCharts.clear();  
+      showCharts.clear();
     }
 
     if (index != -1 && originCharts.hasIndex(index)) {
       originCharts.removeAt(index);
       showCharts.removeAt(index);
     }
-    
+
     notifyListeners();
   }
 
@@ -185,11 +196,15 @@ class KChartDataSource extends ChangeNotifier {
   /// 清除数据 - 副图
   void _clearSubChartData({int index = -1}) {
     // 按索引清除源数据
-    if (index != -1 && originCharts.isNotEmpty && originCharts.hasIndex(index + 1)) {
+    if (index != -1 &&
+        originCharts.isNotEmpty &&
+        originCharts.hasIndex(index + 1)) {
       originCharts.sublist(1)[index].clearChartData();
     }
     // 按索引清除显示数据
-    if (index != -1 && showCharts.isNotEmpty && showCharts.hasIndex(index + 1)) {
+    if (index != -1 &&
+        showCharts.isNotEmpty &&
+        showCharts.hasIndex(index + 1)) {
       showCharts.sublist(1)[index].clearChartData();
     }
 
@@ -213,20 +228,30 @@ class KChartDataSource extends ChangeNotifier {
 
   /// 重置显示的数据。
   /// 自动适配
-  void resetShowData({int? startIndex}) {
-    if (startIndex != null) {
-      showDataStartIndex = startIndex;
+  void resetShowData({int? start}) {
+    KlineUtil.logd(
+        'k_chart_data_source resetShowData, startIndex $start ==============');
+    if (start != null) {
+      showDataStartIndex = start;
     }
 
-    int endIndex = (showDataStartIndex + _showDataNum).clamp(0, dataMaxIndex);
-    showDataStartIndex = (endIndex - _showDataNum).clamp(0, dataMaxIndex);
+    var maxLength = dataMaxLength;
+    int end = (showDataStartIndex + _showDataNum).clamp(0, maxLength);
+    _resetShowDataStartIndexByEnd(end);
 
     showCharts.clear();
     for (ChartData chartData in originCharts) {
-      showCharts.add(chartData.subData(start: showDataStartIndex + 1, end: endIndex + 1));
+      showCharts.add(chartData.subData(start: showDataStartIndex, end: end));
     }
 
-    // 不可设置，需要更新调用 [notifyListeners()]
+    KlineUtil.logd(
+        'k_chart_data_source resetShowData, startIndex $showDataStartIndex');
+    KlineUtil.logd(
+        'k_chart_data_source resetShowData, first data ${showCharts[0].baseCharts[0].data[0]?.id}');
+    KlineUtil.logd(
+        'k_chart_data_source resetShowData, last data ${showCharts[0].baseCharts[0].data.last?.id}');
+
+    // TODO 不可设置，需要更新调用 [notifyListeners()]
     // notifyListeners();
   }
 
@@ -288,7 +313,8 @@ class KChartDataSource extends ChangeNotifier {
         originCharts.length = newCharts.length;
       } else if (originCharts.length < newCharts.length) {
         for (int i = 0; i < (newCharts.length - originCharts.length); ++i) {
-          originCharts.add(ChartData(id: (originCharts.length - 1).toString(), baseCharts: []));
+          originCharts.add(ChartData(
+              id: (originCharts.length - 1).toString(), baseCharts: []));
         }
       }
 
@@ -325,6 +351,4 @@ class KChartDataSource extends ChangeNotifier {
       originChart.updateDataBy(chart, isEnd: isEnd);
     }*/
   }
-
-
 }
