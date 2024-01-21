@@ -16,8 +16,6 @@ class KlineGestureDetector extends StatefulWidget {
     required this.onHorizontalDragUpdate,
     this.onHorizontalDragEnd,
     this.onHorizontalDrawChart,
-    required this.onZoomIn,
-    required this.onZoomOut,
     required this.child,
     required this.totalDataNum,
     this.isShowCrossCurve = false,
@@ -45,13 +43,6 @@ class KlineGestureDetector extends StatefulWidget {
 
   /// 画图请求，横向滑动时触发
   final void Function(HorizontalDrawChartDetails)? onHorizontalDrawChart;
-
-  /// 放大
-  /// TODO details存在空值情况，需要统一
-  final void Function({DragUpdateDetails? details}) onZoomIn;
-
-  /// 缩小
-  final void Function({DragUpdateDetails? details}) onZoomOut;
 
   @override
   State<KlineGestureDetector> createState() => _KlineGestureDetectorState();
@@ -114,10 +105,12 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
 
         // 判断缩放，执行操作
         bool? isZoomIn = _isZoomIn(event);
+
+        /// 双指缩放
         if (isZoomIn == true) {
-          widget.onZoomIn();
+          widget.controller.zoomIn();
         } else if (isZoomIn == false) {
-          widget.onZoomOut();
+          widget.controller.zoomOut();
         }
         // 记录当前执行成功的双指缩放点
         if (isZoomIn != null &&
@@ -203,7 +196,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
             if (widget.isShowCrossCurve) {
               widget.onHorizontalDragUpdate(details);
             } else {
-              widget.onZoomIn(details: details);
               widget.controller.zoomIn();
             }
           } else {
@@ -211,7 +203,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
             if (widget.isShowCrossCurve) {
               widget.onHorizontalDragUpdate(details);
             } else {
-              widget.onZoomOut(details: details);
               widget.controller.zoomOut();
             }
           }
@@ -491,7 +482,7 @@ class KlineGestureDetectorController extends ChangeNotifier {
     KlineUtil.logd(
         'horizontal update, screenMaxWidth $screenMaxWidth, minScrollWidthShow $minScrollWidthShow, maxScrollWidthShow $maxScrollWidthShow');
     KlineUtil.logd(
-        'horizontal update, last data ${source.originCharts[0].baseCharts[0].data[endIndex]?.id}');
+        'horizontal update, first data ${source.originCharts[0].baseCharts[0].data[startIndex]?.id}, last data ${source.originCharts[0].baseCharts[0].data[endIndex]?.id}');
 
     return horizontalDrawChartDetails;
   }

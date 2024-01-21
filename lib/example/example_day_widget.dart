@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
-import 'package:flutter_kline/example/example_badge_data.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/vo/mask_layer.dart';
 import 'package:flutter_kline/widget/k_line_chart_widget.dart';

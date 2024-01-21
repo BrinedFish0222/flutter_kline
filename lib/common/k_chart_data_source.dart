@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/constants/chart_location.dart';

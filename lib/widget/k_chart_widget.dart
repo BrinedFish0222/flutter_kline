@@ -199,38 +199,6 @@ class _KChartWidgetState extends State<KChartWidget> {
                           onHorizontalDragEnd: (details) =>
                               _isOnHorizontalDragStart = false,
                           onHorizontalDrawChart: _onHorizontalDrawChart,
-                          onZoomIn: ({DragUpdateDetails? details}) {
-                            // TODO 临时屏蔽放大缩小
-                            return;
-
-                            // 如果十字线显示的状态，则拖动操作是移动十字线。
-                            if (_isShowCrossCurve && details != null) {
-                              _resetCrossCurve(Pair(
-                                  left: details.globalPosition.dx,
-                                  right: details.globalPosition.dy));
-                              return;
-                            }
-
-                            int endIndex = (_showDataStartIndex + _showDataNum)
-                                .clamp(0, widget.source.dataMaxIndex);
-                            _onZoom(endIndex: endIndex, zoomIn: true);
-                          },
-                          onZoomOut: ({DragUpdateDetails? details}) {
-                            // TODO 临时屏蔽放大缩小
-                            return;
-
-                            // 如果十字线显示的状态，则拖动操作是移动十字线。
-                            if (_isShowCrossCurve && details != null) {
-                              _resetCrossCurve(Pair(
-                                  left: details.globalPosition.dx,
-                                  right: details.globalPosition.dy));
-                              return;
-                            }
-
-                            int endIndex = (_showDataStartIndex + _showDataNum)
-                                .clamp(0, widget.source.dataMaxIndex);
-                            _onZoom(endIndex: endIndex, zoomIn: false);
-                          },
                           child: MainChartWidget(
                             chartData: _showMainChartData,
                             size: _mainChartSize,
@@ -566,7 +534,8 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
     if (crossCurveXY != null && !crossCurveXY.isNull()) {
-      _controller.crossCurveGlobalPosition = Offset(crossCurveXY.left!, crossCurveXY.right!);
+      _controller.crossCurveGlobalPosition =
+          Offset(crossCurveXY.left!, crossCurveXY.right!);
     }
 
     _controller.isShowCrossCurve = crossCurveXY != null;
