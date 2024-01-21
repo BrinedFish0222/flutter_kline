@@ -212,6 +212,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
               widget.onHorizontalDragUpdate(details);
             } else {
               widget.onZoomOut(details: details);
+              widget.controller.zoomOut();
             }
           }
         },
@@ -360,28 +361,33 @@ class KlineGestureDetectorController extends ChangeNotifier {
   /// 显示的宽度
   double get scrollWidthShow => _maxScrollWidthShow - _minScrollWidthShow;
 
+  /// 缩小
+  void zoomOut({int zoomValue = 1}) {
+    _zoom(zoomValue: zoomValue, isIn: false);
+  }
+
   /// 放大
   void zoomIn({int zoomValue = 1}) {
+    _zoom(zoomValue: zoomValue, isIn: true);
+  }
+
+  /// 放大、缩小
+  void _zoom({int zoomValue = 1, required bool isIn}) {
     int showDataNum = source.showDataNum;
     var dataMaxIndex = source.dataMaxIndex;
 
     int endIndex =
         (source.showDataStartIndex + showDataNum).clamp(0, dataMaxIndex);
-    if (showDataNum == KlineConfig.showDataMinLength) {
+    if (showDataNum == KlineConfig.showDataMinLength && isIn) {
       return;
     }
 
-    KlineUtil.logd(
-        'zoom in before startIndex ${source.showDataStartIndex}, padding $padding');
-    KlineUtil.logd(
-        'zoom in before pointWidthGap ${pointWidth + pointGap}, showDataNum $showDataNum,');
-    KlineUtil.logd(
-        'zoom in before _minScrollWidth $_minScrollWidth, _maxScrollWidth $_maxScrollWidth,');
-    KlineUtil.logd(
-        'zoom in before _minScrollWidthShow $_minScrollWidthShow, _maxScrollWidthShow $_maxScrollWidthShow,');
+    if (showDataNum == KlineConfig.showDataMaxLength && !isIn) {
+      return;
+    }
 
     int showDataNumOld = showDataNum;
-    showDataNum = (showDataNum - zoomValue)
+    showDataNum = (isIn ? (showDataNum - zoomValue) : (showDataNum + zoomValue))
         .clamp(KlineConfig.showDataMinLength, KlineConfig.showDataMaxLength);
     // 真正的放大数量
     zoomValue = showDataNumOld - showDataNum;
@@ -394,14 +400,6 @@ class KlineGestureDetectorController extends ChangeNotifier {
     double multiple = (pointWidthGap - pointWidthGapOld) / pointWidthGapOld;
     _minScrollWidth = _minScrollWidth * (1 + multiple);
     _maxScrollWidth = _maxScrollWidth * (1 + multiple);
-
-    KlineUtil.logd(
-        'zoom in after pointWidthGap ${pointWidth + pointGap}, showDataNum $showDataNum,');
-    KlineUtil.logd(
-        'zoom in after _minScrollWidth $_minScrollWidth, _maxScrollWidth $_maxScrollWidth,');
-    KlineUtil.logd(
-        'zoom in after _minScrollWidthShow $_minScrollWidthShow, _maxScrollWidthShow $_maxScrollWidthShow,');
-    KlineUtil.logd('zoom in after showDataStartIndex ${source.showDataStartIndex}');
 
     int startIndex = (endIndex - showDataNum).clamp(0, dataMaxIndex);
     source.showDataNum = showDataNum;
