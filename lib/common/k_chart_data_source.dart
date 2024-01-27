@@ -94,10 +94,7 @@ class KChartDataSource extends ChangeNotifier {
   set showDataNum(val) => _showDataNum = val;
 
   /// 更新图位置，优先级：最右 > 最左 > 中间
-  void updateChartLocation(DragUpdateDetails details) {
-    // var showDataLast = showData.lastData();
-    // var originDataLast = data.lastData();
-
+  void updateChartLocation() {
     BaseChartData? originDataLast = ChartData.lastDataBatch(originCharts);
     BaseChartData? showDataLast = ChartData.lastDataBatch(showCharts);
 
@@ -107,9 +104,6 @@ class KChartDataSource extends ChangeNotifier {
       rightmost();
       return;
     }
-
-    // var showDataFirst = showData.firstData();
-    // var originDataFirst = data.firstData();
 
     BaseChartData? originDataFirst = ChartData.firstDataBatch(originCharts);
     BaseChartData? showDataFirst = ChartData.firstDataBatch(showCharts);
@@ -229,8 +223,6 @@ class KChartDataSource extends ChangeNotifier {
   /// 重置显示的数据。
   /// 自动适配
   void resetShowData({int? start}) {
-    KlineUtil.logd(
-        'k_chart_data_source resetShowData, startIndex $start ==============');
     if (start != null) {
       showDataStartIndex = start;
     }
@@ -244,13 +236,8 @@ class KChartDataSource extends ChangeNotifier {
       showCharts.add(chartData.subData(start: showDataStartIndex, end: end));
     }
 
-    KlineUtil.logd(
-        'k_chart_data_source resetShowData, startIndex $showDataStartIndex');
-    KlineUtil.logd(
-        'k_chart_data_source resetShowData, first data ${showCharts[0].baseCharts[0].data[0]?.id}');
-    KlineUtil.logd(
-        'k_chart_data_source resetShowData, last data ${showCharts[0].baseCharts[0].data.last?.id}');
-
+   
+    updateChartLocation();
     // TODO 不可设置，需要更新调用 [notifyListeners()]
     // notifyListeners();
   }

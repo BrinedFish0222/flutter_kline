@@ -190,11 +190,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
       startIndex =
           (dataMaxLength - source.showDataNum).clamp(0, dataMaxLength - 1);
       endIndex = startIndex + source.showDataNum - 1;
-      KlineUtil.logd(
-          'horizontal update, rightmost $startIndex, endIndex $endIndex');
     } else {
       startIndex = (_minScrollWidthShow - _minScrollWidth) ~/ pointGapWidth;
-      KlineUtil.logd('horizontal update, startIndex $startIndex');
       endIndex = startIndex + source.showDataNum - 1;
       int dataMaxIndex = source.dataMaxIndex;
       if (endIndex > dataMaxIndex) {
@@ -203,15 +200,9 @@ class KlineGestureDetectorController extends ChangeNotifier {
       }
     }
 
-    KlineUtil.logd(
-        'horizontal update, pointGapWidth $pointGapWidth, _minScrollWidthShow $_minScrollWidthShow, scrollWidth $scrollWidth');
-    KlineUtil.logd(
-        'horizontal update, f(x) ${(_minScrollWidthShow - scrollWidth) % pointGapWidth}');
     double leftPadding = pointGapWidth -
         double.parse(((_minScrollWidthShow - scrollWidth) % pointGapWidth)
             .toStringAsFixed(2));
-    KlineUtil.logd(
-        'horizontal update, leftPadding >= pointGapWidth ${leftPadding >= pointGapWidth}, leftPadding $leftPadding, pointGapWidth $pointGapWidth');
     if (leftPadding >= pointGapWidth) {
       leftPadding = 0;
     }
@@ -225,17 +216,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
       details: details,
     );
 
-    KlineUtil.logd(
-        'horizontal update, minScrollWidth $minScrollWidth, maxScrollWidth $maxScrollWidth');
-    KlineUtil.logd(
-        'horizontal update, pointGapWidth $pointGapWidth, showDataNum ${source.showDataNum}');
-    KlineUtil.logd(
-        'horizontal update, startIndex $startIndex, endIndex $endIndex, padding $padding,');
-    KlineUtil.logd(
-        'horizontal update, screenMaxWidth $screenMaxWidth, minScrollWidthShow $minScrollWidthShow, maxScrollWidthShow $maxScrollWidthShow');
-    KlineUtil.logd(
-        'horizontal update, first data ${source.originCharts[0].baseCharts[0].data[startIndex]?.id}, last data ${source.originCharts[0].baseCharts[0].data[endIndex]?.id}');
-
+    source.resetShowData(start: startIndex);
+    source.notifyListeners();
     return horizontalDrawChartDetails;
   }
 

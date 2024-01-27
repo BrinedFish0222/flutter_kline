@@ -440,20 +440,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       return;
     }
 
-    // 滑动更新数据。
-    KlineUtil.logd(
-        'k_chart_widget _onHorizontalDrawChart, startIndex ${horizontalDrawChartDetails.startIndex}');
-    widget.source.resetShowData(start: horizontalDrawChartDetails.startIndex);
-    KlineUtil.logd(
-        'k_chart_widget _onHorizontalDrawChart, widget source first data ${widget.source.showCharts[0].baseCharts[0].data[0]?.id}');
-    KlineUtil.logd(
-        'k_chart_widget _onHorizontalDrawChart, widget source last data ${widget.source.showCharts[0].baseCharts[0].data.last?.id}');
-
-    // 图位置
-    _chartLocation(details);
-
     _controller.updateOverlayEntryDataByIndex(-1);
-    widget.source.notifyListeners();
   }
 
   /// 拖动事件
@@ -497,15 +484,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
   }
 
-  /// 图位置
-  void _chartLocation(DragUpdateDetails details) {
-    widget.source.updateChartLocation(details);
-    if (widget.onHorizontalDragUpdate == null) {
-      return;
-    }
-
-    widget.onHorizontalDragUpdate!(details, widget.source.chartLocation);
-  }
 
   void _globalOnHorizontalDragUpdate(DragUpdateDetails details) {
     if (!_isShowCrossCurve) {
