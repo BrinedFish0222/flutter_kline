@@ -52,4 +52,7 @@ class KlineConfig {
   /// 数据点像素占比
   static const double pointWidthRatio = .8;
 
+  /// 横向滑动动画值
+  static const double horizontalDragAnimationValue = 2;
+
 }

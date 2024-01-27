@@ -48,7 +48,8 @@ class KlineGestureDetector extends StatefulWidget {
   State<KlineGestureDetector> createState() => _KlineGestureDetectorState();
 }
 
-class _KlineGestureDetectorState extends State<KlineGestureDetector> {
+class _KlineGestureDetectorState extends State<KlineGestureDetector>
+    with SingleTickerProviderStateMixin {
   /// 手指数量
   int pointerCount = 0;
 
@@ -65,6 +66,29 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
 
   /// 双指首个手指空开时间
   int doublePointerFirstPutdownMilliseconds = 0;
+
+  late AnimationController _animationController;
+
+  late Animation _animation;
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _animation =
+        CurvedAnimation(parent: _animationController, curve: Curves.decelerate);
+    _animationController.addListener(() {
+      KlineUtil.logd('animation value ${1 - _animation.value}');
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,11 +192,16 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector> {
           widget.onHorizontalDrawChart!(horizontalDrawChartDetails);
         },
         onHorizontalDragEnd: (details) {
-          if (_isDoublePointer() || widget.onHorizontalDragEnd == null) {
+          if (_isDoublePointer()) {
             return;
           }
 
-          widget.onHorizontalDragEnd!(details);
+          KlineUtil.logd('animation pre, pv ${details.primaryVelocity}, v ${details.velocity}');
+          _animationController.forward();
+
+          if (widget.onHorizontalDragEnd != null) {
+            widget.onHorizontalDragEnd!(details);
+          }
         },
         onVerticalDragUpdate: (details) {
           if (_isDoublePointer()) {
@@ -452,7 +481,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
       startIndex =
           (dataMaxLength - source.showDataNum).clamp(0, dataMaxLength - 1);
       endIndex = startIndex + source.showDataNum - 1;
-      KlineUtil.logd('horizontal update, rightmost $startIndex, endIndex $endIndex');
+      KlineUtil.logd(
+          'horizontal update, rightmost $startIndex, endIndex $endIndex');
     } else {
       startIndex = (_minScrollWidthShow - _minScrollWidth) ~/ pointGapWidth;
       KlineUtil.logd('horizontal update, startIndex $startIndex');
