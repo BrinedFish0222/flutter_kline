@@ -103,10 +103,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 默认范围：[KlineConfig.showDataMinLength], [KlineConfig.showDataMaxLength]
   late int _showDataNum;
 
-  /// 同一时间上一个拖动的x轴坐标
-  @deprecated
-  late double _sameTimeLastHorizontalDragX;
-
   KlineGestureDetectorController? _gestureDetectorController;
 
   KlineGestureDetectorController get gestureDetectorController =>
@@ -297,8 +293,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   void _onHorizontalDragStart(details) {
-    KlineUtil.logd("GestureDetector onHorizontalDragStart");
-    _sameTimeLastHorizontalDragX = details.localPosition.dx;
     _isOnHorizontalDragStart = true;
   }
 
@@ -462,7 +456,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     // 图位置
     _chartLocation(details);
 
-    _sameTimeLastHorizontalDragX = dx;
     _controller.updateOverlayEntryDataByIndex(-1);
     widget.source.notifyListeners();
   }
@@ -477,22 +470,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     return;
-
-    // TODO DELETE
-    // 滑动更新数据。
-    var dx = details.localPosition.dx;
-    if (_sameTimeLastHorizontalDragX > dx) {
-      widget.source.resetShowData(start: _showDataStartIndex + 1);
-    } else {
-      widget.source.resetShowData(start: _showDataStartIndex - 1);
-    }
-
-    // 图位置
-    _chartLocation(details);
-
-    _sameTimeLastHorizontalDragX = dx;
-    _controller.updateOverlayEntryDataByIndex(-1);
-    widget.source.notifyListeners();
   }
 
   /// 取消十字线
