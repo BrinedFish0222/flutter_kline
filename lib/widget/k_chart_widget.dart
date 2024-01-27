@@ -18,6 +18,7 @@ import '../vo/candlestick_chart_vo.dart';
 import '../vo/mask_layer.dart';
 import '../vo/pointer_info.dart';
 import 'kline_gesture_detector.dart';
+import 'kline_gesture_detector_controller.dart';
 import 'main_chart_widget.dart';
 
 /// k线图手势操作组件
@@ -95,8 +96,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 十字线选中数据索引流。
   StreamController<int>? _selectedIndexStream;
 
-  /// 十字线是否显示
-  // bool _isShowCrossCurve = false;
   bool _isOnHorizontalDragStart = true;
 
   /// [widget.showDataNum]
@@ -371,9 +370,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   _initSelectedIndexStream() {
-    /*if (_showMainChartData.isEmpty) {
-      return;
-    }*/
+    
 
     _selectedIndexStream = StreamController<int>.broadcast();
     // 处理悬浮层。
@@ -444,7 +441,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     }
 
     // 滑动更新数据。
-    var dx = details.localPosition.dx;
     KlineUtil.logd(
         'k_chart_widget _onHorizontalDrawChart, startIndex ${horizontalDrawChartDetails.startIndex}');
     widget.source.resetShowData(start: horizontalDrawChartDetails.startIndex);
