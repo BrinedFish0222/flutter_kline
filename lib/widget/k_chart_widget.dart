@@ -92,7 +92,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 十字线选中数据索引流。
   // StreamController<int>? _selectedIndexStream;
 
-  bool _isOnHorizontalDragStart = true;
+  
 
   /// [widget.showDataNum]
   /// 默认范围：[KlineConfig.showDataMinLength], [KlineConfig.showDataMaxLength]
@@ -174,9 +174,6 @@ class _KChartWidgetState extends State<KChartWidget> {
                           controller: gestureDetectorController,
                           kChartController: _controller,
                           totalDataNum: widget.source.dataMaxLength,
-                          onHorizontalDragStart: _onHorizontalDragStart,
-                          onHorizontalDragEnd: (details) =>
-                              _isOnHorizontalDragStart = false,
                           child: MainChartWidget(
                             chartData: _showMainChartData,
                             size: _mainChartSize,
@@ -261,11 +258,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     _showDataNum = showDataNum;
   }
 
-
-
-  void _onHorizontalDragStart(details) {
-    _isOnHorizontalDragStart = true;
-  }
 
   /// 重算布局
   void _computeLayout(BoxConstraints constraints) {
@@ -399,20 +391,6 @@ class _KChartWidgetState extends State<KChartWidget> {
         left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 
-  /// 取消十字线
-  bool _cancelCrossCurve() {
-    if (!(_isShowCrossCurve ||
-        (_isShowCrossCurve && !_isOnHorizontalDragStart))) {
-      return false;
-    }
-
-    _resetCrossCurve(null);
-    _hideCandlestickOverlay();
-
-    KlineUtil.logd('取消十字线，传输-1');
-    _selectedIndexStream.add(-1);
-    return true;
-  }
 
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {

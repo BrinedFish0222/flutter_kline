@@ -12,8 +12,6 @@ class KlineGestureDetector extends StatefulWidget {
     super.key,
     required this.controller,
     required this.kChartController,
-    this.onHorizontalDragStart,
-    this.onHorizontalDragEnd,
     required this.child,
     required this.totalDataNum,
   });
@@ -27,8 +25,6 @@ class KlineGestureDetector extends StatefulWidget {
 
   final Widget child;
 
-  final void Function(DragStartDetails)? onHorizontalDragStart;
-  final void Function(DragEndDetails)? onHorizontalDragEnd;
 
   @override
   State<KlineGestureDetector> createState() => _KlineGestureDetectorState();
@@ -162,13 +158,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
                 lastPointerInfo!.globalPosition.dy));
           }
         },
-        onHorizontalDragStart: (details) {
-          if (_isDoublePointer() || widget.onHorizontalDragStart == null) {
-            return;
-          }
-
-          widget.onHorizontalDragStart!(details);
-        },
         onHorizontalDragUpdate: (details) {
           if (_isDoublePointer()) {
             return;
@@ -196,10 +185,6 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
           KlineUtil.logd(
               'animation pre, pv ${details.primaryVelocity}, v ${details.velocity}');
           _animationController.forward();
-
-          if (widget.onHorizontalDragEnd != null) {
-            widget.onHorizontalDragEnd!(details);
-          }
         },
         onVerticalDragUpdate: (details) {
           if (_isDoublePointer()) {
