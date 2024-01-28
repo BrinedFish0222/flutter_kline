@@ -7,7 +7,6 @@ import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
-import 'package:flutter_kline/vo/horizontal_draw_chart_details.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
@@ -180,7 +179,6 @@ class _KChartWidgetState extends State<KChartWidget> {
                           onHorizontalDragStart: _onHorizontalDragStart,
                           onHorizontalDragEnd: (details) =>
                               _isOnHorizontalDragStart = false,
-                          onHorizontalDrawChart: _onHorizontalDrawChart,
                           child: MainChartWidget(
                             chartData: _showMainChartData,
                             size: _mainChartSize,
@@ -359,7 +357,7 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   _initSelectedIndexStream() {
     // 处理悬浮层。
-    _selectedIndexStream?.stream.listen((index) {
+    _selectedIndexStream.stream.listen((index) {
       KlineUtil.logd('index stream listen, index $index');
       if (index == -1) {
         _hideCandlestickOverlay();
@@ -415,21 +413,6 @@ class _KChartWidgetState extends State<KChartWidget> {
         left: details.globalPosition.dx, right: details.globalPosition.dy));
   }
 
-  void _onHorizontalDrawChart(
-      HorizontalDrawChartDetails horizontalDrawChartDetails) {
-    var details = horizontalDrawChartDetails.details;
-    // 如果十字线显示的状态，则拖动操作是移动十字线。
-    if (_isShowCrossCurve) {
-      _resetCrossCurve(Pair(
-          left: details.globalPosition.dx, right: details.globalPosition.dy));
-      return;
-    }
-
-    _controller.updateOverlayEntryDataByIndex(-1);
-  }
-
- 
-
   /// 取消十字线
   bool _cancelCrossCurve() {
     if (!(_isShowCrossCurve ||
@@ -441,7 +424,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _hideCandlestickOverlay();
 
     KlineUtil.logd('取消十字线，传输-1');
-    _selectedIndexStream?.add(-1);
+    _selectedIndexStream.add(-1);
     return true;
   }
 

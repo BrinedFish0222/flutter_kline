@@ -15,7 +15,6 @@ class KlineGestureDetector extends StatefulWidget {
     this.onTap,
     this.onHorizontalDragStart,
     this.onHorizontalDragEnd,
-    this.onHorizontalDrawChart,
     required this.child,
     required this.totalDataNum,
     this.isShowCrossCurve = false,
@@ -37,8 +36,6 @@ class KlineGestureDetector extends StatefulWidget {
   final void Function(DragStartDetails)? onHorizontalDragStart;
   final void Function(DragEndDetails)? onHorizontalDragEnd;
 
-  /// 画图请求，横向滑动时触发
-  final void Function(HorizontalDrawChartDetails)? onHorizontalDrawChart;
 
   @override
   State<KlineGestureDetector> createState() => _KlineGestureDetectorState();
@@ -180,19 +177,14 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
             
             return;
           }
-          
 
-          if (widget.onHorizontalDrawChart == null || widget.isShowCrossCurve) {
-            return;
-          }
 
+          widget.kChartController.updateOverlayEntryDataByIndex(-1);
           HorizontalDrawChartDetails? horizontalDrawChartDetails =
               widget.controller.onHorizontalDrawChart(details);
           if (horizontalDrawChartDetails == null) {
             return;
           }
-
-          widget.onHorizontalDrawChart!(horizontalDrawChartDetails);
         },
         onHorizontalDragEnd: (details) {
           if (_isDoublePointer()) {
