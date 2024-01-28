@@ -129,7 +129,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   @override
   void dispose() {
     _hideCandlestickOverlay();
-    _selectedIndexStream?.close();
 
     if (widget.controller == null) {
       _controller.dispose();
@@ -174,11 +173,11 @@ class _KChartWidgetState extends State<KChartWidget> {
                         /// 主图
                         KlineGestureDetector(
                           controller: gestureDetectorController,
+                          kChartController: _controller,
                           isShowCrossCurve: _isShowCrossCurve,
                           onTap: _onTap,
                           totalDataNum: widget.source.dataMaxLength,
                           onHorizontalDragStart: _onHorizontalDragStart,
-                          onHorizontalDragUpdate: _onHorizontalDragUpdate,
                           onHorizontalDragEnd: (details) =>
                               _isOnHorizontalDragStart = false,
                           onHorizontalDrawChart: _onHorizontalDrawChart,
@@ -429,17 +428,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _controller.updateOverlayEntryDataByIndex(-1);
   }
 
-  /// 拖动事件
-  _onHorizontalDragUpdate(DragUpdateDetails details) {
-    // 如果十字线显示的状态，则拖动操作是移动十字线。
-    if (_isShowCrossCurve) {
-      _resetCrossCurve(Pair(
-          left: details.globalPosition.dx, right: details.globalPosition.dy));
-      return;
-    }
-
-    return;
-  }
+ 
 
   /// 取消十字线
   bool _cancelCrossCurve() {
