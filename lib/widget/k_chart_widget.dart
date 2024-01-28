@@ -15,7 +15,6 @@ import '../common/k_chart_data_source.dart';
 import '../common/pair.dart';
 import '../vo/candlestick_chart_vo.dart';
 import '../vo/mask_layer.dart';
-import '../vo/pointer_info.dart';
 import 'kline_gesture_detector.dart';
 import 'kline_gesture_detector_controller.dart';
 import 'main_chart_widget.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/constants/direction.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/horizontal_draw_chart_details.dart';
 
 import '../common/pair.dart';
 import '../vo/pointer_info.dart';
@@ -24,7 +24,6 @@ class KlineGestureDetector extends StatefulWidget {
   final int totalDataNum;
 
   final Widget child;
-
 
   @override
   State<KlineGestureDetector> createState() => _KlineGestureDetectorState();
@@ -53,6 +52,9 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
 
   late Animation _animation;
 
+  /// 横向拖动速率
+  double _primaryVelocity = 0;
+
   @override
   void initState() {
     _animationController =
@@ -60,7 +62,12 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
     _animation =
         CurvedAnimation(parent: _animationController, curve: Curves.decelerate);
     _animationController.addListener(() {
-      KlineUtil.logd('animation value ${1 - _animation.value}');
+      double dx = _primaryVelocity.abs() * (1 - _animation.value) * 0.02;
+      if (dx == 0) {
+        return;
+      }
+      widget.controller.onHorizontalDrawChart(
+          widget.controller.horizontalDrawDir == Direction.left ? -dx : dx);
     });
 
     super.initState();
@@ -166,20 +173,19 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
           if (widget.kChartController.isShowCrossCurve) {
             // 如果十字线显示的状态，则拖动操作是移动十字线。
             _showCrossCurve(details);
-
             return;
           }
 
           widget.kChartController.updateOverlayEntryDataByIndex(-1);
-          widget.controller.onHorizontalDrawChart(details);
+          widget.controller.onHorizontalDrawChart(details.delta.dx);
         },
         onHorizontalDragEnd: (details) {
           if (_isDoublePointer()) {
             return;
           }
 
-          KlineUtil.logd(
-              'animation pre, pv ${details.primaryVelocity}, v ${details.velocity}');
+          _primaryVelocity = details.primaryVelocity ?? 0;
+          _animationController.reset();
           _animationController.forward();
         },
         onVerticalDragUpdate: (details) {

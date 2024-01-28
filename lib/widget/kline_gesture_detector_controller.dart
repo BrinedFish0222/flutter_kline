@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/horizontal_draw_chart_details.dart';
+
+import '../constants/direction.dart';
 
 /// 手势控制器 
 class KlineGestureDetectorController extends ChangeNotifier {
@@ -64,6 +65,11 @@ class KlineGestureDetectorController extends ChangeNotifier {
   late double _minScrollWidthShow, _maxScrollWidthShow = 0;
 
   late EdgeInsets _padding;
+
+  /// 滑动方向
+  Direction _horizontalDrawDir = Direction.right;
+
+  Direction get horizontalDrawDir => _horizontalDrawDir;
 
   EdgeInsets get padding => _padding;
 
@@ -145,8 +151,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
 
   /// 横向滑动画图请求
   /// 返回值空表示不满足触发条件
-  void onHorizontalDrawChart(DragUpdateDetails details) {
-    KlineUtil.logd('horizontal update ============');
+  void onHorizontalDrawChart(double dx) {
+    KlineUtil.logd('horizontal update dx $dx ============');
     // 数据不足一屏幕，中断画图请求
     if (_minScrollWidth.abs() <= screenMaxWidth) {
       KlineUtil.logd("横向滑动画图请求 数据不足一屏幕中断");
@@ -154,7 +160,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
     }
 
     // 是否是左滑动
-    bool leftDir = details.delta.dx > 0;
+    bool leftDir = dx > 0;
+    _horizontalDrawDir = leftDir ? Direction.right : Direction.left;
     if (leftDir && _minScrollWidthShow == _minScrollWidth) {
       // 左边滑动尽头结束
       KlineUtil.logd("横向滑动画图请求 左边尽头中断");
@@ -167,7 +174,6 @@ class KlineGestureDetectorController extends ChangeNotifier {
     }
 
     // 这一帧滑动的dx可能超过界限了，需要进行矫正
-    double dx = details.delta.dx;
     _minScrollWidthShow = _minScrollWidthShow - dx;
     _maxScrollWidthShow = _maxScrollWidthShow - dx;
 
