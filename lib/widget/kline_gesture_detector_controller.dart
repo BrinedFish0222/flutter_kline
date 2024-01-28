@@ -145,12 +145,12 @@ class KlineGestureDetectorController extends ChangeNotifier {
 
   /// 横向滑动画图请求
   /// 返回值空表示不满足触发条件
-  HorizontalDrawChartDetails? onHorizontalDrawChart(DragUpdateDetails details) {
+  void onHorizontalDrawChart(DragUpdateDetails details) {
     KlineUtil.logd('horizontal update ============');
     // 数据不足一屏幕，中断画图请求
     if (_minScrollWidth.abs() <= screenMaxWidth) {
       KlineUtil.logd("横向滑动画图请求 数据不足一屏幕中断");
-      return null;
+      return;
     }
 
     // 是否是左滑动
@@ -158,12 +158,12 @@ class KlineGestureDetectorController extends ChangeNotifier {
     if (leftDir && _minScrollWidthShow == _minScrollWidth) {
       // 左边滑动尽头结束
       KlineUtil.logd("横向滑动画图请求 左边尽头中断");
-      return null;
+      return;
     }
     if (!leftDir && _maxScrollWidthShow == _maxScrollWidth) {
       // 右边滑动尽头结束
       KlineUtil.logd("横向滑动画图请求 右边尽头中断");
-      return null;
+      return;
     }
 
     // 这一帧滑动的dx可能超过界限了，需要进行矫正
@@ -207,18 +207,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
       leftPadding = 0;
     }
     _padding = EdgeInsets.only(left: leftPadding);
-
-    HorizontalDrawChartDetails horizontalDrawChartDetails =
-        HorizontalDrawChartDetails(
-      startIndex: startIndex,
-      endIndex: endIndex,
-      padding: padding,
-      details: details,
-    );
-
     source.resetShowData(start: startIndex);
     source.notifyListeners();
-    return horizontalDrawChartDetails;
   }
 
   /// 根据[startIndex]更新卷轴显示区域值

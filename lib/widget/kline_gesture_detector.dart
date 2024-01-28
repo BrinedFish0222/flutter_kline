@@ -171,11 +171,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
           }
 
           widget.kChartController.updateOverlayEntryDataByIndex(-1);
-          HorizontalDrawChartDetails? horizontalDrawChartDetails =
-              widget.controller.onHorizontalDrawChart(details);
-          if (horizontalDrawChartDetails == null) {
-            return;
-          }
+          widget.controller.onHorizontalDrawChart(details);
         },
         onHorizontalDragEnd: (details) {
           if (_isDoublePointer()) {
