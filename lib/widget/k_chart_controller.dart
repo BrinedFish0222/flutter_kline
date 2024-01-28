@@ -12,6 +12,7 @@ class KChartController extends ChangeNotifier {
   KChartController({required this.source}) {
     updateOverlayEntryDataByIndex(-1);
     source.addListener(_sourceListener);
+    _crossCurveIndexStream = StreamController<int>.broadcast();
     _initCrossCurveStream();
   }
 
@@ -26,6 +27,9 @@ class KChartController extends ChangeNotifier {
   /// 十字线流。索引0是主图，其它均是副图。
   late List<StreamController<Pair<double?, double?>>> _crossCurveStreams;
 
+  /// 十字线选中数据索引流。
+  late StreamController<int> _crossCurveIndexStream;
+
   /// 悬浮层数据
   /// 不显示悬浮层是，默认是最后一根
   BaseChartData? overlayEntryData;
@@ -34,6 +38,8 @@ class KChartController extends ChangeNotifier {
   OverlayEntry? overlayEntry;
 
   bool get isShowCrossCurve => _isShowCrossCurve;
+
+  StreamController<int> get crossCurveIndexStream => _crossCurveIndexStream;
 
   List<StreamController<Pair<double?, double?>>> get crossCurveStreams => _crossCurveStreams;
 
@@ -50,6 +56,8 @@ class KChartController extends ChangeNotifier {
     for (var con in crossCurveStreams) {
       con.close();
     }
+
+    _crossCurveIndexStream.close();
     super.dispose();
   }
 
@@ -71,6 +79,9 @@ class KChartController extends ChangeNotifier {
     for (var element in crossCurveStreams) {
       element.add(Pair(left: null, right: null));
     }
+
+    hideOverlayEntry();
+    _crossCurveIndexStream.add(-1);
 
     notifyListeners();
   }

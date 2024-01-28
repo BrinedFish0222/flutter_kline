@@ -91,7 +91,7 @@ class _KChartWidgetState extends State<KChartWidget> {
   late Size _subChartSize;
 
   /// 十字线选中数据索引流。
-  StreamController<int>? _selectedIndexStream;
+  // StreamController<int>? _selectedIndexStream;
 
   bool _isOnHorizontalDragStart = true;
 
@@ -100,6 +100,8 @@ class _KChartWidgetState extends State<KChartWidget> {
   late int _showDataNum;
 
   KlineGestureDetectorController? _gestureDetectorController;
+
+  StreamController<int> get _selectedIndexStream => _controller.crossCurveIndexStream;
 
   List<StreamController<Pair<double?, double?>>> get _crossCurveStreamList => _controller.crossCurveStreams;
 
@@ -200,7 +202,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                         /// 副图
                         for (int i = 0; i < subChartsShowLength; ++i)
                           GestureDetector(
-                            onTapDown: (details) => _cancelCrossCurve(),
+                            onTapDown: (details) => _controller.hideCrossCurve(),
                             child: SizedBox.fromSize(
                               size: _subChartSize,
                               child: SubChartWidget(
@@ -357,9 +359,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   }
 
   _initSelectedIndexStream() {
-    
-
-    _selectedIndexStream = StreamController<int>.broadcast();
     // 处理悬浮层。
     _selectedIndexStream?.stream.listen((index) {
       KlineUtil.logd('index stream listen, index $index');
