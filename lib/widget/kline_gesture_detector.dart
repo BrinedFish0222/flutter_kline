@@ -12,7 +12,6 @@ class KlineGestureDetector extends StatefulWidget {
     super.key,
     required this.controller,
     required this.kChartController,
-    this.onTap,
     this.onHorizontalDragStart,
     this.onHorizontalDragEnd,
     required this.child,
@@ -32,10 +31,8 @@ class KlineGestureDetector extends StatefulWidget {
 
   final Widget child;
 
-  final void Function(PointerInfo)? onTap;
   final void Function(DragStartDetails)? onHorizontalDragStart;
   final void Function(DragEndDetails)? onHorizontalDragEnd;
-
 
   @override
   State<KlineGestureDetector> createState() => _KlineGestureDetectorState();
@@ -151,14 +148,24 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
         pointerCount -= 1;
       },
       child: GestureDetector(
-        onTap: widget.onTap == null
-            ? null
-            : () {
-                if (_isDoublePointer() || lastPointerInfo == null) {
-                  return;
-                }
-                widget.onTap!(lastPointerInfo!);
-              },
+        onTap: () {
+          if (_isDoublePointer()) {
+            return;
+          }
+
+          if (widget.kChartController.isShowCrossCurve) {
+            // 取消选中的十字线
+            widget.kChartController.hideCrossCurve();
+            return;
+          }
+
+          if (lastPointerInfo != null) {
+            // 显示十字线
+            widget.kChartController.showCrossCurve(Offset(
+                lastPointerInfo!.globalPosition.dx,
+                lastPointerInfo!.globalPosition.dy));
+          }
+        },
         onHorizontalDragStart: (details) {
           if (_isDoublePointer() || widget.onHorizontalDragStart == null) {
             return;
@@ -174,10 +181,9 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
           if (widget.kChartController.isShowCrossCurve) {
             // 如果十字线显示的状态，则拖动操作是移动十字线。
             _showCrossCurve(details);
-            
+
             return;
           }
-
 
           widget.kChartController.updateOverlayEntryDataByIndex(-1);
           HorizontalDrawChartDetails? horizontalDrawChartDetails =
@@ -289,9 +295,10 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
   }
 
   double get screenMaxWidth => widget.controller.screenMaxWidth;
-  
+
   /// 显示十字线
   void _showCrossCurve(DragUpdateDetails details) {
-    widget.kChartController.showCrossCurve(Offset(details.globalPosition.dx, details.globalPosition.dy));
+    widget.kChartController.showCrossCurve(
+        Offset(details.globalPosition.dx, details.globalPosition.dy));
   }
 }

@@ -174,7 +174,6 @@ class _KChartWidgetState extends State<KChartWidget> {
                           controller: gestureDetectorController,
                           kChartController: _controller,
                           isShowCrossCurve: _isShowCrossCurve,
-                          onTap: _onTap,
                           totalDataNum: widget.source.dataMaxLength,
                           onHorizontalDragStart: _onHorizontalDragStart,
                           onHorizontalDragEnd: (details) =>
@@ -263,19 +262,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     _showDataNum = showDataNum;
   }
 
-  void _onTap(PointerInfo pointerInfo) {
-    KlineUtil.logd("k_chart_widget _onTap");
-    // 取消选中的十字线
-    if (_cancelCrossCurve()) {
-      setState(() {});
-      return;
-    }
 
-    _resetCrossCurve(Pair(
-        left: pointerInfo.globalPosition.dx,
-        right: pointerInfo.globalPosition.dy));
-    setState(() {});
-  }
 
   void _onHorizontalDragStart(details) {
     _isOnHorizontalDragStart = true;
