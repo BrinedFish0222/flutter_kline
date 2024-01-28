@@ -64,6 +64,11 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
     _animation =
         CurvedAnimation(parent: _animationController, curve: Curves.decelerate);
     _animationController.addListener(() {
+      // 如果显示十字线则结束动画
+      if (widget.kChartController.isShowCrossCurve) {
+        return;
+      }
+
       double dx = _primaryVelocity.abs() * (1 - _animation.value) * 0.02;
       if (dx == 0) {
         return;
