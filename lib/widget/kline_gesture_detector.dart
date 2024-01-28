@@ -54,6 +54,8 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
 
   /// 横向拖动速率
   double _primaryVelocity = 0;
+  
+  final String _log = 'KlineGestureDetector';
 
   @override
   void initState() {
@@ -66,6 +68,8 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
       if (dx == 0) {
         return;
       }
+
+      widget.kChartController.hideCrossCurve();
       widget.controller.onHorizontalDrawChart(
           widget.controller.horizontalDrawDir == Direction.left ? -dx : dx);
     });
@@ -81,7 +85,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
 
   @override
   Widget build(BuildContext context) {
-    KlineUtil.logd('KlineGestureDetector build');
+    KlineUtil.logd('$_log build');
     return Listener(
       onPointerDown: (event) {
         pointerCount += 1;
@@ -166,6 +170,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
           }
         },
         onHorizontalDragUpdate: (details) {
+          KlineUtil.logd('$_log onHorizontalDragUpdate');
           if (_isDoublePointer()) {
             return;
           }
@@ -176,6 +181,7 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
             return;
           }
 
+          KlineUtil.logd('$_log show ${widget.kChartController.isShowCrossCurve}');
           widget.kChartController.updateOverlayEntryDataByIndex(-1);
           widget.controller.onHorizontalDrawChart(details.delta.dx);
         },
