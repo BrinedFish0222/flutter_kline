@@ -1,13 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
+
+import '../common/pair.dart';
 
 /// k线图控制器
 class KChartController extends ChangeNotifier {
   KChartController({required this.source}) {
     updateOverlayEntryDataByIndex(-1);
     source.addListener(_sourceListener);
+    _initCrossCurveStream();
   }
 
   final KChartDataSource source;
@@ -18,6 +23,9 @@ class KChartController extends ChangeNotifier {
   /// 十字线全局坐标
   Offset crossCurveGlobalPosition = const Offset(0, 0);
 
+  /// 十字线流。索引0是主图，其它均是副图。
+  late List<StreamController<Pair<double?, double?>>> _crossCurveStreams;
+
   /// 悬浮层数据
   /// 不显示悬浮层是，默认是最后一根
   BaseChartData? overlayEntryData;
@@ -26,6 +34,46 @@ class KChartController extends ChangeNotifier {
   OverlayEntry? overlayEntry;
 
   bool get isShowCrossCurve => _isShowCrossCurve;
+
+  List<StreamController<Pair<double?, double?>>> get crossCurveStreams => _crossCurveStreams;
+
+  /// 初始化十字线流
+  void _initCrossCurveStream() {
+    _crossCurveStreams = [];
+    for (int i = 0; i < source.originCharts.length; ++i) {
+      _crossCurveStreams.add(StreamController.broadcast());
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var con in crossCurveStreams) {
+      con.close();
+    }
+    super.dispose();
+  }
+
+  /// 显示十字线
+  void showCrossCurve(Offset offset) {
+    isShowCrossCurve = true;
+    crossCurveGlobalPosition = offset;
+
+    for (var element in crossCurveStreams) {
+      element.add(Pair(left: offset.dx, right: offset.dy));
+    }
+
+    notifyListeners();
+  }
+
+  /// 隐藏十字线
+  void hideCrossCurve() {
+    isShowCrossCurve = false;
+    for (var element in crossCurveStreams) {
+      element.add(Pair(left: null, right: null));
+    }
+
+    notifyListeners();
+  }
 
   set isShowCrossCurve(bool showCrossCurve) {
     _isShowCrossCurve = showCrossCurve;

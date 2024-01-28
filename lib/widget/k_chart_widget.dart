@@ -90,9 +90,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 副图size
   late Size _subChartSize;
 
-  /// 十字线流。索引0是主图，其它均是副图。
-  late List<StreamController<Pair<double?, double?>>> _crossCurveStreamList;
-
   /// 十字线选中数据索引流。
   StreamController<int>? _selectedIndexStream;
 
@@ -103,6 +100,8 @@ class _KChartWidgetState extends State<KChartWidget> {
   late int _showDataNum;
 
   KlineGestureDetectorController? _gestureDetectorController;
+
+  List<StreamController<Pair<double?, double?>>> get _crossCurveStreamList => _controller.crossCurveStreams;
 
   KlineGestureDetectorController get gestureDetectorController =>
       _gestureDetectorController!;
@@ -115,7 +114,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   @override
   void initState() {
     _controller = widget.controller ?? KChartController(source: widget.source);
-    _initCrossCurveStream();
     _updateShowDataNum(widget.showDataNum);
     _showDataStartIndex = (widget.source.dataMaxIndex - _showDataNum)
         .clamp(0, widget.source.dataMaxIndex);
@@ -125,22 +123,11 @@ class _KChartWidgetState extends State<KChartWidget> {
     super.initState();
   }
 
-  /// 初始化十字线 StreamController
-  void _initCrossCurveStream() {
-    _crossCurveStreamList = [];
-    _crossCurveStreamList.add(StreamController.broadcast());
-    for (int i = 0; i < _subChartData.length; ++i) {
-      _crossCurveStreamList.add(StreamController.broadcast());
-    }
-  }
-
+ 
   @override
   void dispose() {
     _hideCandlestickOverlay();
     _selectedIndexStream?.close();
-    for (var con in _crossCurveStreamList) {
-      con.close();
-    }
 
     if (widget.controller == null) {
       _controller.dispose();
@@ -472,7 +459,8 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
-    if (crossCurveXY != null && !crossCurveXY.isNull()) {
+    // TODO DELETE
+    /* if (crossCurveXY != null && !crossCurveXY.isNull()) {
       _controller.crossCurveGlobalPosition =
           Offset(crossCurveXY.left!, crossCurveXY.right!);
     }
@@ -481,7 +469,14 @@ class _KChartWidgetState extends State<KChartWidget> {
 
     for (var element in _crossCurveStreamList) {
       element.add(crossCurveXY ?? Pair(left: null, right: null));
+    } */
+
+    if (crossCurveXY == null || crossCurveXY.isNull()) {
+      _controller.hideCrossCurve();
+    } else {
+      _controller.showCrossCurve(Offset(crossCurveXY.left ?? 0, crossCurveXY.right ?? 0));
     }
+
   }
 
 
