@@ -16,7 +16,6 @@ class KlineGestureDetector extends StatefulWidget {
     this.onHorizontalDragEnd,
     required this.child,
     required this.totalDataNum,
-    this.isShowCrossCurve = false,
   });
 
   final KlineGestureDetectorController controller;
@@ -25,9 +24,6 @@ class KlineGestureDetector extends StatefulWidget {
 
   /// 数据总数量
   final int totalDataNum;
-
-  /// 是否显示十字线
-  final bool isShowCrossCurve;
 
   final Widget child;
 
@@ -215,7 +211,9 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
             return;
           }
 
-          if (widget.isShowCrossCurve) {
+          bool isShowCrossCurve = widget.kChartController.isShowCrossCurve;
+
+          if (isShowCrossCurve) {
             _showCrossCurve(details);
             return;
           }
@@ -223,14 +221,14 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
           if (delta.dy < 0) {
             // 单指放大
             // 如果十字线显示的状态，则拖动操作是移动十字线。
-            if (widget.isShowCrossCurve) {
+            if (isShowCrossCurve) {
               _showCrossCurve(details);
             } else {
               widget.controller.zoomIn();
             }
           } else {
             // 单指缩小
-            if (widget.isShowCrossCurve) {
+            if (isShowCrossCurve) {
               _showCrossCurve(details);
             } else {
               widget.controller.zoomOut();
