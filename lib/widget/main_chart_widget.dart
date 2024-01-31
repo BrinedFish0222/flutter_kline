@@ -180,6 +180,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                 for (BadgeChartVo vo in _badgeList)
                   BadgeWidget(
                     badgeChartVo: vo,
+                    padding: widget.padding ?? EdgeInsets.zero,
                     pointWidth: widget.pointWidth,
                     pointGap: widget.pointGap ?? 0,
                     maxMinValue: maxMinValue,

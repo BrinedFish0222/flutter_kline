@@ -13,12 +13,14 @@ class BadgeWidget extends StatelessWidget {
     this.pointWidth,
     this.pointGap = 0,
     required this.maxMinValue,
+    this.padding = EdgeInsets.zero,
   });
 
   final BadgeChartVo badgeChartVo;
   final double? pointWidth;
   final double pointGap;
   final Pair<double, double> maxMinValue;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class BadgeWidget extends StatelessWidget {
                   badgeChartData: badgeChartVo.data[i]!,
                   maxHeight: constraints.maxHeight,
                   maxMinValue: maxMinValue,
+                  padding: padding,
                 ),
           ],
         ),
@@ -55,6 +58,7 @@ class _BadgePositionedWidget extends StatelessWidget {
     required this.badgeChartData,
     required this.maxMinValue,
     required this.maxHeight,
+    this.padding = EdgeInsets.zero,
   });
 
   final int index;
@@ -63,6 +67,7 @@ class _BadgePositionedWidget extends StatelessWidget {
   final double maxHeight;
   final BadgeChartData badgeChartData;
   final Pair<double, double> maxMinValue;
+  final EdgeInsets padding;
 
   Size _getSize({required double yAxis}) {
     double width = pointWidth;
@@ -109,7 +114,7 @@ class _BadgePositionedWidget extends StatelessWidget {
     }
 
     var xAxis =
-        (pointWidth + pointGap) * index - ((size.width - pointWidth) / 2);
+        (pointWidth + pointGap) * index - ((size.width - pointWidth) / 2) + padding.left;
 
 
     Widget? badge = invert ? badgeChartData.invertWidget : badgeChartData.widget;

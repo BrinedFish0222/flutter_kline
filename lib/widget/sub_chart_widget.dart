@@ -173,6 +173,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                       pointWidth: widget.pointWidth,
                       pointGap: widget.pointGap ?? 0,
                       maxMinValue: maxMinValue,
+                      padding: widget.padding,
                     ),
 
                   /// 遮罩层

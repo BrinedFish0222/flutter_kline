@@ -88,11 +88,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   /// 副图size
   late Size _subChartSize;
 
-  /// 十字线选中数据索引流。
-  // StreamController<int>? _selectedIndexStream;
-
-  
-
   /// [widget.showDataNum]
   /// 默认范围：[KlineConfig.showDataMinLength], [KlineConfig.showDataMaxLength]
   late int _showDataNum;

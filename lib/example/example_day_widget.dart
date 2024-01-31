@@ -8,6 +8,7 @@ import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
 import '../vo/bar_chart_vo.dart';
 import '../widget/k_chart_widget.dart';
+import 'example_badge_data.dart';
 import 'example_candlestick_data.dart';
 import 'example_ess_data.dart';
 import 'example_line_data.dart';
@@ -36,11 +37,12 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       ChartData(id: '0', name: 'MA', baseCharts: [
         candlestickData,
         ...ExampleLineData.getLineChartMA13(),
-        // ExampleBadgeData.badgeChartVo,
+        ExampleBadgeData.badgeChartVo,
       ]),
       ChartData(id: '1', name: 'VOL', baseCharts: [
         ExampleVolData.barChartData..minValue = 0,
         ...ExampleVolData.lineChartData,
+        ExampleBadgeData.volBadgeChartVo,
       ]),
       ChartData(
           id: '2',
