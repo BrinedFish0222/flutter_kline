@@ -58,11 +58,6 @@ class CrossCurvePainter extends CustomPainter {
       return;
     }
 
-    if (padding.left != 0) {
-      canvas.translate(padding.left, 0);
-    }
-
-
     Pair<double?, double?>? newSelectedXY = _computeSelectedX();
 
     Paint paint = Paint()
@@ -70,9 +65,10 @@ class CrossCurvePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
+    // 画y轴线
     if (newSelectedXY!.left != null && isDrawY) {
-      canvas.drawLine(Offset(newSelectedXY.left!, 0),
-          Offset(newSelectedXY.left!, size.height), paint);
+      double x = newSelectedXY.left! + padding.left;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
 
 

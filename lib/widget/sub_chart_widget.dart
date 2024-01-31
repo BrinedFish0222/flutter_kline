@@ -160,7 +160,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                                     left: selectedXY.dx, right: selectedXY.dy),
                                 pointWidth: widget.pointWidth,
                                 pointGap: widget.pointGap,
-                                padding: null,
+                                padding: widget.padding,
                                 selectedHorizontalValue: selectedHorizontalValue),
                           );
                         }),
