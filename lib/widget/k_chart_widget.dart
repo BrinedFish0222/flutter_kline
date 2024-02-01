@@ -153,9 +153,6 @@ class _KChartWidgetState extends State<KChartWidget> {
               child: AnimatedBuilder(
                   animation: widget.source,
                   builder: (context, _) {
-                    KlineUtil.logd(
-                        "KChartWidget ValueListenableBuilder run ...");
-
                     /// 副图显示的数据
                     List<ChartData> subChartsShow = widget.source.subChartsShow;
                     int subChartsShowLength = _subChartShowLength;
@@ -220,7 +217,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   @override
   void didUpdateWidget(covariant KChartWidget oldWidget) {
-    KlineUtil.logd('k_chart_widget didUpdateWidget');
     super.didUpdateWidget(oldWidget);
   }
 

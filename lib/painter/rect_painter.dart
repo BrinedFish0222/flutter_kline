@@ -98,7 +98,6 @@ class RectPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    KlineUtil.logd("RectPainter paint");
     _init(canvas: canvas, size: size);
     List<LineConfig> transverseLineConfigList = _initTransverseLineConfig();
 
@@ -190,7 +189,6 @@ class RectPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    KlineUtil.logd("RectPainter paint");
     return true;
   }
 

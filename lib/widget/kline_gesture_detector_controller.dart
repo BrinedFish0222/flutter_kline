@@ -152,7 +152,6 @@ class KlineGestureDetectorController extends ChangeNotifier {
   /// 横向滑动画图请求
   /// 返回值空表示不满足触发条件
   void onHorizontalDrawChart(double dx) {
-    KlineUtil.logd('horizontal update dx $dx ============');
     // 数据不足一屏幕，中断画图请求
     if (_minScrollWidth.abs() <= screenMaxWidth) {
       KlineUtil.logd("横向滑动画图请求 数据不足一屏幕中断");

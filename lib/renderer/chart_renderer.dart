@@ -47,8 +47,6 @@ class ChartRenderer extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    KlineUtil.logd("KChartRenderer paint run ...");
-
     Size paddingSize = Size(size.width - padding.right - padding.left, size.height);
 
     Pair<double, double> maxMinValue =

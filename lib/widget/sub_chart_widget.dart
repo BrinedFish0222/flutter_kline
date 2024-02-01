@@ -71,7 +71,6 @@ class _SubChartWidgetState extends State<SubChartWidget> {
   /// 初始化：监听选中的数据索引位置
   void _initSelectedIndexListen() {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
-      KlineUtil.logd("副图触发【监听选中的数据索引位置】监听");
       List<ChartShowDataItemVo> showDataList = [];
 
       for (var data in widget.chartData) {
@@ -116,7 +115,6 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                 children: [
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      KlineUtil.logd("sub chart total height ${widget.size.height}, single height ${constraints.maxHeight}");
                       return RepaintBoundary(
                         child: CustomPaint(
                           key: _chartKey,
@@ -152,7 +150,6 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                                   height: renderBox.size.height,
                                   selectedY: selectedXY.dy);
 
-                          KlineUtil.logd("副图十字线绘制，选中的横轴值：$selectedHorizontalValue");
                           return CustomPaint(
                             size: widget.size,
                             painter: CrossCurvePainter(

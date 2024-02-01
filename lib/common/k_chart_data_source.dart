@@ -15,11 +15,9 @@ class KChartDataSource extends ChangeNotifier {
     required this.originCharts,
     int showDataNum = KlineConfig.showDataDefaultLength,
   }) {
-    KlineUtil.logd('KChartDataSource 初始化 - 开始');
     _showDataNum = showDataNum;
     _resetChartRightmost();
     resetShowData(start: showDataStartIndex);
-    KlineUtil.logd('KChartDataSource 初始化 - 结束');
   }
 
   String id;

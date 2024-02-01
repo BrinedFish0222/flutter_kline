@@ -30,7 +30,6 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
 
   @override
   void initState() {
-    KlineUtil.logd('ExampleDayWidget initState ...');
     var candlestickData = ExampleCandlestickData.getCandlestickData();
 
     _source = KChartDataSource(originCharts: [
