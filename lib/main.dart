@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
@@ -68,12 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(color: Colors.black),
                 ),
               ),
-              Tab(
+              /*Tab(
                 child: Text(
                   '筹码峰',
                   style: TextStyle(color: Colors.black),
                 ),
-              ),
+              ),*/
             ]),
             Expanded(
               child: TabBarView(children: [
@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ExampleDayWidget(
                   overlayEntryLocationKey: _globalKey,
                 ),
-                const ExampleVolumeProfileWidget(),
+                // const ExampleVolumeProfileWidget(),
               ]),
             )
           ],
