@@ -92,8 +92,6 @@ class _MainChartWidgetState extends State<MainChartWidget> {
   @override
   Widget build(BuildContext context) {
     var maxMinValue = BaseChartVo.maxMinValue(widget.chartData);
-    // TODO 202401160117 当前调用处于build的合理性
-    // widget.selectedChartDataIndexStream?.add(-1);
 
     _badgeList = widget.chartData.whereType<BadgeChartVo>().toList();
 
@@ -149,18 +147,20 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                           Offset? selectedOffset =
                               snapshot.data == null || snapshot.data!.isNull()
                                   ? null
-                                  : renderBox.globalToLocal(Offset(
-                                      snapshot.data?.left ?? 0,
-                                      snapshot.data?.right ?? 0),);
+                                  : renderBox.globalToLocal(
+                                      Offset(snapshot.data?.left ?? 0,
+                                          snapshot.data?.right ?? 0),
+                                    );
                           selectedXY.left = selectedOffset?.dx;
                           selectedXY.right = selectedOffset?.dy;
                         }
 
                         double? selectedHorizontalValue =
                             KlineUtil.computeSelectedHorizontalValue(
-                                maxMinValue: maxMinValue,
-                                height: renderBox.size.height,
-                                selectedY: selectedXY.right);
+                          maxMinValue: maxMinValue,
+                          height: renderBox.size.height,
+                          selectedY: selectedXY.right,
+                        );
 
                         return CustomPaint(
                           size: widget.size,
@@ -168,8 +168,6 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                               selectedXY: selectedXY,
                               padding: widget.padding,
                               selectedHorizontalValue: selectedHorizontalValue,
-                              selectedDataIndexStream:
-                                  widget.selectedChartDataIndexStream,
                               pointWidth: widget.pointWidth,
                               pointGap: widget.pointGap),
                         );

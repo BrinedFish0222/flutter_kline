@@ -80,6 +80,8 @@ class KChartWidget extends StatefulWidget {
 }
 
 class _KChartWidgetState extends State<KChartWidget> {
+  final GlobalKey _chartKey = GlobalKey();
+
   late KChartController _controller;
 
   /// 主图size
@@ -135,9 +137,12 @@ class _KChartWidgetState extends State<KChartWidget> {
       _computeLayout(constraints);
 
       _gestureDetectorController ??= KlineGestureDetectorController(
+        chartKey: _chartKey,
         screenMaxWidth: _mainChartSize.width,
         source: widget.source,
       );
+      _controller.gestureDetectorController = _gestureDetectorController;
+
       return AnimatedBuilder(
           animation: _controller,
           builder: (context, _) {
@@ -166,6 +171,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                           kChartController: _controller,
                           totalDataNum: widget.source.dataMaxLength,
                           child: MainChartWidget(
+                            key: _chartKey,
                             chartData: _showMainChartData,
                             size: _mainChartSize,
                             infoBarName:
@@ -340,8 +346,7 @@ class _KChartWidgetState extends State<KChartWidget> {
         return;
       }
 
-      // TODO 202401160117 为何 updateOverlayEntryDataByIndex notifyListeners 会和当前方法进入死循环
-      // _controller.updateOverlayEntryDataByIndex(index);
+      _controller.updateOverlayEntryDataByIndex(index);
 
       Pair<double, double>? overlayLocation = _getCandlestickOverlayLocation();
       if (overlayLocation == null) {

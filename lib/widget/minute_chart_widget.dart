@@ -218,8 +218,6 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
                               painter: CrossCurvePainter(
                                   selectedXY: selectedXY,
                                   selectedHorizontalValue: selectedHorizontalValue,
-                                  selectedDataIndexStream:
-                                      widget.selectedChartDataIndexStream,
                                   pointWidth: widget.pointWidth,
                                   pointGap: widget.pointGap),
                             );

@@ -78,7 +78,6 @@ class VolumeProfileWidget extends StatelessWidget {
                         isDrawY: false,
                         isDrawText: false,
                         selectedHorizontalValue: selectedHorizontalValue,
-                        selectedDataIndexStream: selectedChartDataIndexStream,
                         selectedDataIndexAxis: Axis.vertical),
                   );
                 }),

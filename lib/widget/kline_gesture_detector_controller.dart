@@ -8,6 +8,7 @@ import '../constants/direction.dart';
 /// 手势控制器 
 class KlineGestureDetectorController extends ChangeNotifier {
   KlineGestureDetectorController({
+    required this.chartKey,
     required double screenMaxWidth,
     required KChartDataSource source,
   })  : _screenMaxWidth = screenMaxWidth,
@@ -41,6 +42,8 @@ class KlineGestureDetectorController extends ChangeNotifier {
       }
     });
   }
+
+  final GlobalKey chartKey;
 
   /// 显示图的最大宽度
   final double _screenMaxWidth;

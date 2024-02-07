@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/painter/cross_curve_text_painter.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
@@ -22,8 +20,6 @@ class CrossCurvePainter extends CustomPainter {
   /// 选中的y轴值
   final double? selectedHorizontalValue;
 
-  final StreamController<int>? selectedDataIndexStream;
-
   /// 是否画x轴
   final bool isDrawX;
 
@@ -41,7 +37,6 @@ class CrossCurvePainter extends CustomPainter {
     this.pointGap,
     EdgeInsets? padding,
     this.selectedHorizontalValue,
-    this.selectedDataIndexStream,
     this.isDrawX = true,
     this.isDrawY = true,
     this.isDrawText = true,
@@ -54,7 +49,6 @@ class CrossCurvePainter extends CustomPainter {
     if (selectedXY == null ||
         (selectedXY!.left != null && selectedXY!.left! > size.width) ||
         (selectedXY!.left != null && selectedXY!.left! < 0)) {
-      selectedDataIndexStream?.add(-1);
       return;
     }
 
@@ -70,7 +64,6 @@ class CrossCurvePainter extends CustomPainter {
       double x = newSelectedXY.left! + padding.left;
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }
-
 
     if (newSelectedXY.right == null) {
       return;
@@ -102,7 +95,6 @@ class CrossCurvePainter extends CustomPainter {
         offset: Offset(0, newSelectedXY.right!),
       ).paint(canvas, size);
     }
-
   }
 
   /// 重新计算选中的x轴。
@@ -121,12 +113,12 @@ class CrossCurvePainter extends CustomPainter {
     }
 
     double gap = pointGap ?? 0;
-    double oldX = selectedDataIndexAxis == Axis.horizontal ? selectedXY!.left! : selectedXY!.right!;
+    double oldX = selectedDataIndexAxis == Axis.horizontal
+        ? selectedXY!.left!
+        : selectedXY!.right!;
     int dataIndex = oldX ~/ (pointWidth! + gap);
     double newX = dataIndex * (pointWidth! + gap) + pointWidth! / 2;
 
-    // 通知选中的k线变了
-    selectedDataIndexStream?.add(dataIndex);
     return Pair(left: newX, right: selectedXY?.right);
   }
 

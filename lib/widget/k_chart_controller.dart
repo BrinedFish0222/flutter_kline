@@ -6,6 +6,7 @@ import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 
 import '../common/pair.dart';
+import 'kline_gesture_detector_controller.dart';
 
 /// k线图控制器
 class KChartController extends ChangeNotifier {
@@ -17,6 +18,9 @@ class KChartController extends ChangeNotifier {
   }
 
   final KChartDataSource source;
+
+  /// 手势控制器
+  late KlineGestureDetectorController _gestureDetectorController;
 
   /// 显示十字线
   bool _isShowCrossCurve = false;
@@ -41,7 +45,11 @@ class KChartController extends ChangeNotifier {
 
   StreamController<int> get crossCurveIndexStream => _crossCurveIndexStream;
 
-  List<StreamController<Pair<double?, double?>>> get crossCurveStreams => _crossCurveStreams;
+  List<StreamController<Pair<double?, double?>>> get crossCurveStreams =>
+      _crossCurveStreams;
+
+  set gestureDetectorController(controller) =>
+      _gestureDetectorController = controller;
 
   /// 初始化十字线流
   void _initCrossCurveStream() {
@@ -62,6 +70,7 @@ class KChartController extends ChangeNotifier {
   }
 
   /// 显示十字线
+  /// [offset] 全局Position
   void showCrossCurve(Offset offset) {
     isShowCrossCurve = true;
     crossCurveGlobalPosition = offset;
@@ -69,6 +78,19 @@ class KChartController extends ChangeNotifier {
     for (var element in crossCurveStreams) {
       element.add(Pair(left: offset.dx, right: offset.dy));
     }
+
+    // compute dataIndex
+    double pointGap = _gestureDetectorController.pointGap;
+    double pointWidth = _gestureDetectorController.pointWidth;
+    GlobalKey chartKey = _gestureDetectorController.chartKey;
+    RenderBox renderBox =
+        chartKey.currentContext!.findRenderObject() as RenderBox;
+    Offset localOffset = renderBox.globalToLocal(offset);
+    int dataIndex = localOffset.dx ~/ (pointWidth + pointGap);
+    if (dataIndex < source.showDataNum) {
+      _crossCurveIndexStream.add(dataIndex);
+    }
+
 
     notifyListeners();
   }
