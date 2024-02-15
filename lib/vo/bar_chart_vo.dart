@@ -13,7 +13,7 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
   Pair<double, double>? _maxMinData;
 
   BarChartVo({
-    super.id,
+    required super.id,
     super.name,
     super.maxValue,
     super.minValue,
@@ -98,7 +98,7 @@ class BarChartData<E> extends BaseChartData<E> {
   bool isFill;
 
   BarChartData({
-    super.id,
+    required super.id,
     this.value = 0,
     this.isFill = false,
     super.color = Colors.black,

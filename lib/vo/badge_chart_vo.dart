@@ -8,7 +8,7 @@ import 'base_chart_vo.dart';
 
 class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
   BadgeChartVo({
-    super.id,
+    required super.id,
     super.name,
     super.maxValue,
     super.minValue,
@@ -153,7 +153,7 @@ class BadgeChartData<E> extends BaseChartData<E> {
   double? minValue;
 
   BadgeChartData({
-    super.id,
+    required super.id,
     required this.widget,
     Widget? invertWidget,
     this.padding = defaultPadding,

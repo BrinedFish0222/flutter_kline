@@ -8,7 +8,7 @@ import '../common/pair.dart';
 /// 蜡烛图数据vo
 class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
   CandlestickChartVo({
-    super.id,
+    required super.id,
     super.name,
     super.maxValue,
     super.minValue,
@@ -87,7 +87,7 @@ class CandlestickChartData<E> extends BaseChartData<E> {
   double low;
 
   CandlestickChartData({
-    super.id,
+    required super.id,
     required this.dateTime,
     required this.open,
     required this.close,

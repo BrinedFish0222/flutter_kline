@@ -3636,7 +3636,7 @@ class ExampleCandlestickData {
           low: e[4]);
     }).toList();
 
-    _candlestickData = CandlestickChartVo(data: dataList);
+    _candlestickData = CandlestickChartVo(id: 'CandlestickChartVo', data: dataList);
 
     return _candlestickData!;
   }

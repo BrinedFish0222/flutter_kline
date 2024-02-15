@@ -89,7 +89,7 @@ class MinuteChartRenderer extends CustomPainter {
 
     int diff = dataNum - minuteChartVo.data.length;
     for (int i = 0; i < diff; ++i) {
-      minuteChartVo.data.add(LineChartData());
+      minuteChartVo.data.add(LineChartData(id: i.toString()));
     }
 
     return minuteChartVo;

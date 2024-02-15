@@ -2432,48 +2432,76 @@ class ExampleVolData {
           ? KlineConfig.green
           : KlineConfig.red;
       bool isFill = (data?.close ?? 0) < (data?.open ?? 0) ? true : false;
-      dataList.add(
-          BarChartData(value: _volume[i] ?? 0, color: color, isFill: isFill));
+      dataList.add(BarChartData(
+          id: i.toString(),
+          value: _volume[i] ?? 0,
+          color: color,
+          isFill: isFill));
     }
 
-    return BarChartVo(name: 'VOLUME', data: dataList);
+    return BarChartVo(id: 'VOLUME', name: 'VOLUME', data: dataList);
   }
 
   static BarChartVo barChartDataLastN(int lastN) {
     return BarChartVo(
-        data: KlineCollectionUtil.lastN(_volume, lastN)
-                ?.map((e) => BarChartData(value: e ?? 0))
-                .toList() ??
-            []);
+      id: "BarChartVo",
+      data: KlineCollectionUtil.lastN(_volume, lastN)
+              ?.asMap()
+              .entries
+              .map((e) =>
+                  BarChartData(id: e.key.toString(), value: e.value ?? 0))
+              .toList() ??
+          [],
+    );
   }
 
   static List<LineChartVo> get lineChartData {
     return [
       LineChartVo(
-          name: 'M5',
-          data: _vol1.map((e) => LineChartData(value: e)).toList(),
-          color: KlineConfig.kLineColors[0]),
+        id: "M5",
+        name: 'M5',
+        data: _vol1
+            .asMap()
+            .entries
+            .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+            .toList(),
+        color: KlineConfig.kLineColors[0],
+      ),
       LineChartVo(
-          name: 'M10',
-          data: _vol2.map((e) => LineChartData(value: e)).toList(),
-          color: KlineConfig.kLineColors[2]),
+        id: "M10",
+        name: 'M10',
+        data: _vol2
+            .asMap()
+            .entries
+            .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+            .toList(),
+        color: KlineConfig.kLineColors[2],
+      ),
     ];
   }
 
   static List<LineChartVo> lineChartDataLastN(int lastN) {
     return [
       LineChartVo(
-          data: KlineCollectionUtil.lastN(_vol1, lastN)
-                  ?.map((e) => LineChartData(value: e))
-                  .toList() ??
-              [],
-          color: KlineConfig.kLineColors[0]),
+        id: "vol1",
+        data: KlineCollectionUtil.lastN(_vol1, lastN)
+                ?.asMap()
+                .entries
+                .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+                .toList() ??
+            [],
+        color: KlineConfig.kLineColors[0],
+      ),
       LineChartVo(
-          data: KlineCollectionUtil.lastN(_vol2, lastN)
-                  ?.map((e) => LineChartData(value: e))
-                  .toList() ??
-              [],
-          color: KlineConfig.kLineColors[2]),
+        id: 'vol2',
+        data: KlineCollectionUtil.lastN(_vol2, lastN)
+                ?.asMap()
+                .entries
+                .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+                .toList() ??
+            [],
+        color: KlineConfig.kLineColors[2],
+      ),
     ];
   }
 }

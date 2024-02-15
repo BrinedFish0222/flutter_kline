@@ -663,10 +663,14 @@ class ExampleMinuteData {
 
   static LineChartVo get lineData {
     var dataList = _lineData
+        .asMap()
+        .entries
         .map((e) => LineChartData(
-            value: e[5], dateTime: KlineDateUtil.parseIntTime(e.last.toInt())))
+            id: e.key.toString(),
+            value: e.value[5],
+            dateTime: KlineDateUtil.parseIntTime(e.value.last.toInt())))
         .toList();
-    LineChartVo result = LineChartVo(data: dataList);
+    LineChartVo result = LineChartVo(id: 'lineData', data: dataList);
     result.maxValue = 11.48;
     result.minValue = 11.30;
     return result;
@@ -674,10 +678,14 @@ class ExampleMinuteData {
 
   static LineChartVo get lineData2 {
     var dataList = _lineData2
+        .asMap()
+        .entries
         .map((e) => LineChartData(
-            value: e[5], dateTime: KlineDateUtil.parseIntTime(e.last.toInt())))
+            id: e.key.toString(),
+            value: e.value[5],
+            dateTime: KlineDateUtil.parseIntTime(e.value.last.toInt())))
         .toList();
-    LineChartVo result = LineChartVo(data: dataList);
+    LineChartVo result = LineChartVo(id: 'lineData2', data: dataList);
     result.maxValue = 11.48;
     result.minValue = 11.30;
     return result;
@@ -689,8 +697,13 @@ class ExampleMinuteData {
     for (int i = 0; i < 1; ++i) {
       result.add(
         LineChartVo(
+          id: 'A1',
           name: 'A1',
-          data: _a1.map((e) => LineChartData(value: e)).toList(),
+          data: _a1
+              .asMap()
+              .entries
+              .map((e) => LineChartData(value: e.value, id: e.key.toString()))
+              .toList(),
           color: KlineConfig.kLineColors[i + 1],
           gradient: GradientChartConstants.formGradient(
               color: KlineConfig.kLineColors[i + 1]),
@@ -706,8 +719,14 @@ class ExampleMinuteData {
     for (int i = 0; i < 1; ++i) {
       result.add(
         LineChartVo(
+          id: 'A1',
           name: 'A1',
-          data: _a1.map((e) => LineChartData(value: e)).toList()..length = 240,
+          data: _a1
+              .asMap()
+              .entries
+              .map((e) => LineChartData(value: e.value, id: e.key.toString()))
+              .toList()
+            ..length = 240,
           color: KlineConfig.kLineColors[i + 1],
           gradient: GradientChartConstants.formGradient(
               color: KlineConfig.kLineColors[i + 1]),
@@ -726,6 +745,7 @@ class ExampleMinuteData {
     double lastValue = minValue + (maxValue - minValue) / 2;
     for (int i = 0; i < 1; ++i) {
       result.add(LineChartVo(
+          id: 'A1',
           name: 'A1',
           data: List.generate(generateNum, (index) {
             var generateValue = KlineRandomUtil.generateDoubleInRange(
@@ -737,7 +757,10 @@ class ExampleMinuteData {
 
             lastValue = generateValue;
             genDataList.add(generateValue);
-            return LineChartData(value: generateValue);
+            return LineChartData(
+              id: index.toString(),
+              value: generateValue,
+            );
           }),
           color: KlineConfig.kLineColors[i + 1]));
     }

@@ -2416,31 +2416,52 @@ class ExampleMacdData {
 
   static List<BaseChartVo> get macd {
     List<BaseChartVo> result = [];
-    List<BarChartData?> barChartDataList = _macd
-        .map(
-          (e) => e == null
-              ? null
-              : BarChartData(
-                  value: e,
-                  isFill: true,
-                  color: e > 0 ? KlineConfig.green : KlineConfig.red,
-                ),
-        )
-        .toList();
-    BarChartVo barChartVo =
-        BarChartVo(data: barChartDataList, name: 'MACD', barWidth: 2);
+    List<BarChartData?> barChartDataList = [];
+    for (int i = 0; i < _macd.length; ++i) {
+      double? value = _macd[i];
+      if (value == null) {
+        barChartDataList.add(null);
+        continue;
+      }
+
+      barChartDataList.add(BarChartData(
+        id: i.toString(),
+        value: value,
+        isFill: true,
+        color: value > 0 ? KlineConfig.green : KlineConfig.red,
+      ));
+    }
+
+    BarChartVo barChartVo = BarChartVo(
+      id: "MACD",
+      data: barChartDataList,
+      name: 'MACD',
+      barWidth: 2,
+    );
     result.add(barChartVo);
 
     var dea = LineChartVo(
-        name: 'DEA',
-        color: KlineConfig.kLineColors[0],
-        data: _dea.map((e) => LineChartData(value: e)).toList());
+      id: "DEA",
+      name: 'DEA',
+      color: KlineConfig.kLineColors[0],
+      data: _dea
+          .asMap()
+          .entries
+          .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+          .toList(),
+    );
     result.add(dea);
 
     var dif = LineChartVo(
-        name: 'DIF',
-        color: KlineConfig.kLineColors[1],
-        data: _dif.map((e) => LineChartData(value: e)).toList());
+      id: "DIF",
+      name: 'DIF',
+      color: KlineConfig.kLineColors[1],
+      data: _dif
+          .asMap()
+          .entries
+          .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+          .toList(),
+    );
     result.add(dif);
 
     return result;
@@ -2449,30 +2470,49 @@ class ExampleMacdData {
   static List<BaseChartVo> get macdMinute {
     List<BaseChartVo> result = [];
     List<BarChartData?> barChartDataList = _macd
+        .asMap()
+        .entries
         .map(
-          (e) => e == null
+          (e) => e.value == null
               ? null
               : BarChartData(
-                  value: e,
+                  id: e.key.toString(),
+                  value: e.value!,
                   isFill: true,
-                  color: e > 0 ? KlineConfig.green : KlineConfig.red,
+                  color: e.value! > 0 ? KlineConfig.green : KlineConfig.red,
                 ),
         )
         .toList();
-    BarChartVo barChartVo =
-        BarChartVo(data: barChartDataList, name: 'MACD', barWidth: 2);
+    BarChartVo barChartVo = BarChartVo(
+      id: "MACD",
+      data: barChartDataList,
+      name: 'MACD',
+      barWidth: 2,
+    );
     result.add(barChartVo);
 
     var dea = LineChartVo(
-        name: 'DEA',
-        color: KlineConfig.kLineColors[0],
-        data: _dea.map((e) => LineChartData(value: e)).toList());
+      id: "DEA",
+      name: 'DEA',
+      color: KlineConfig.kLineColors[0],
+      data: _dea
+          .asMap()
+          .entries
+          .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+          .toList(),
+    );
     result.add(dea);
 
     var dif = LineChartVo(
-        name: 'DIF',
-        color: KlineConfig.kLineColors[1],
-        data: _dif.map((e) => LineChartData(value: e)).toList());
+      id: "DIF",
+      name: 'DIF',
+      color: KlineConfig.kLineColors[1],
+      data: _dif
+          .asMap()
+          .entries
+          .map((e) => LineChartData(id: e.key.toString(), value: e.value))
+          .toList(),
+    );
     result.add(dif);
 
     for (var element in result) {

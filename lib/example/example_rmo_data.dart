@@ -815,10 +815,10 @@ class ExampleRmoData {
           : KlineConfig.red;
       bool isFill = true;
       dataList.add(
-          BarChartData(value: _dataList[i] ?? 0, color: color, isFill: isFill));
+          BarChartData(id: i.toString(), value: _dataList[i] ?? 0, color: color, isFill: isFill));
     }
 
-    return BarChartVo(name: 'RMO', data: dataList);
+    return BarChartVo(id: "RMO", name: 'RMO', data: dataList);
   }
 
   static BarChartVo get barChartDataMinute {
@@ -829,10 +829,10 @@ class ExampleRmoData {
           : KlineConfig.red;
       bool isFill = true;
       dataList.add(
-          BarChartData(value: _dataList[i] ?? 0, color: color, isFill: isFill));
+          BarChartData(id: i.toString(), value: _dataList[i] ?? 0, color: color, isFill: isFill));
     }
 
     dataList.length = KlineConfig.minuteDataNum;
-    return BarChartVo(name: 'RMO', data: dataList);
+    return BarChartVo(id: "RMO", name: 'RMO', data: dataList);
   }
 }

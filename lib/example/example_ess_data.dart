@@ -814,25 +814,27 @@ class ExampleEssData {
       Color color = i % 2 == 0 ? KlineConfig.green : KlineConfig.red;
       bool isFill = true;
       dataList.add(
-          BarChartData(value: _dataList[i] ?? 0, color: color, isFill: isFill));
+          BarChartData(id: i.toString(), value: _dataList[i] ?? 0, color: color, isFill: isFill));
     }
 
-    return BarChartVo(name: 'ESS', data: dataList.toList());
+    return BarChartVo(id: 'ESS', name: 'ESS', data: dataList.toList());
   }
 
   static LineChartVo get lineChartA {
     return LineChartVo(
+      id: 'A',
       name: 'A',
       color: KlineConfig.kLineColors[0],
-      data: List.generate(800, (index) => LineChartData(value: 30)),
+      data: List.generate(800, (index) => LineChartData(id: index.toString(), value: 30)),
     );
   }
 
   static LineChartVo get lineChartB {
     return LineChartVo(
+      id: "B",
       name: "B",
       color: KlineConfig.kLineColors[1],
-      data: List.generate(800, (index) => LineChartData(value: 70)),
+      data: List.generate(800, (index) => LineChartData(id: index.toString(), value: 70)),
     );
   }
 }

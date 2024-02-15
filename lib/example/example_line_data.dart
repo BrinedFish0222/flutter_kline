@@ -2414,29 +2414,45 @@ class ExampleLineData {
   ];
 
   static List<BaseChartVo> getLineChartMA13({int end = 800}) {
+    var ma13Values = ExampleLineData.ma13.sublist(0, end).toList();
+    var ma34Values = ExampleLineData.ma34.sublist(0, end).toList();
+    var ma144Values = ExampleLineData.ma144.sublist(0, end).toList();
+
+    List<LineChartData?> ma13 = [];
+    for (int i = 0; i < ma13Values.length; ++i) {
+      ma13.add(LineChartData(id: i.toString(), value: ma13Values[i]));
+    }
+
+    List<LineChartData?> ma34 = [];
+    for (int i = 0; i < ma34Values.length; ++i) {
+      ma34.add(LineChartData(id: i.toString(), value: ma34Values[i]));
+    }
+
+    List<LineChartData?> ma144 = [];
+    for (int i = 0; i < ma144Values.length; ++i) {
+      ma144.add(LineChartData(id: i.toString(), value: ma144Values[i]));
+    }
+
     return [
-      LineChartVo(name: 'MA', data: []),
+      LineChartVo(id: "MA", name: 'MA', data: []),
       LineChartVo(
-          name: 'MA13',
-          data: ExampleLineData.ma13
-              .sublist(0, end)
-              .map((e) => LineChartData(value: e))
-              .toList(),
-          color: KlineConfig.kLineColors[0]),
+        id: "MA13",
+        name: 'MA13',
+        data: ma13,
+        color: KlineConfig.kLineColors[0],
+      ),
       LineChartVo(
-          name: 'MA34',
-          data: ExampleLineData.ma34
-              .sublist(0, end)
-              .map((e) => LineChartData(value: e))
-              .toList(),
-          color: KlineConfig.kLineColors[1]),
+        id: "MA34",
+        name: 'MA34',
+        data: ma34,
+        color: KlineConfig.kLineColors[1],
+      ),
       LineChartVo(
-          name: 'MA144',
-          data: ExampleLineData.ma144
-              .sublist(0, end)
-              .map((e) => LineChartData(value: e))
-              .toList(),
-          color: KlineConfig.kLineColors[2]),
+        id: "MA144",
+        name: 'MA144',
+        data: ma144,
+        color: KlineConfig.kLineColors[2],
+      ),
     ];
   }
 }

@@ -148,7 +148,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   LineChartVo get _minuteChartData {
     BaseChartVo? firstLineChart = KlineCollectionUtil.firstWhere(widget.source.mainChartBaseChartsShow, (element) => element is LineChartVo);
     if (firstLineChart == null) {
-      return LineChartVo(data: []);
+      return LineChartVo(id: '_minuteChartData', data: []);
     }
     return firstLineChart as LineChartVo;
   }

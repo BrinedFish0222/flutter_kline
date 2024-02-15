@@ -18,7 +18,7 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   Pair<double, double>? _maxMinData;
 
   LineChartVo({
-    super.id,
+    required super.id,
     super.name,
     super.maxValue,
     super.minValue,
@@ -122,7 +122,7 @@ class LineChartData<E> extends BaseChartData<E> {
   double? value;
 
   LineChartData({
-    super.id,
+    required super.id,
     this.dateTime,
     this.value,
     super.extrasData,

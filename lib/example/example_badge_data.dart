@@ -10,6 +10,7 @@ class ExampleBadgeData {
     }
     dataList.addAll([
       BadgeChartData(
+        id: '20230811',
         minSize: const Size(20, 30),
         widget: const BsPointWidget.buy(),
         invertWidget: const BsPointWidget.buy(invert: true,),
@@ -18,6 +19,7 @@ class ExampleBadgeData {
       ),
       null,
       BadgeChartData(
+        id: '20230815',
         minSize: const Size(20, 30),
         widget: const BsPointWidget.buy(),
         invertWidget: const BsPointWidget.buy(invert: true,),
@@ -27,6 +29,7 @@ class ExampleBadgeData {
       null,
       null,
       BadgeChartData(
+        id: '20230818',
         minSize: const Size(20, 30),
         widget: const BsPointWidget.sell(),
         invertWidget: const BsPointWidget.sell(invert: true,),
@@ -35,7 +38,7 @@ class ExampleBadgeData {
       ),
     ]);
 
-    return BadgeChartVo(data: dataList);
+    return BadgeChartVo(id: 'BadgeChartVo', data: dataList);
   }
 
   static BadgeChartVo get volBadgeChartVo {
@@ -45,6 +48,7 @@ class ExampleBadgeData {
     }
     dataList.addAll([
       BadgeChartData(
+        id: '20230815',
         minSize: const Size(20, 30),
         widget: const BsPointWidget.buy(),
         invertWidget: const BsPointWidget.buy(invert: true,),
@@ -52,12 +56,13 @@ class ExampleBadgeData {
       null,
       null,
       BadgeChartData(
+        id: '20230818',
         minSize: const Size(20, 30),
         widget: const BsPointWidget.sell(),
         invertWidget: const BsPointWidget.sell(invert: true,),
       ),
     ]);
 
-    return BadgeChartVo(data: dataList);
+    return BadgeChartVo(id: "BadgeChartVo", data: dataList);
   }
 }

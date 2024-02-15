@@ -11,7 +11,7 @@ import '../common/pair.dart';
 
 /// 图数据基类
 abstract class BaseChartVo<T extends BaseChartData> {
-  String? id;
+  String id;
   String? name;
 
   /// 最大值
@@ -24,7 +24,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
   List<T?> data = [];
 
   BaseChartVo({
-    this.id,
+    required this.id,
     this.name,
     this.maxValue,
     this.minValue,
@@ -197,12 +197,12 @@ abstract class BaseChartVo<T extends BaseChartData> {
 /// 图基础数据
 /// 使用场景：一根线上一个点的信息
 abstract class BaseChartData<T> {
-  String? id;
+  String id;
   Color? color;
   T? extrasData;
 
   BaseChartData({
-    this.id,
+    required this.id,
     this.color,
     this.extrasData,
   });
