@@ -297,7 +297,8 @@ class KChartDataSource extends ChangeNotifier {
       if (originCharts.length > newCharts.length) {
         originCharts.length = newCharts.length;
       } else if (originCharts.length < newCharts.length) {
-        for (int i = 0; i < (newCharts.length - originCharts.length); ++i) {
+        int diffLength = newCharts.length - originCharts.length;
+        for (int i = 0; i < diffLength; ++i) {
           originCharts.add(ChartData(
               id: (originCharts.length - 1).toString(), baseCharts: []));
         }
