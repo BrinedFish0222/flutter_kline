@@ -75,19 +75,28 @@ class KChartController extends ChangeNotifier {
     isShowCrossCurve = true;
     crossCurveGlobalPosition = offset;
 
-    for (var element in crossCurveStreams) {
-      element.add(Pair(left: offset.dx, right: offset.dy));
-    }
-
     // compute dataIndex
     double pointGap = _gestureDetectorController.pointGap;
     double pointWidth = _gestureDetectorController.pointWidth;
     GlobalKey chartKey = _gestureDetectorController.chartKey;
     RenderBox renderBox =
-        chartKey.currentContext!.findRenderObject() as RenderBox;
+    chartKey.currentContext!.findRenderObject() as RenderBox;
     Offset localOffset = renderBox.globalToLocal(offset);
     int dataIndex = localOffset.dx ~/ (pointWidth + pointGap);
-    dataIndex = dataIndex < source.showDataNum ? dataIndex : -1;
+
+    if (dataIndex < source.showDataNum && localOffset.dx >= 0) {
+      for (var element in crossCurveStreams) {
+        element.add(Pair(left: offset.dx, right: offset.dy));
+      }
+    }
+
+    // 约束 index 范围
+    if (dataIndex >= source.showDataNum) {
+      dataIndex = source.showDataNum - 1;
+    }
+    if (dataIndex < 0) {
+      dataIndex = 0;
+    }
     _crossCurveIndexStream.add(dataIndex);
 
 

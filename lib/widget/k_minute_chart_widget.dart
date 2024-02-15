@@ -455,15 +455,30 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
     _controller.isShowCrossCurve = crossCurveXY != null;
 
-    for (var element in _crossCurveStreamList) {
-      element.add(crossCurveXY ?? Pair(left: null, right: null));
+    if (crossCurveXY == null) {
+      for (var element in _crossCurveStreamList) {
+        element.add(Pair(left: null, right: null));
+      }
     }
+
 
     if (crossCurveXY?.isNotNull() ?? false) {
       RenderBox renderBox = _chartKey.currentContext!.findRenderObject() as RenderBox;
       Offset localOffset = renderBox.globalToLocal(Offset(crossCurveXY!.left!, crossCurveXY.right!));
       int dataIndex = localOffset.dx ~/ (_pointWidth + _pointGap);
-      dataIndex = dataIndex < _controller.source.showDataNum ? dataIndex : -1;
+      if (dataIndex >= 0 && dataIndex < _controller.source.showDataNum && localOffset.dx > 0) {
+        for (var element in _crossCurveStreamList) {
+          element.add(crossCurveXY);
+        }
+      }
+
+      if (dataIndex < 0) {
+        dataIndex = 0;
+      }
+      if (dataIndex >= _controller.source.showDataNum) {
+        dataIndex = _controller.source.showDataNum - 1;
+      }
+
       _selectedIndexStream?.add(dataIndex);
     }
 

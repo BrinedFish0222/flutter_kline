@@ -332,7 +332,6 @@ class _KChartWidgetState extends State<KChartWidget> {
   _initSelectedIndexStream() {
     // 处理悬浮层。
     _selectedIndexStream.stream.listen((index) {
-      KlineUtil.logd('index stream listen, index $index');
       _controller.updateOverlayEntryDataByIndex(index);
       if (index == -1) {
         _hideCandlestickOverlay();
