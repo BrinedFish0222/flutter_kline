@@ -25,7 +25,7 @@ class _ExampleMinuteNetworkWidgetState
     extends State<ExampleMinuteNetworkWidget> {
   late StreamSubscription _streamSubscription;
   late KChartDataSource _source;
-  final LineChartVo _vo = LineChartVo(data: []);
+  final LineChartVo _vo = LineChartVo(data: [], id: 'minute');
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _ExampleMinuteNetworkWidgetState
         _source.updateData(
           newCharts: [
             ChartData(
-                id: '0', baseCharts: [LineChartVo(data: lineChartDataList!)])
+                id: '0', baseCharts: [LineChartVo(data: lineChartDataList!, id: 'minute')])
           ],
           isEnd: true,
         );

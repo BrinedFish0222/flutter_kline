@@ -322,18 +322,5 @@ class KChartDataSource extends ChangeNotifier {
     } finally {
       isEndLast.notifyListeners();
     }
-
-    /*for (ChartData chart in newCharts) {
-      // 源数据
-      ChartData? originChart = KlineCollectionUtil.firstWhere(originCharts, (element) => element.id == chart.id);
-
-      // 不包含图，直接添加
-      if (originChart == null) {
-        originCharts.add(chart);
-        continue;
-      }
-
-      originChart.updateDataBy(chart, isEnd: isEnd);
-    }*/
   }
 }

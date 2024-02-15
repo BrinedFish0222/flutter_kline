@@ -145,56 +145,20 @@ class ChartData {
       return;
     }
 
-    // 无数据更新
+    // 清空数据
     if (newChart.baseCharts.isEmpty) {
+      baseCharts.clear();
       return;
-    }
-
-    for (int i = 0; i < newChart.baseCharts.length; ++i) {
-      BaseChartVo newBaseChart = newChart.baseCharts[i];
-      if (newBaseChart.id != null) {
-        // ID 非空更新逻辑
-        _updateBaseChartById(newBaseChart, isEnd: isEnd);
-        continue;
-      }
-
-      _updateBaseChartByIndex(newBaseChart: newBaseChart, index: i, isEnd: isEnd);
     }
 
     for (BaseChartVo newBaseChart in newChart.baseCharts) {
-      if (newBaseChart.id != null) {
-        // ID 非空更新逻辑
-        _updateBaseChartById(newBaseChart, isEnd: isEnd);
-        continue;
-      }
-
-
+      _updateBaseChartById(newBaseChart, isEnd: isEnd);
     }
   }
 
-  /// 根据索引位置更新数据
-  /// 如果源数据对应索引没有数据，则新增
-  /// 如果源数据对应索引有数据，则更新
-  /// @param [newBaseChart] 新数据
-  /// @param [index] 当前索引
-  /// @param [isEnd] 新增数据的位置
-  void _updateBaseChartByIndex({required BaseChartVo<BaseChartData> newBaseChart, required int index, required bool isEnd}) {
-    bool hasIndex = baseCharts.hasIndex(index);
-    if (!hasIndex) {
-      isEnd ? baseCharts.add(newBaseChart) : baseCharts.insert(0, newBaseChart);
-      return;
-    }
-
-    BaseChartVo originBaseChart = baseCharts[index];
-    originBaseChart.updateDataBy(newBaseChart);
-  }
 
   /// 根据ID更新基础图数据
   void _updateBaseChartById(BaseChartVo newBaseChart, {bool isEnd = true}) {
-    if (newBaseChart.id == null) {
-      return;
-    }
-
     BaseChartVo? originBaseChart = KlineCollectionUtil.firstWhere(baseCharts, (element) => element.id == newBaseChart.id);
     if (originBaseChart == null) {
       baseCharts.add(newBaseChart);

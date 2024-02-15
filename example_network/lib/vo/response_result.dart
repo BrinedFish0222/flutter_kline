@@ -35,7 +35,7 @@ class ResponseResult {
 
     return LineChartData(
         dateTime: KlineDateUtil.parseIntTime((data[0] as double).toInt()),
-        value: data[1]);
+        value: data[1], id: 'minute');
   }
 
   List<LineChartData>? parseMinuteAllData() {
@@ -91,7 +91,7 @@ class ResponseResult {
 
       }
 
-      result.add(CandlestickChartVo(data: dataList));
+      result.add(CandlestickChartVo(data: dataList, id: 'CandlestickChartVo'));
     }
 
 

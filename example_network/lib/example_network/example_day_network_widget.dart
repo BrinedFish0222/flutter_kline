@@ -30,7 +30,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
     _source = KChartDataSource(
       originCharts: [
         ChartData(id: '0', name: 'MA', baseCharts: [
-          CandlestickChartVo(data: []),
+          CandlestickChartVo(data: [], id: 'MA'),
           // ...ExampleLineData.getLineChartMA13(),
           // ExampleBadgeData.badgeChartVo,
         ]),
