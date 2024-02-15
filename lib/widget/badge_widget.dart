@@ -71,7 +71,7 @@ class _BadgePositionedWidget extends StatelessWidget {
 
   Size _getSize({required double yAxis}) {
     double width = pointWidth;
-    double height = pointWidth * badgeChartData.heighMultiple;
+    double height = pointWidth * badgeChartData.highMultiple;
     if (badgeChartData.minSize != null) {
       width = badgeChartData.minSize!.width > width
           ? badgeChartData.minSize!.width

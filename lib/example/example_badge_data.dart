@@ -5,10 +5,18 @@ import 'package:flutter_kline/widget/bs_point_widget.dart';
 class ExampleBadgeData {
   static BadgeChartVo get badgeChartVo {
     List<BadgeChartData?> dataList = [];
-    for (int i = 0; i < 796; ++i) {
+    for (int i = 0; i < 794; ++i) {
       dataList.add(null);
     }
     dataList.addAll([
+      BadgeChartData(
+        minSize: const Size(20, 30),
+        widget: const BsPointWidget.buy(),
+        invertWidget: const BsPointWidget.buy(invert: true,),
+        value: 12.7,
+        invertValue: 11.89,
+      ),
+      null,
       BadgeChartData(
         minSize: const Size(20, 30),
         widget: const BsPointWidget.buy(),

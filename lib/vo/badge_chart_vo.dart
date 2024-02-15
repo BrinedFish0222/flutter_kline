@@ -135,7 +135,7 @@ class BadgeChartData<E> extends BaseChartData<E> {
   Size? minSize;
 
   /// 高度倍数
-  double heighMultiple;
+  double highMultiple;
 
   /// 决定 badge 在图中的高度位置。
   /// 如果[value]为空，会默认设置为当前y轴数据点最大值
@@ -158,7 +158,7 @@ class BadgeChartData<E> extends BaseChartData<E> {
     Widget? invertWidget,
     this.padding = defaultPadding,
     this.minSize,
-    this.heighMultiple = 2,
+    this.highMultiple = 2,
     this.value,
     double? invertValue,
     super.extrasData,
