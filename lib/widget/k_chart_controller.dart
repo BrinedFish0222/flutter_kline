@@ -87,9 +87,8 @@ class KChartController extends ChangeNotifier {
         chartKey.currentContext!.findRenderObject() as RenderBox;
     Offset localOffset = renderBox.globalToLocal(offset);
     int dataIndex = localOffset.dx ~/ (pointWidth + pointGap);
-    if (dataIndex < source.showDataNum) {
-      _crossCurveIndexStream.add(dataIndex);
-    }
+    dataIndex = dataIndex < source.showDataNum ? dataIndex : -1;
+    _crossCurveIndexStream.add(dataIndex);
 
 
     notifyListeners();
@@ -138,7 +137,8 @@ class KChartController extends ChangeNotifier {
   /// [index] 等于-1，表示设置当前显示的最后一根数据
   void updateOverlayEntryDataByIndex(int index) {
     try {
-      if (index == -1) {
+      KlineUtil.logd('index $index', name: 'updateOverlayEntryDataByIndex');
+      if (index == -1 || index >= source.showCharts.length) {
         overlayEntryData = source.showCharts.first.baseCharts.first.data.last;
         return;
       }

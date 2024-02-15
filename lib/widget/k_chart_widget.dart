@@ -333,10 +333,12 @@ class _KChartWidgetState extends State<KChartWidget> {
     // 处理悬浮层。
     _selectedIndexStream.stream.listen((index) {
       KlineUtil.logd('index stream listen, index $index');
+      _controller.updateOverlayEntryDataByIndex(index);
       if (index == -1) {
         _hideCandlestickOverlay();
         return;
       }
+
       var candlestickChartVo =
           BaseChartVo.getCandlestickChartVo(_showMainChartData);
 
@@ -345,8 +347,6 @@ class _KChartWidgetState extends State<KChartWidget> {
         _hideCandlestickOverlay();
         return;
       }
-
-      _controller.updateOverlayEntryDataByIndex(index);
 
       Pair<double, double>? overlayLocation = _getCandlestickOverlayLocation();
       if (overlayLocation == null) {

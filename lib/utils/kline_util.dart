@@ -5,20 +5,21 @@ import 'package:flutter_kline/vo/base_chart_vo.dart';
 
 import '../common/pair.dart';
 import '../vo/candlestick_chart_vo.dart';
+import 'dart:developer' as developer;
 
 class KlineUtil {
-  static void logd(String text) {
+  static void logd(String text, {String name = ''}) {
     if (kReleaseMode) {
       return;
     }
-    debugPrint(text);
+    developer.log(text, name: name);
   }
 
-  static void loge(String text) {
-    if (kReleaseMode) {
+  static void loge(String text, {String name = ''}) {
+    /*if (kReleaseMode) {
       return;
-    }
-    debugPrint(text);
+    }*/
+    developer.log(text, name: name);
   }
 
   /// 转换数据为图数据。
