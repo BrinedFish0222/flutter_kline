@@ -137,8 +137,7 @@ class KChartController extends ChangeNotifier {
   /// [index] 等于-1，表示设置当前显示的最后一根数据
   void updateOverlayEntryDataByIndex(int index) {
     try {
-      KlineUtil.logd('index $index', name: 'updateOverlayEntryDataByIndex');
-      if (index == -1 || index >= source.showCharts.length) {
+      if (index == -1 || index >= source.showDataNum) {
         overlayEntryData = source.showCharts.first.baseCharts.first.data.last;
         return;
       }

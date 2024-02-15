@@ -463,6 +463,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
       RenderBox renderBox = _chartKey.currentContext!.findRenderObject() as RenderBox;
       Offset localOffset = renderBox.globalToLocal(Offset(crossCurveXY!.left!, crossCurveXY.right!));
       int dataIndex = localOffset.dx ~/ (_pointWidth + _pointGap);
+      dataIndex = dataIndex < _controller.source.showDataNum ? dataIndex : -1;
       _selectedIndexStream?.add(dataIndex);
     }
 

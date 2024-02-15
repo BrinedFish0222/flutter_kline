@@ -89,7 +89,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
   /// 初始化选中数据
   _initSelectedChartData() {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
-      KlineUtil.logd("分时选中数据索引：$index");
+      KlineUtil.logd("分时选中数据索引：$index", name: toStringShort());
 
       if (index == -1 || (widget.minuteChartSubjoinData?.length ?? 0 - 1) < index) {
         List<ChartShowDataItemVo>? showData =
