@@ -12,6 +12,10 @@ class Pair<L, R> {
     return left == null && right == null;
   }
 
+  bool isNotNull() {
+    return !isNull();
+  }
+
   static Pair<double, double> getMaxMinValue(
       List<Pair<double, double>?> dataList,
       {double? defaultMaxValue,

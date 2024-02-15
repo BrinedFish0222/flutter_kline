@@ -67,6 +67,9 @@ class KMinuteChartWidget extends StatefulWidget {
 }
 
 class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
+
+  final GlobalKey _chartKey = GlobalKey();
+
   late final KChartController _controller;
 
   /// 主图size
@@ -210,6 +213,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                                     _isOnHorizontalDragStart = false
                                 : null,
                             child: MinuteChartWidget(
+                              key: _chartKey,
                               size: _mainChartSize,
                               name: widget.source.mainChartShow?.name,
                               minuteChartData: _minuteChartData,
@@ -454,6 +458,14 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     for (var element in _crossCurveStreamList) {
       element.add(crossCurveXY ?? Pair(left: null, right: null));
     }
+
+    if (crossCurveXY?.isNotNull() ?? false) {
+      RenderBox renderBox = _chartKey.currentContext!.findRenderObject() as RenderBox;
+      Offset localOffset = renderBox.globalToLocal(Offset(crossCurveXY!.left!, crossCurveXY.right!));
+      int dataIndex = localOffset.dx ~/ (_pointWidth + _pointGap);
+      _selectedIndexStream?.add(dataIndex);
+    }
+
   }
 
   void _globalOnLongPressStart(LongPressStartDetails details) {
