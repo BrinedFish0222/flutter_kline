@@ -47,7 +47,8 @@ class ChartRenderer extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Size paddingSize = Size(size.width - padding.right - padding.left, size.height);
+    Size paddingSize =
+        Size(size.width - padding.right - padding.left, size.height);
 
     Pair<double, double> maxMinValue =
         this.maxMinValue ?? BaseChartVo.maxMinValue(chartData);
@@ -96,12 +97,21 @@ class ChartRenderer extends CustomPainter {
 
       // 画线图
       if (data is LineChartVo) {
-        LineChartPainter(
+        data.paint(
+          canvas: canvas,
+          size: paddingSize,
+          maxMinValue: maxMinValue,
+          pointWidth: pointWidth,
+          pointGap: pointGap,
+        );
+
+        // TODO DELETE
+        /*LineChartPainter(
           lineChartData: data,
           maxMinValue: maxMinValue,
           pointWidth: pointWidth,
           pointGap: pointGap,
-        ).paint(canvas, paddingSize);
+        ).paint(canvas, paddingSize);*/
 
         continue;
       }

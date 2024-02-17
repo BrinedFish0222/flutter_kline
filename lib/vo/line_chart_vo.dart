@@ -4,6 +4,7 @@ import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
+import '../painter/line_chart_painter.dart';
 import 'base_chart_vo.dart';
 import 'candlestick_chart_vo.dart';
 
@@ -113,6 +114,16 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   @override
   bool isSelectedShowData() {
     return true;
+  }
+
+  @override
+  void paint({required Canvas canvas, required Size size, required Pair<double, double> maxMinValue, required double pointWidth, required double pointGap}) {
+    LineChartPainter(
+      lineChartData: this,
+      maxMinValue: maxMinValue,
+      pointWidth: pointWidth,
+      pointGap: pointGap,
+    ).paint(canvas, size);
   }
 }
 
