@@ -82,31 +82,13 @@ class ChartRenderer extends CustomPainter {
     // 画完矩形，将画笔移到对应的画图起点
     canvas.translate(padding.left, 0);
     for (var data in chartData) {
-      if (data is CandlestickChartVo) {
-        // 画蜡烛图
-        canvas.save();
-        CandlestickChartPainter(
-          data: data,
-          maxMinHeight: maxMinValue,
-          pointWidth: pointWidth,
-          pointGap: pointGap,
-        ).paint(canvas, paddingSize);
-        canvas.restore();
-        continue;
-      }
-
-      // 画图
-      if (data is LineChartVo || data is BarChartVo) {
-        data.paint(
-          canvas: canvas,
-          size: paddingSize,
-          maxMinValue: maxMinValue,
-          pointWidth: pointWidth,
-          pointGap: pointGap,
-        );
-
-        continue;
-      }
+      data.paint(
+        canvas: canvas,
+        size: paddingSize,
+        maxMinValue: maxMinValue,
+        pointWidth: pointWidth,
+        pointGap: pointGap,
+      );
     }
 
     // 将画笔移回原位

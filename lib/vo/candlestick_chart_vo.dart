@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/painter/candlestick_chart_painter.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
@@ -15,6 +16,25 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
     required super.data,
   }) {
     getMaxMinData();
+  }
+
+  @override
+  void paint({
+    required Canvas canvas,
+    required Size size,
+    required Pair<double, double> maxMinValue,
+    required double pointWidth,
+    required double pointGap,
+  }) {
+    // 画蜡烛图
+    canvas.save();
+    CandlestickChartPainter(
+      data: this,
+      maxMinHeight: maxMinValue,
+      pointWidth: pointWidth,
+      pointGap: pointGap,
+    ).paint(canvas, size);
+    canvas.restore();
   }
 
   @override
