@@ -31,9 +31,13 @@ abstract class BaseChartVo<T extends BaseChartData> {
   });
 
   /// 画图
-  void paint({required Canvas canvas, required Size size, required Pair<double, double> maxMinValue, required double pointWidth, required double pointGap}){
-
-  }
+  void paint({
+    required Canvas canvas,
+    required Size size,
+    required Pair<double, double> maxMinValue,
+    required double pointWidth,
+    required double pointGap,
+  }) {}
 
   /// 更新数据
   void updateDataBy(BaseChartVo newBaseChart, {bool isEnd = true}) {
@@ -54,7 +58,8 @@ abstract class BaseChartVo<T extends BaseChartData> {
 
   /// 根据ID更新数据
   void _updateDataById(BaseChartData newData, {required bool isEnd}) {
-    bool replaceWhereFlag = KlineCollectionUtil.replaceWhere(dataList: data, test: (d) => d?.id == newData.id, element: newData);
+    bool replaceWhereFlag = KlineCollectionUtil.replaceWhere(
+        dataList: data, test: (d) => d?.id == newData.id, element: newData);
     if (replaceWhereFlag) {
       return;
     }

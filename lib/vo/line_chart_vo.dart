@@ -117,7 +117,13 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   }
 
   @override
-  void paint({required Canvas canvas, required Size size, required Pair<double, double> maxMinValue, required double pointWidth, required double pointGap}) {
+  void paint({
+    required Canvas canvas,
+    required Size size,
+    required Pair<double, double> maxMinValue,
+    required double pointWidth,
+    required double pointGap,
+  }) {
     LineChartPainter(
       lineChartData: this,
       maxMinValue: maxMinValue,

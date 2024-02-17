@@ -95,8 +95,8 @@ class ChartRenderer extends CustomPainter {
         continue;
       }
 
-      // 画线图
-      if (data is LineChartVo) {
+      // 画图
+      if (data is LineChartVo || data is BarChartVo) {
         data.paint(
           canvas: canvas,
           size: paddingSize,
@@ -104,26 +104,6 @@ class ChartRenderer extends CustomPainter {
           pointWidth: pointWidth,
           pointGap: pointGap,
         );
-
-        // TODO DELETE
-        /*LineChartPainter(
-          lineChartData: data,
-          maxMinValue: maxMinValue,
-          pointWidth: pointWidth,
-          pointGap: pointGap,
-        ).paint(canvas, paddingSize);*/
-
-        continue;
-      }
-
-      // 画柱图
-      if (data is BarChartVo) {
-        BarChartPainter(
-          barData: data,
-          pointWidth: pointWidth,
-          pointGap: pointGap,
-          maxMinValue: maxMinValue,
-        ).paint(canvas, paddingSize);
 
         continue;
       }

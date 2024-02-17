@@ -5,6 +5,8 @@ import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
+import '../painter/bar_chart_painter.dart';
+
 class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
   /// 柱体宽度
   double? barWidth;
@@ -21,6 +23,22 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
     required super.data,
   }) {
     getSelectedShowData();
+  }
+
+  @override
+  void paint({
+    required Canvas canvas,
+    required Size size,
+    required Pair<double, double> maxMinValue,
+    required double pointWidth,
+    required double pointGap,
+  }) {
+    BarChartPainter(
+      barData: this,
+      pointWidth: pointWidth,
+      pointGap: pointGap,
+      maxMinValue: maxMinValue,
+    ).paint(canvas, size);
   }
 
   @override
