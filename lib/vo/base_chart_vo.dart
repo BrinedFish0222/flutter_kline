@@ -37,7 +37,8 @@ abstract class BaseChartVo<T extends BaseChartData> {
     required Pair<double, double> maxMinValue,
     required double pointWidth,
     required double pointGap,
-  }) {}
+    required EdgeInsets padding,
+  });
 
   /// 更新数据
   void updateDataBy(BaseChartVo newBaseChart, {bool isEnd = true}) {

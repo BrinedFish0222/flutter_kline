@@ -32,6 +32,7 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
     required Pair<double, double> maxMinValue,
     required double pointWidth,
     required double pointGap,
+    required EdgeInsets padding,
   }) {
     BarChartPainter(
       barData: this,

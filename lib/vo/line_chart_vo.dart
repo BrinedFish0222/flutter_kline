@@ -123,6 +123,7 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
     required Pair<double, double> maxMinValue,
     required double pointWidth,
     required double pointGap,
+    required EdgeInsets padding,
   }) {
     LineChartPainter(
       lineChartData: this,

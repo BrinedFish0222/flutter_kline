@@ -25,6 +25,7 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
     required Pair<double, double> maxMinValue,
     required double pointWidth,
     required double pointGap,
+    required EdgeInsets padding,
   }) {
     // 画蜡烛图
     canvas.save();

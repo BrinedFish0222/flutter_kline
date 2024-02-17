@@ -88,6 +88,7 @@ class ChartRenderer extends CustomPainter {
         maxMinValue: maxMinValue,
         pointWidth: pointWidth,
         pointGap: pointGap,
+        padding: padding,
       );
     }
 

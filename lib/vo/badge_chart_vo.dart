@@ -115,6 +115,18 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
   bool isSelectedShowData() {
     return false;
   }
+
+  @override
+  void paint({
+    required Canvas canvas,
+    required Size size,
+    required Pair<double, double> maxMinValue,
+    required double pointWidth,
+    required double pointGap,
+    required EdgeInsets padding,
+  }) {
+    // TODO: implement paint
+  }
 }
 
 /// <E> 是扩展数据
