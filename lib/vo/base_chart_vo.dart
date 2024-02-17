@@ -30,6 +30,11 @@ abstract class BaseChartVo<T extends BaseChartData> {
     required this.data,
   });
 
+  /// 画图
+  void paint({required Canvas canvas, required Size size, required Pair<double, double> maxMinValue, required double pointWidth, required double pointGap}){
+
+  }
+
   /// 更新数据
   void updateDataBy(BaseChartVo newBaseChart, {bool isEnd = true}) {
     if (newBaseChart.data.isEmpty) {
