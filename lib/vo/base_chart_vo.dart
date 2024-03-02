@@ -76,7 +76,9 @@ abstract class BaseChartVo<T extends BaseChartData> {
   List<ChartShowDataItemVo?>? getSelectedShowData();
 
   /// 是否是可选中显示的数据
-  bool isSelectedShowData();
+  bool isSelectedShowData() {
+    return true;
+  }
 
   /// 获取最大最小值。
   /// 左  最大值；右 最小值。

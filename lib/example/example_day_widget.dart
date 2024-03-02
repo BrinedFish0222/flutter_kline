@@ -14,6 +14,7 @@ import 'example_ess_data.dart';
 import 'example_line_data.dart';
 import 'example_macd_data.dart';
 import 'example_rmo_data.dart';
+import 'example_vertical_line_data.dart';
 import 'example_vol_data.dart';
 
 class ExampleDayWidget extends StatefulWidget {
@@ -37,6 +38,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
         candlestickData,
         ...ExampleLineData.getLineChartMA13(),
         ExampleBadgeData.badgeChartVo,
+        // ExampleVerticalLineData.verticalLine,
       ]),
       ChartData(id: '1', name: 'VOL', baseCharts: [
         ExampleVolData.barChartData..minValue = 0,
