@@ -1,9 +1,13 @@
+import 'package:flutter_kline/stock_indicator_engine/stock_indicator_constants.dart';
+
 /// 指标参数
 class StockIndicatorParameter {
+  final StockIndicatorParameterType type;
   final String name;
   final double value;
 
   StockIndicatorParameter({
+    this.type = StockIndicatorParameterType.defined,
     required this.name,
     this.value = 0,
   });

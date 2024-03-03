@@ -1,6 +1,7 @@
 import 'package:flutter_kline/common/common_exception.dart';
 import 'package:flutter_kline/stock_indicator_engine/function/stock_indicator_function_library.dart';
 import 'package:flutter_kline/stock_indicator_engine/stock_indicator.dart';
+import 'package:flutter_kline/stock_indicator_engine/stock_indicator_constants.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 
 /// 股票指标引擎
@@ -89,7 +90,8 @@ class StockIndicatorEngine {
     Iterable<Match> matches = variablesRegExp.allMatches(_formula);
     List<StockIndicatorParameter> indicators = matches
         .map((match) => match.group(0)!)
-        .map((e) => StockIndicatorParameter(name: e, value: 0))
+        .map((e) => StockIndicatorParameter(
+            name: e, value: 0, type: StockIndicatorParameterType.variable))
         .toList();
     _parameters.addAll(indicators);
     KlineUtil.logd('variables: $indicators', name: _className);
