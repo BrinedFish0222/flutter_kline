@@ -1,14 +1,41 @@
 /// 指标参数
 class StockIndicatorParameter {
   final String name;
-  final double max;
-  final double min;
-  final double def;
+  final double value;
 
-  const StockIndicatorParameter({
+  StockIndicatorParameter({
     required this.name,
-    this.max = 0,
-    this.min = 0,
-    this.def = 0,
+    this.value = 0,
   });
+
+  @override
+  String toString() {
+    return 'StockIndicatorParameter{name: $name, value: $value}';
+  }
+}
+
+/// 测试公式结果
+class TestFormulaResult {
+  final bool success;
+  final String message;
+
+  const TestFormulaResult({
+    required this.success,
+    required this.message,
+  });
+
+  const TestFormulaResult.success({
+    this.success = true,
+    this.message = '测试通过',
+  });
+
+  const TestFormulaResult.fail({
+    this.success = false,
+    this.message = '公式错误',
+  });
+
+  @override
+  String toString() {
+    return 'TestFormulaResult{success: $success, message: $message}';
+  }
 }
