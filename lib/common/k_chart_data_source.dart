@@ -3,6 +3,7 @@ import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/vo/base_chart_vo.dart';
+import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
 
 import '../utils/kline_collection_util.dart';
@@ -44,6 +45,52 @@ class KChartDataSource extends ChangeNotifier {
   ValueNotifier<bool> isEndLast = ValueNotifier(true);
 
   int get dataMaxLengthLast => _dataMaxLengthLast;
+
+  /// 获取显示图首个时间
+  /// 规则：第一张图，找出蜡烛图，获取对应的首个时间
+  DateTime? get showChartStartDateTime {
+    return KlineCollectionUtil.first(_getShowCandlestickChart?.data)?.dateTime;
+  }
+
+  /// 获取显示图最后时间
+  /// 规则：第一张图，找出蜡烛图，获取对应的首个时间
+  DateTime? get showChartEndDateTime {
+    return KlineCollectionUtil.last(_getShowCandlestickChart?.data)?.dateTime;
+  }
+
+  /// 获取显示图首个时间
+  /// 规则：第一张图，找出蜡烛图，获取对应的首个时间
+  DateTime? showChartDateTimeByIndex(int index) {
+    var candlestickChart = _getShowCandlestickChart;
+    if (candlestickChart == null) {
+      return null;
+    }
+
+    if (!candlestickChart.data.hasIndex(index)) {
+      return null;
+    }
+
+    return candlestickChart.data[index]?.dateTime;
+  }
+
+
+  /// 获取显示的蜡烛图
+  /// 规则：第一张图，找出蜡烛图
+  CandlestickChartVo? get _getShowCandlestickChart {
+    List<BaseChartVo> firstChart = showCharts.first.baseCharts;
+    if (firstChart.isEmpty) {
+      return null;
+    }
+
+    // 寻找蜡烛图
+    List<CandlestickChartVo> candlestickChart =
+        firstChart.whereType<CandlestickChartVo>().toList();
+    if (candlestickChart.isEmpty) {
+      return null;
+    }
+
+    return candlestickChart.first;
+  }
 
   /// 重置图在最右边
   void _resetChartRightmost() {
@@ -234,7 +281,6 @@ class KChartDataSource extends ChangeNotifier {
       showCharts.add(chartData.subData(start: showDataStartIndex, end: end));
     }
 
-   
     updateChartLocation();
     // TODO 不可设置，需要更新调用 [notifyListeners()]
     // notifyListeners();
@@ -258,17 +304,17 @@ class KChartDataSource extends ChangeNotifier {
 
   /// 最左时触发
   void leftmost() {
-    KlineUtil.logd('图处于最左边');
+    // KlineUtil.logd('图处于最左边');
   }
 
   /// 最右时触发
   void rightmost() {
-    KlineUtil.logd('图处于最右边');
+    // KlineUtil.logd('图处于最右边');
   }
 
   /// 中间时触发
   void centre() {
-    KlineUtil.logd('图处于中间');
+    // KlineUtil.logd('图处于中间');
   }
 
   /// 更新数据

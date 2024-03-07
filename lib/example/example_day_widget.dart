@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/vo/mask_layer.dart';
+import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/k_line_chart_widget.dart';
 
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
 import '../vo/bar_chart_vo.dart';
+import '../widget/bottom_date_widget.dart';
 import '../widget/k_chart_widget.dart';
 import 'example_badge_data.dart';
 import 'example_candlestick_data.dart';
@@ -27,6 +29,7 @@ class ExampleDayWidget extends StatefulWidget {
 }
 
 class _ExampleDayWidgetState extends State<ExampleDayWidget> {
+  late KChartController _controller;
   late KChartDataSource _source;
 
   @override
@@ -59,6 +62,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       ])
     ]);
 
+    _controller = KChartController(source: _source);
     super.initState();
   }
 
@@ -79,22 +83,54 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
       child: ListView(
         children: [
-          KChartWidget(
-            showDataNum: 30,
-            source: _source,
-            realTimePrice: 11.56,
-            onTapIndicator: (index) {
-              KlineUtil.showToast(context: context, text: '点击指标索引：$index');
-            },
-            subChartMaskList: [
-              null,
-              MaskLayer(percent: 0.3),
-              // MaskLayer(percent: 0.8)
+          Column(
+            children: [
+              KChartWidget(
+                controller: _controller,
+                showDataNum: 30,
+                source: _source,
+                realTimePrice: 11.56,
+                onTapIndicator: (index) {
+                  KlineUtil.showToast(context: context, text: '点击指标索引：$index');
+                },
+                subChartMaskList: [
+                  null,
+                  MaskLayer(percent: 0.3),
+                  // MaskLayer(percent: 0.8)
+                ],
+                overlayEntryLocationKey: widget.overlayEntryLocationKey,
+                onHorizontalDragUpdate: (details, location) {
+                  KlineUtil.logd('移动的位置：$location');
+                },
+              ),
+              SizedBox(
+                height: 12,
+                // color: Colors.yellow,
+                child: StreamBuilder<int>(
+                    stream: _controller.crossCurveIndexStream.stream,
+                    builder: (context, snapshot) {
+                      DateTime? currentDate;
+                      if (_controller.isShowCrossCurve) {
+                        currentDate = _controller.source
+                            .showChartDateTimeByIndex(snapshot.data ?? 0);
+                      }
+
+                      return AnimatedBuilder(
+                          animation: _controller.source,
+                          builder: (context, _) {
+                            return BottomDateWidget(
+                              startDate:
+                                  _controller.source.showChartStartDateTime,
+                              endDate: _controller.source.showChartEndDateTime,
+                              periodNumber: _controller.source.showDataNum,
+                              currentDateLeftPadding:
+                                  _controller.crossCurveGlobalPosition.dx,
+                              currentDate: currentDate,
+                            );
+                          });
+                    }),
+              )
             ],
-            overlayEntryLocationKey: widget.overlayEntryLocationKey,
-            onHorizontalDragUpdate: (details, location) {
-              KlineUtil.logd('移动的位置：$location');
-            },
           ),
           const SizedBox(height: 16),
           SizedBox(

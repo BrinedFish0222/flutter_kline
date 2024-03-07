@@ -3,12 +3,25 @@ class KlineDateUtil {
   /// 格式化日期
   /// [date] 日期
   /// [spaceCharacter] 间隔符
-  static String formatDate(
-      {required DateTime? date, String spaceCharacter = '/'}) {
+  static String formatDate({
+    required DateTime? date,
+    String spaceCharacter = '/',
+    bool time = true,
+  }) {
     if (date == null) {
       return '';
     }
-    return '${date.year}$spaceCharacter${date.month}$spaceCharacter${date.day} ${date.hour}:${date.minute}';
+
+    String month = date.month.toString().padLeft(2, '0');
+    String day = date.day.toString().padLeft(2, '0');
+
+    if (!time) {
+      return '${date.year}$spaceCharacter$month$spaceCharacter$day';
+    }
+
+    String hour = date.hour.toString().padLeft(2, '0');
+    String minute = date.minute.toString().padLeft(2, '0');
+    return '${date.year}$spaceCharacter$month$spaceCharacter$day $hour:$minute';
   }
 
   /// 格式化时间
