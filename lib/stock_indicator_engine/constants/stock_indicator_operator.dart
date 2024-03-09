@@ -1,3 +1,5 @@
+import 'package:flutter_kline/utils/kline_collection_util.dart';
+
 /// 运算符
 enum StockIndicatorOperator {
   add(value: '+'),
@@ -13,5 +15,10 @@ enum StockIndicatorOperator {
   static bool isOperator(String value) {
     return StockIndicatorOperator.values
         .any((element) => element.value == value);
+  }
+
+  static StockIndicatorOperator? operator(String value) {
+    return KlineCollectionUtil.firstWhere(
+        StockIndicatorOperator.values, (element) => element.value == value);
   }
 }

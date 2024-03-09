@@ -1,4 +1,4 @@
-import 'package:flutter_kline/stock_indicator_engine/stock_indicator_constants.dart';
+import 'package:flutter_kline/stock_indicator_engine/constants/stock_indicator_constants.dart';
 
 /// 指标参数
 class StockIndicatorParameter {
