@@ -135,13 +135,11 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
 }
 
 class LineChartData<E> extends BaseChartData<E> {
-  DateTime? dateTime;
-
   double? value;
 
   LineChartData({
     required super.id,
-    this.dateTime,
+    super.dateTime,
     this.value,
     super.extrasData,
   });

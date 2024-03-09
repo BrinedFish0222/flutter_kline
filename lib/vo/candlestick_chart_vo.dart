@@ -101,7 +101,6 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
 }
 
 class CandlestickChartData<E> extends BaseChartData<E> {
-  DateTime dateTime;
   double open;
   double close;
   double high;
@@ -109,7 +108,7 @@ class CandlestickChartData<E> extends BaseChartData<E> {
 
   CandlestickChartData({
     required super.id,
-    required this.dateTime,
+    required super.dateTime,
     required this.open,
     required this.close,
     required this.high,

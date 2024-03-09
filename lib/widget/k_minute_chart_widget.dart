@@ -15,6 +15,7 @@ import '../utils/kline_util.dart';
 import '../vo/base_chart_vo.dart';
 import '../vo/main_chart_selected_data_vo.dart';
 import '../vo/mask_layer.dart';
+import 'kline_gesture_detector_controller.dart';
 
 /// k线分时图
 class KMinuteChartWidget extends StatefulWidget {
@@ -87,10 +88,9 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   /// 数据点间隔
   late double _pointGap;
 
-  /// 十字线选中数据索引流。
-  StreamController<int>? _selectedIndexStream;
-
   bool _isOnHorizontalDragStart = true;
+
+  KlineGestureDetectorController? _gestureDetectorController;
 
   // 选中的折线数据
   final StreamController<MainChartSelectedDataVo> _selectedLineChartDataStream =
@@ -110,7 +110,11 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
     return widget.source.mainChartBaseChartsShow.sublist(1);
   }
-  
+
+  /// 十字线选中数据索引流。
+  StreamController<int> get _selectedIndexStream =>
+      _controller.crossCurveIndexStream;
+
   /// 副图显示数量
   get _subChartShowLength => widget.chartNum == null ? _subChartData.length : (widget.chartNum! - 1).clamp(0, _subChartData.length);
 
@@ -124,10 +128,8 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   }
 
   void _initSelectedIndexStream() {
-    _selectedIndexStream = StreamController<int>.broadcast();
-
     // 增加对悬浮层的操作
-    _selectedIndexStream?.stream.listen((index) {
+    _selectedIndexStream.stream.listen((index) {
       // 不显示的情况：索引为-1；空数据；索引不存在；索引位置空数据；
       if (index == -1 ||
           KlineCollectionUtil.isEmpty(_minuteChartData.data) ||
@@ -168,7 +170,6 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   @override
   void dispose() {
     _hideCandlestickOverlay();
-    _selectedIndexStream?.close();
     _selectedLineChartDataStream.close();
     if (widget.controller == null) {
       _controller.dispose();
@@ -196,6 +197,13 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     _computeLayout(constraints);
+                    _gestureDetectorController ??= KlineGestureDetectorController(
+                      chartKey: _chartKey,
+                      screenMaxWidth: _mainChartSize.width,
+                      source: _controller.source,
+                    );
+                    _controller.gestureDetectorController = _gestureDetectorController;
+
                     return Column(
                       children: [
                         Listener(
@@ -445,7 +453,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     }
 
     _resetCrossCurve(null);
-    _selectedIndexStream?.add(-1);
+    _selectedIndexStream.add(-1);
     _hideCandlestickOverlay();
     setState(() {});
     return true;
@@ -454,6 +462,10 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
   /// 重置十字线位置
   void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
     _controller.isShowCrossCurve = crossCurveXY != null;
+    if (crossCurveXY != null) {
+      _controller.showCrossCurve(
+          Offset(crossCurveXY.left ?? 0, crossCurveXY.right ?? 0));
+    }
 
     if (crossCurveXY == null) {
       for (var element in _crossCurveStreamList) {
@@ -479,7 +491,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
         dataIndex = _controller.source.showDataNum - 1;
       }
 
-      _selectedIndexStream?.add(dataIndex);
+      _selectedIndexStream.add(dataIndex);
     }
 
   }

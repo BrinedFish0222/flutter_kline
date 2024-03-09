@@ -47,32 +47,33 @@ class KChartDataSource extends ChangeNotifier {
   int get dataMaxLengthLast => _dataMaxLengthLast;
 
   /// 获取显示图首个时间
-  /// 规则：第一张图，找出蜡烛图，获取对应的首个时间
+  /// 规则：第一张图，找出蜡烛图（没有蜡烛，直接取第一张图），获取对应的首个时间
   DateTime? get showChartStartDateTime {
-    return KlineCollectionUtil.first(_getShowCandlestickChart?.data)?.dateTime;
+    BaseChartVo? chart = _getShowCandlestickChart;
+    chart ??= showCharts.first.baseCharts.first;
+    return KlineCollectionUtil.first(chart.data)?.dateTime;
   }
 
   /// 获取显示图最后时间
-  /// 规则：第一张图，找出蜡烛图，获取对应的首个时间
+  /// 规则：第一张图，找出蜡烛图（没有蜡烛，直接取第一张图），获取对应的首个时间
   DateTime? get showChartEndDateTime {
-    return KlineCollectionUtil.last(_getShowCandlestickChart?.data)?.dateTime;
+    BaseChartVo? chart = _getShowCandlestickChart;
+    chart ??= showCharts.first.baseCharts.first;
+    return KlineCollectionUtil.last(chart.data)?.dateTime;
   }
 
-  /// 获取显示图首个时间
-  /// 规则：第一张图，找出蜡烛图，获取对应的首个时间
+  /// 根据索引获取显示图的时间
+  /// 规则：第一张图，找出蜡烛图（没有蜡烛，直接取第一张图），获取对应的首个时间
   DateTime? showChartDateTimeByIndex(int index) {
-    var candlestickChart = _getShowCandlestickChart;
-    if (candlestickChart == null) {
+    BaseChartVo? chart = _getShowCandlestickChart;
+    chart ??= showCharts.first.baseCharts.first;
+
+    if (!chart.data.hasIndex(index)) {
       return null;
     }
 
-    if (!candlestickChart.data.hasIndex(index)) {
-      return null;
-    }
-
-    return candlestickChart.data[index]?.dateTime;
+    return chart.data[index]?.dateTime;
   }
-
 
   /// 获取显示的蜡烛图
   /// 规则：第一张图，找出蜡烛图

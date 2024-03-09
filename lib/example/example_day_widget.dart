@@ -16,7 +16,6 @@ import 'example_ess_data.dart';
 import 'example_line_data.dart';
 import 'example_macd_data.dart';
 import 'example_rmo_data.dart';
-import 'example_vertical_line_data.dart';
 import 'example_vol_data.dart';
 
 class ExampleDayWidget extends StatefulWidget {
@@ -29,6 +28,8 @@ class ExampleDayWidget extends StatefulWidget {
 }
 
 class _ExampleDayWidgetState extends State<ExampleDayWidget> {
+  final GlobalKey _chartKey = GlobalKey();
+
   late KChartController _controller;
   late KChartDataSource _source;
 
@@ -86,6 +87,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
           Column(
             children: [
               KChartWidget(
+                key: _chartKey,
                 controller: _controller,
                 showDataNum: 30,
                 source: _source,
@@ -118,13 +120,22 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                       return AnimatedBuilder(
                           animation: _controller.source,
                           builder: (context, _) {
+                            double leftPadding = _controller.crossCurveGlobalPosition.dx;
+                            RenderObject? renderBox = _chartKey.currentContext?.findRenderObject();
+                            if (renderBox != null && renderBox is RenderBox) {
+                              try {
+                                leftPadding = renderBox.globalToLocal(_controller.crossCurveGlobalPosition).dx;
+                              } catch (e) {
+                                KlineUtil.loge(e.toString());
+                              }
+                            }
+
                             return BottomDateWidget(
                               startDate:
                                   _controller.source.showChartStartDateTime,
                               endDate: _controller.source.showChartEndDateTime,
                               periodNumber: _controller.source.showDataNum,
-                              currentDateLeftPadding:
-                                  _controller.crossCurveGlobalPosition.dx,
+                              currentDateLeftPadding: leftPadding,
                               currentDate: currentDate,
                             );
                           });
