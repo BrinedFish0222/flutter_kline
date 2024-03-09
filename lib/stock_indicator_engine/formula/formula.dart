@@ -37,11 +37,21 @@ class Formula {
       operator: StockIndicatorOperator.add,
     );
 
+
     int length = words.length;
+    int leftBracketNumber = 0;
+    int rightBracketNumber = 0;
     for (int i = 0; i < length; ++i) {
       String word = words.removeAt(0);
+      if (word == StockIndicatorKeys.leftBracket.value) {
+        leftBracketNumber += 1;
+      } else if (word == StockIndicatorKeys.rightBracket.value) {
+        rightBracketNumber += 1;
+      }
+
       var indicatorOperator = StockIndicatorOperator.operator(word);
-      if (indicatorOperator != null) {
+      if (indicatorOperator != null && leftBracketNumber == rightBracketNumber) {
+        // 到关键运算符位置
         result = result.copyWith(
           left: stack.join(),
           right: words.join(),
@@ -83,6 +93,8 @@ class Formula {
         leftBracketStack.length = leftBracketStack.length - 1;
         if (leftBracketStack.isEmpty && i == length - 1) {
           flag = true;
+        } else if (leftBracketStack.isEmpty) {
+          break;
         }
       }
     }
