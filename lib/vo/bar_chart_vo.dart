@@ -118,6 +118,7 @@ class BarChartData<E> extends BaseChartData<E> {
 
   BarChartData({
     required super.id,
+    super.dateTime,
     this.value = 0,
     this.isFill = false,
     super.color = Colors.black,

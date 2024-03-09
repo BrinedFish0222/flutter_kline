@@ -193,12 +193,14 @@ abstract class BaseChartVo<T extends BaseChartData> {
 /// 使用场景：一根线上一个点的信息
 abstract class BaseChartData<T> {
   String id;
+  DateTime dateTime;
   Color? color;
   T? extrasData;
 
   BaseChartData({
     required this.id,
+    DateTime? dateTime,
     this.color,
     this.extrasData,
-  });
+  }) : dateTime = dateTime ?? DateTime.now();
 }

@@ -166,6 +166,7 @@ class BadgeChartData<E> extends BaseChartData<E> {
 
   BadgeChartData({
     required super.id,
+    super.dateTime,
     required this.widget,
     Widget? invertWidget,
     this.padding = defaultPadding,

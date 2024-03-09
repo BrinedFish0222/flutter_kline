@@ -378,9 +378,6 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   /// 长按移动事件
   _globalOnLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
-    KlineUtil.logd(
-        "_onLongPressMoveUpdate, dx: ${details.localPosition.dx}, dy ${details.localPosition.dy}");
-
     _resetCrossCurve(Pair(
         left: details.globalPosition.dx, right: details.globalPosition.dy));
   }

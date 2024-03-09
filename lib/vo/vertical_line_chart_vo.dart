@@ -101,6 +101,7 @@ class VerticalLineChartData<E> extends BaseChartData<E> {
 
   VerticalLineChartData({
     required super.id,
+    super.dateTime,
     required this.top,
     required this.bottom,
     super.color,
@@ -114,6 +115,7 @@ class VerticalLineChartData<E> extends BaseChartData<E> {
   }) {
     return VerticalLineChartData(
       id: id,
+      dateTime: dateTime,
       top: top ?? this.top,
       bottom: bottom ?? this.bottom,
       extrasData: extrasData,

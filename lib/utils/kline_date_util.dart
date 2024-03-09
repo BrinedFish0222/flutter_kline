@@ -3,12 +3,36 @@ class KlineDateUtil {
   /// 格式化日期
   /// [date] 日期
   /// [spaceCharacter] 间隔符
-  static String formatDate(
-      {required DateTime? date, String spaceCharacter = '/'}) {
+  static String formatDate({
+    required DateTime? date,
+    String spaceCharacter = '/',
+    String timeSpaceCharacter = ':',
+    DateTimeFormatType formatType = DateTimeFormatType.dateTimeNoSecond,
+  }) {
     if (date == null) {
       return '';
     }
-    return '${date.year}$spaceCharacter${date.month}$spaceCharacter${date.day} ${date.hour}:${date.minute}';
+
+    String month = date.month.toString().padLeft(2, '0');
+    String day = date.day.toString().padLeft(2, '0');
+
+    if (formatType == DateTimeFormatType.date) {
+      return '${date.year}$spaceCharacter$month$spaceCharacter$day';
+    }
+
+    String hour = date.hour.toString().padLeft(2, '0');
+    String minute = date.minute.toString().padLeft(2, '0');
+
+    if (formatType == DateTimeFormatType.time) {
+      return '$hour$timeSpaceCharacter$minute';
+    }
+
+    if (formatType == DateTimeFormatType.dateTimeNoSecond) {
+      return '${date.year}$spaceCharacter$month$spaceCharacter$day $hour$timeSpaceCharacter$minute';
+    }
+
+    String second = date.second.toString().padLeft(2, '0');
+    return '${date.year}$spaceCharacter$month$spaceCharacter$day $hour$timeSpaceCharacter$minute$timeSpaceCharacter$second';
   }
 
   /// 格式化时间
@@ -58,4 +82,12 @@ class KlineDateUtil {
       int.parse(minuteStr),
     );
   }
+}
+
+
+enum DateTimeFormatType {
+  dateTime,
+  time,
+  date,
+  dateTimeNoSecond,
 }

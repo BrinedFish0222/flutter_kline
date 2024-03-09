@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/vo/mask_layer.dart';
+import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/k_line_chart_widget.dart';
 
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
 import '../vo/bar_chart_vo.dart';
+import '../widget/bottom_date_widget.dart';
 import '../widget/k_chart_widget.dart';
 import 'example_badge_data.dart';
 import 'example_candlestick_data.dart';
@@ -14,7 +16,6 @@ import 'example_ess_data.dart';
 import 'example_line_data.dart';
 import 'example_macd_data.dart';
 import 'example_rmo_data.dart';
-import 'example_vertical_line_data.dart';
 import 'example_vol_data.dart';
 
 class ExampleDayWidget extends StatefulWidget {
@@ -27,6 +28,9 @@ class ExampleDayWidget extends StatefulWidget {
 }
 
 class _ExampleDayWidgetState extends State<ExampleDayWidget> {
+  final GlobalKey _chartKey = GlobalKey();
+
+  late KChartController _controller;
   late KChartDataSource _source;
 
   @override
@@ -59,6 +63,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       ])
     ]);
 
+    _controller = KChartController(source: _source);
     super.initState();
   }
 
@@ -79,22 +84,64 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
       padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
       child: ListView(
         children: [
-          KChartWidget(
-            showDataNum: 30,
-            source: _source,
-            realTimePrice: 11.56,
-            onTapIndicator: (index) {
-              KlineUtil.showToast(context: context, text: '点击指标索引：$index');
-            },
-            subChartMaskList: [
-              null,
-              MaskLayer(percent: 0.3),
-              // MaskLayer(percent: 0.8)
+          Column(
+            children: [
+              KChartWidget(
+                key: _chartKey,
+                controller: _controller,
+                showDataNum: 30,
+                source: _source,
+                realTimePrice: 11.56,
+                onTapIndicator: (index) {
+                  KlineUtil.showToast(context: context, text: '点击指标索引：$index');
+                },
+                subChartMaskList: [
+                  null,
+                  MaskLayer(percent: 0.3),
+                  // MaskLayer(percent: 0.8)
+                ],
+                overlayEntryLocationKey: widget.overlayEntryLocationKey,
+                onHorizontalDragUpdate: (details, location) {
+                  KlineUtil.logd('移动的位置：$location');
+                },
+              ),
+              SizedBox(
+                height: 12,
+                // color: Colors.yellow,
+                child: StreamBuilder<int>(
+                    stream: _controller.crossCurveIndexStream.stream,
+                    builder: (context, snapshot) {
+                      DateTime? currentDate;
+                      if (_controller.isShowCrossCurve) {
+                        currentDate = _controller.source
+                            .showChartDateTimeByIndex(snapshot.data ?? 0);
+                      }
+
+                      return AnimatedBuilder(
+                          animation: _controller.source,
+                          builder: (context, _) {
+                            double leftPadding = _controller.crossCurveGlobalPosition.dx;
+                            RenderObject? renderBox = _chartKey.currentContext?.findRenderObject();
+                            if (renderBox != null && renderBox is RenderBox) {
+                              try {
+                                leftPadding = renderBox.globalToLocal(_controller.crossCurveGlobalPosition).dx;
+                              } catch (e) {
+                                KlineUtil.loge(e.toString());
+                              }
+                            }
+
+                            return BottomDateWidget(
+                              startDate:
+                                  _controller.source.showChartStartDateTime,
+                              endDate: _controller.source.showChartEndDateTime,
+                              periodNumber: _controller.source.showDataNum,
+                              currentDateLeftPadding: leftPadding,
+                              currentDate: currentDate,
+                            );
+                          });
+                    }),
+              )
             ],
-            overlayEntryLocationKey: widget.overlayEntryLocationKey,
-            onHorizontalDragUpdate: (details, location) {
-              KlineUtil.logd('移动的位置：$location');
-            },
           ),
           const SizedBox(height: 16),
           SizedBox(

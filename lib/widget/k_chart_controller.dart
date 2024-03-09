@@ -74,6 +74,7 @@ class KChartController extends ChangeNotifier {
   void showCrossCurve(Offset offset) {
     isShowCrossCurve = true;
     crossCurveGlobalPosition = offset;
+    KlineUtil.logd('update crossCurveGlobalPosition $crossCurveGlobalPosition', name: 'KChartController');
 
     // compute dataIndex
     double pointGap = _gestureDetectorController.pointGap;
