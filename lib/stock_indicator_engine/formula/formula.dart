@@ -13,6 +13,12 @@ class Formula {
     required this.operator,
   });
 
+  Formula.empty({
+    this.left = '',
+    this.right = '',
+    this.operator = StockIndicatorOperator.add,
+  });
+
   Formula copyWith({
     String? left,
     String? right,
@@ -37,7 +43,6 @@ class Formula {
       operator: StockIndicatorOperator.add,
     );
 
-
     int length = words.length;
     int leftBracketNumber = 0;
     int rightBracketNumber = 0;
@@ -49,12 +54,30 @@ class Formula {
         rightBracketNumber += 1;
       }
 
-      var indicatorOperator = StockIndicatorOperator.operator(word);
-      if (indicatorOperator != null && leftBracketNumber == rightBracketNumber) {
+      StockIndicatorOperator? indicatorOperator =
+          StockIndicatorOperator.operator(word);
+      if (indicatorOperator != null &&
+          leftBracketNumber == rightBracketNumber) {
         // 到关键运算符位置
+        String left = stack.join();
+        String right = words.join();
+        if (indicatorOperator.isDiv || indicatorOperator.isMul) {
+          // 如果是乘除，还需要加多一步来正确区分左右公式
+          Formula next = _next(right);
+          if (next.left.isNotEmpty) {
+            left += indicatorOperator.value;
+            left += next.left;
+            indicatorOperator = next.operator;
+          }
+
+          if (next.right.isNotEmpty) {
+            right = next.right;
+          }
+        }
+
         result = result.copyWith(
-          left: stack.join(),
-          right: words.join(),
+          left: left,
+          right: right,
           operator: indicatorOperator,
         );
         break;
@@ -64,6 +87,23 @@ class Formula {
     }
 
     return result;
+  }
+
+  /// 如果是乘除，还需要加多一步来正确区分左右公式
+  static Formula _next(String formula) {
+    bool hasOuterBrackets = _hasOuterBrackets(formula.split(''));
+    if (hasOuterBrackets) {
+      return Formula.empty();
+    }
+
+    return Formula.parse(formula);
+  }
+
+  /// 是否包含外层括号
+  static bool _hasOuterBrackets(List<String> formulaWords) {
+    int originLength = formulaWords.length;
+    int newLength = _removeOuterBrackets(formulaWords).length;
+    return !(originLength == newLength);
   }
 
   /// 删除最外层括号
@@ -98,7 +138,6 @@ class Formula {
         }
       }
     }
-
 
     if (flag) {
       formulaWords.removeAt(0);

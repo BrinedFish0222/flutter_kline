@@ -12,6 +12,14 @@ enum StockIndicatorOperator {
 
   const StockIndicatorOperator({required this.value});
 
+  bool get isMul {
+    return this == StockIndicatorOperator.mul;
+  }
+
+  bool get isDiv {
+    return this == StockIndicatorOperator.div;
+  }
+
   static bool isOperator(String value) {
     return StockIndicatorOperator.values
         .any((element) => element.value == value);
