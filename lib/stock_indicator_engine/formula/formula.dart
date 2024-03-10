@@ -90,13 +90,33 @@ class Formula {
   }
 
   /// 如果是乘除，还需要加多一步来正确区分左右公式
-  static Formula _next(String formula) {
-    bool hasOuterBrackets = _hasOuterBrackets(formula.split(''));
+  static Formula _next(String formulaStr) {
+    bool hasOuterBrackets = _hasOuterBrackets(formulaStr.split(''));
     if (hasOuterBrackets) {
+      // 如果是最后一块就没必要进行再次区分了
       return Formula.empty();
     }
 
-    return Formula.parse(formula);
+    Formula formula = Formula.parse(formulaStr);
+    if (formula.operator.isMul || formula.operator.isDiv) {
+      // 如果运算符还是乘除，需要再进一步区分
+      Formula nextFormula = _next(formula.right);
+      String left = formula.left;
+      String right = formula.right;
+
+      if (nextFormula.left.isNotEmpty) {
+        left += formula.operator.value;
+        left += nextFormula.left;
+      }
+
+      if (nextFormula.right.isNotEmpty) {
+        right = nextFormula.right;
+      }
+
+      formula = formula.copyWith(left: left, right: right, operator: nextFormula.operator);
+    }
+
+    return formula;
   }
 
   /// 是否包含外层括号
