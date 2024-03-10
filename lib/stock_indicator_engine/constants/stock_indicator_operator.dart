@@ -2,6 +2,7 @@ import 'package:flutter_kline/utils/kline_collection_util.dart';
 
 /// 运算符
 enum StockIndicatorOperator {
+  unknown(value: ''),
   add(value: '+'),
   sub(value: '-'),
   div(value: '/'),

@@ -1,6 +1,6 @@
+import 'package:flutter_kline/stock_indicator_engine/common/string_ext.dart';
 import 'package:flutter_kline/stock_indicator_engine/constants/stock_indicator_constants.dart';
 import 'package:flutter_kline/stock_indicator_engine/constants/stock_indicator_operator.dart';
-
 /// 公式
 class Formula {
   final String left;
@@ -16,7 +16,7 @@ class Formula {
   Formula.empty({
     this.left = '',
     this.right = '',
-    this.operator = StockIndicatorOperator.add,
+    this.operator = StockIndicatorOperator.unknown,
   });
 
   Formula copyWith({
@@ -89,6 +89,22 @@ class Formula {
     return result;
   }
 
+  bool get isAtomLeft {
+    return _isAtom(left);
+  }
+
+  bool get isAtomRight {
+    return _isAtom(right);
+  }
+
+  /// 是否是原子项
+  static bool _isAtom(String formulaStr) {
+    if (formulaStr.isNumber) {
+      return true;
+    }
+    return false;
+  }
+
   /// 如果是乘除，还需要加多一步来正确区分左右公式
   static Formula _next(String formulaStr) {
     bool hasOuterBrackets = _hasOuterBrackets(formulaStr.split(''));
@@ -113,7 +129,10 @@ class Formula {
         right = nextFormula.right;
       }
 
-      formula = formula.copyWith(left: left, right: right, operator: nextFormula.operator);
+      formula = formula.copyWith(
+        left: left,
+        right: right,
+      );
     }
 
     return formula;
