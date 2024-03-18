@@ -12,6 +12,12 @@
 
 如果这个项目对你有启发，请一定要给个 :star: :star: :star:
 
+如果你需要股票指标引擎的思路，可以参考我另一个开源项目：[BrinedFish0222/stock_indicator_engine: 股票指标引擎 (github.com)](https://github.com/BrinedFish0222/stock_indicator_engine)
+
+
+
+
+
 # 为什么使用 flutter_kline
 
 :snowflake: flutter_kline 是一个没有任何第三方插件包的项目，它不会和你项目原本指定的第三方插件版本产生冲突，降低集成的成本，它是纯净的。
