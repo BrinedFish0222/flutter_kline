@@ -7,7 +7,6 @@ import 'package:flutter_kline/widget/k_line_chart_widget.dart';
 
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
-import '../vo/bar_chart_vo.dart';
 import '../widget/bottom_date_widget.dart';
 import '../widget/k_chart_widget.dart';
 import 'example_badge_data.dart';
@@ -75,11 +74,6 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
 
   @override
   Widget build(BuildContext context) {
-    BarChartVo barChartVo = ExampleVolData.barChartData..barWidth = 2;
-    for (var element in barChartVo.data) {
-      element?.isFill = true;
-    }
-
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
       child: ListView(

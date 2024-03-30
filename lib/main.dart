@@ -4,7 +4,6 @@ import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
 import 'package:flutter_kline/example/example_candlestick_data.dart';
 import 'package:flutter_kline/example/example_day_widget.dart';
 import 'package:flutter_kline/example/example_minute_widget.dart';
-import 'package:flutter_kline/example/example_volume_profile_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
