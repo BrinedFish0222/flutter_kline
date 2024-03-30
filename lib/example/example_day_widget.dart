@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/vo/chart_data.dart';
-import 'package:flutter_kline/vo/mask_layer.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/k_line_chart_widget.dart';
 
@@ -89,9 +88,9 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                 onTapIndicator: (index) {
                   KlineUtil.showToast(context: context, text: '点击指标索引：$index');
                 },
-                subChartMaskList: [
+                subChartMaskList: const [
                   null,
-                  MaskLayer(percent: 0.3),
+                  // MaskLayer(percent: 0.3),
                   // MaskLayer(percent: 0.8)
                 ],
                 overlayEntryLocationKey: widget.overlayEntryLocationKey,
