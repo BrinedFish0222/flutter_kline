@@ -179,16 +179,16 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
+    return ListenableBuilder(
+      listenable: _controller,
       builder: (context, _) {
         return GestureDetector(
           onLongPressStart: _globalOnLongPressStart,
           onLongPressMoveUpdate: _globalOnLongPressMoveUpdate,
           onHorizontalDragUpdate: _controller.isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
           onVerticalDragUpdate: _controller.isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
-          child: AnimatedBuilder(
-              animation: widget.source,
+          child: ListenableBuilder(
+              listenable: widget.source,
               builder: (context, _) {
                 /// 副图显示数据
                 var subChartsShow = widget.source.subChartsShow;

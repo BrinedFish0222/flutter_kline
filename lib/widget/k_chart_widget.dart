@@ -143,8 +143,8 @@ class _KChartWidgetState extends State<KChartWidget> {
       );
       _controller.gestureDetectorController = _gestureDetectorController;
 
-      return AnimatedBuilder(
-          animation: _controller,
+      return ListenableBuilder(
+          listenable: _controller,
           builder: (context, _) {
             return GestureDetector(
               onLongPressStart: _globalOnLongPressStart,
@@ -154,9 +154,8 @@ class _KChartWidgetState extends State<KChartWidget> {
               onVerticalDragUpdate:
                   _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
 
-              /// TODO 原使用 ListenableBuilder，改成 AnimatedBuilder 是为了兼容旧版本sdk 3.7.7
-              child: AnimatedBuilder(
-                  animation: widget.source,
+              child: ListenableBuilder(
+                  listenable: widget.source,
                   builder: (context, _) {
                     /// 副图显示的数据
                     List<ChartData> subChartsShow = widget.source.subChartsShow;

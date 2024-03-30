@@ -110,8 +110,8 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                             .showChartDateTimeByIndex(snapshot.data ?? 0);
                       }
 
-                      return AnimatedBuilder(
-                          animation: _controller.source,
+                      return ListenableBuilder(
+                          listenable: _controller.source,
                           builder: (context, _) {
                             double leftPadding = _controller.crossCurveGlobalPosition.dx;
                             RenderObject? renderBox = _chartKey.currentContext?.findRenderObject();
