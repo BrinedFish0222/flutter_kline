@@ -32,8 +32,6 @@
 
 # 快速开始
 
-flutter version 3.10.5
-
 直接[下载 apk 体验](https://github.com/BrinedFish0222/flutter_kline/releases)。
 
 `lib/main.dart` 启动即可。
