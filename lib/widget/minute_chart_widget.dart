@@ -8,10 +8,10 @@ import '../common/chart_show_data_item_vo.dart';
 import '../chart/line_chart.dart';
 import '../common/kline_config.dart';
 import '../common/pair.dart';
+import '../common/utils/kline_collection_util.dart';
+import '../common/utils/kline_num_util.dart';
+import '../common/utils/kline_util.dart';
 import '../painter/cross_curve_painter.dart';
-import '../utils/kline_collection_util.dart';
-import '../utils/kline_num_util.dart';
-import '../utils/kline_util.dart';
 
 /// 分时图
 class MinuteChartWidget extends StatefulWidget {

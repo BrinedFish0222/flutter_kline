@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../common/constants/direction.dart';
+import '../common/utils/kline_util.dart';
 
 /// 手势控制器 
 class KlineGestureDetectorController extends ChangeNotifier {

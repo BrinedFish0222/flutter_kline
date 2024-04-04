@@ -8,9 +8,9 @@ import '../common/chart_show_data_item_vo.dart';
 import '../chart/line_chart.dart';
 import '../common/main_chart_selected_data_vo.dart';
 import '../common/pair.dart';
+import '../common/utils/kline_util.dart';
 import '../painter/cross_curve_painter.dart';
 import '../renderer/chart_renderer.dart';
-import '../utils/kline_util.dart';
 import 'badge_widget.dart';
 import 'main_chart_show_data_widget.dart';
 

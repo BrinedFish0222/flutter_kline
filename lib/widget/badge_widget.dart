@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../chart/badge_chart.dart';
 import '../common/pair.dart';
+import '../common/utils/kline_util.dart';
 
 class BadgeWidget extends StatelessWidget {
   const BadgeWidget({

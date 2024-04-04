@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../chart/base_chart.dart';
 import '../common/pair.dart';
+import '../common/utils/kline_util.dart';
 import 'kline_gesture_detector_controller.dart';
 
 /// k线图控制器

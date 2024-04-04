@@ -3,12 +3,12 @@ import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/renderer/chart_renderer.dart';
 import 'package:flutter_kline/setting/rect_setting.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../chart/base_chart.dart';
 import '../chart/line_chart.dart';
 import '../common/constants/line_type.dart';
+import '../common/utils/kline_collection_util.dart';
+import '../common/utils/kline_num_util.dart';
 import '../painter/line_chart_painter.dart';
 import '../painter/rect_painter.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/painter/cross_curve_text_painter.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../common/pair.dart';
+import '../common/utils/kline_num_util.dart';
 
 /// 十字线 CrossCurvePainter
 class CrossCurvePainter extends CustomPainter {

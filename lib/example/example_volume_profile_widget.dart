@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/widget/volume_profile_widget.dart';
 
 import '../common/pair.dart';
+import '../common/utils/kline_util.dart';
 import 'example_volume_profile_data.dart';
 
 /// 筹码峰

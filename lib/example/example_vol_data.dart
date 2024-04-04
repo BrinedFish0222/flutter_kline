@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
 
 import '../chart/bar_chart.dart';
 import '../chart/line_chart.dart';
+import '../common/utils/kline_collection_util.dart';
 import 'example_candlestick_data.dart';
 
 class ExampleVolData {

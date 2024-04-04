@@ -6,8 +6,8 @@ import 'package:flutter_kline/widget/k_chart_controller.dart';
 
 import '../common/chart_data.dart';
 import '../common/mask_layer.dart';
-import '../utils/kline_date_util.dart';
-import '../utils/kline_util.dart';
+import '../common/utils/kline_date_util.dart';
+import '../common/utils/kline_util.dart';
 import '../widget/bottom_date_widget.dart';
 import '../widget/k_minute_chart_widget.dart';
 import 'example_macd_data.dart';

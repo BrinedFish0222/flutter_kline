@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/triangle_painter.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
+
+import '../common/utils/kline_util.dart';
 
 /// 价格线
 class PriceLinePainter extends CustomPainter {

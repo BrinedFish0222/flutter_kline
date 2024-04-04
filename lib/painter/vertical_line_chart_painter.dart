@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../chart/vertical_line_chart.dart';
 import '../common/pair.dart';
-import '../utils/kline_util.dart';
+import '../common/utils/kline_util.dart';
 
 /// 竖线 painter
 class VerticalLineChartPainter extends CustomPainter {

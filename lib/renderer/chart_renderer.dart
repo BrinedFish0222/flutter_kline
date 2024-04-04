@@ -3,10 +3,10 @@ import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/price_line_painter.dart';
 import 'package:flutter_kline/setting/rect_setting.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../chart/base_chart.dart';
 import '../chart/candlestick_chart.dart';
+import '../common/utils/kline_util.dart';
 import '../painter/rect_painter.dart';
 
 /// 图渲染器

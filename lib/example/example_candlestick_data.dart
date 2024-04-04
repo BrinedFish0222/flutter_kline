@@ -1,6 +1,6 @@
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../chart/candlestick_chart.dart';
+import '../common/utils/kline_util.dart';
 
 class ExampleCandlestickData {
   static const List<List<double>?> originData = [

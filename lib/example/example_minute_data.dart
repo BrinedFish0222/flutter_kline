@@ -1,10 +1,10 @@
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/painter/gradient_chart_painter.dart';
-import 'package:flutter_kline/utils/kline_date_util.dart';
-import 'package:flutter_kline/utils/kline_random_util.dart';
 
 import '../chart/base_chart.dart';
 import '../chart/line_chart.dart';
+import '../common/utils/kline_date_util.dart';
+import '../common/utils/kline_random_util.dart';
 
 /// 分时示例数据
 class ExampleMinuteData {

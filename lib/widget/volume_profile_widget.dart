@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/volume_profile_painter.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 
+import '../common/utils/kline_num_util.dart';
+import '../common/utils/kline_util.dart';
 import '../common/volume_profile.dart';
 import '../painter/cross_curve_painter.dart';
-import '../utils/kline_util.dart';
 
 /// 筹码峰
 class VolumeProfileWidget extends StatelessWidget {

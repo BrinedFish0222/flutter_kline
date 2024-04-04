@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_date_util.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
+
+import '../common/utils/kline_date_util.dart';
+import '../common/utils/kline_util.dart';
 
 /// 底部日期栏
 class BottomDateWidget extends StatefulWidget {

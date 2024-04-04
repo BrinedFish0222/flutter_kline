@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
+
+import '../utils/kline_util.dart';
 
 class DoubleBackExitAppWidget extends StatefulWidget {
   const DoubleBackExitAppWidget({super.key, required this.child});

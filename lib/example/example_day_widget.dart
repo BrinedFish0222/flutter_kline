@@ -5,7 +5,7 @@ import 'package:flutter_kline/widget/k_line_chart_widget.dart';
 
 import '../common/chart_data.dart';
 import '../common/k_chart_data_source.dart';
-import '../utils/kline_util.dart';
+import '../common/utils/kline_util.dart';
 import '../widget/bottom_date_widget.dart';
 import '../widget/k_chart_widget.dart';
 import 'example_badge_data.dart';

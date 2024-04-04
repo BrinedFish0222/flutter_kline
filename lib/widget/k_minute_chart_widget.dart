@@ -12,9 +12,9 @@ import '../common/main_chart_selected_data_vo.dart';
 import '../common/mask_layer.dart';
 import '../common/kline_config.dart';
 import '../common/pair.dart';
-import '../utils/kline_collection_util.dart';
-import '../utils/kline_date_util.dart';
-import '../utils/kline_util.dart';
+import '../common/utils/kline_collection_util.dart';
+import '../common/utils/kline_date_util.dart';
+import '../common/utils/kline_util.dart';
 import 'kline_gesture_detector_controller.dart';
 
 /// k线分时图

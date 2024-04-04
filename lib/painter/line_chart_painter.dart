@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../chart/line_chart.dart';
+import '../common/utils/kline_num_util.dart';
+import '../common/utils/kline_util.dart';
 import 'gradient_chart_painter.dart';
 
 /// 折线图

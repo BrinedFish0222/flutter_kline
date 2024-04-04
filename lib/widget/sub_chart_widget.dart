@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/renderer/chart_renderer.dart';
 import 'package:flutter_kline/setting/rect_setting.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/widget/badge_widget.dart';
 import 'package:flutter_kline/widget/mask_layer_widget.dart';
 
@@ -13,6 +11,8 @@ import '../chart/base_chart.dart';
 import '../common/chart_show_data_item_vo.dart';
 import '../common/mask_layer.dart';
 import '../common/pair.dart';
+import '../common/utils/kline_collection_util.dart';
+import '../common/utils/kline_util.dart';
 import '../painter/cross_curve_painter.dart';
 import 'sub_chart_show_data_widget.dart';
 

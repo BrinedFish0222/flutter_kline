@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
-
-import '../chart/base_chart.dart';
-import '../chart/candlestick_chart.dart';
-import '../common/pair.dart';
 import 'dart:developer' as developer;
+
+import '../../chart/base_chart.dart';
+import '../../chart/candlestick_chart.dart';
+import '../pair.dart';
+import 'kline_num_util.dart';
 
 class KlineUtil {
   static void logd(String text, {String name = ''}) {

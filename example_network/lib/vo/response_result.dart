@@ -7,8 +7,8 @@ import 'dart:convert';
 import 'package:flutter_kline/chart/base_chart.dart';
 import 'package:flutter_kline/chart/candlestick_chart.dart';
 import 'package:flutter_kline/chart/line_chart.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_date_util.dart';
+import 'package:flutter_kline/common/utils/kline_collection_util.dart';
+import 'package:flutter_kline/common/utils/kline_date_util.dart';
 
 ResponseResult responseResultFromJson(String str) =>
     ResponseResult.fromJson(json.decode(str));

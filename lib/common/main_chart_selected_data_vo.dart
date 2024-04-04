@@ -1,4 +1,4 @@
-import 'package:flutter_kline/utils/kline_collection_util.dart';
+import 'package:flutter_kline/common/utils/kline_collection_util.dart';
 
 import '../chart/base_chart.dart';
 import '../chart/candlestick_chart.dart';

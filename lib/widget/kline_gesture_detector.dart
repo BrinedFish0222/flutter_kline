@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
 
 import '../common/constants/direction.dart';
 import '../common/pointer_info.dart';
 import '../common/pair.dart';
+import '../common/utils/kline_util.dart';
 import 'k_chart_controller.dart';
 import 'kline_gesture_detector_controller.dart';
 

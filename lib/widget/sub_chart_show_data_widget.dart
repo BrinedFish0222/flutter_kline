@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../common/chart_show_data_item_vo.dart';
+import '../common/utils/kline_num_util.dart';
 
 
 /// 图显示的信息栏

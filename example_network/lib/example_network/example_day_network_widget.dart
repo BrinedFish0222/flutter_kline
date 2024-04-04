@@ -5,7 +5,7 @@ import 'package:flutter_kline/chart/base_chart.dart';
 import 'package:flutter_kline/chart/candlestick_chart.dart';
 import 'package:flutter_kline/common/chart_data.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
+import 'package:flutter_kline/common/utils/kline_util.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
 
 /// 日K网络组件示例

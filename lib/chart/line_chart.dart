@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../common/pair.dart';
+import '../common/utils/kline_collection_util.dart';
+import '../common/utils/kline_num_util.dart';
 import '../painter/line_chart_painter.dart';
 import 'base_chart.dart';
 import 'candlestick_chart.dart';

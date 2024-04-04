@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/utils/kline_util.dart';
+import 'package:flutter_kline/common/utils/kline_collection_util.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
@@ -15,6 +14,7 @@ import '../common/constants/chart_location.dart';
 import '../common/mask_layer.dart';
 import '../common/k_chart_data_source.dart';
 import '../common/pair.dart';
+import '../common/utils/kline_util.dart';
 import 'kline_gesture_detector.dart';
 import 'kline_gesture_detector_controller.dart';
 import 'main_chart_widget.dart';

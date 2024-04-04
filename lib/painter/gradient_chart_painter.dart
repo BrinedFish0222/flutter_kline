@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../utils/kline_util.dart';
+import '../common/utils/kline_util.dart';
+
 
 /// 渐变色图
 class GradientChartPainter extends CustomPainter {
