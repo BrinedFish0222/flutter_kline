@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 2.2.0+220
 
 environment:
-  sdk: '>=2.19.4 <3.0.0'
+  sdk: '>=3.0.6 <4.0.0'
   flutter: ^3.10.6
 
 # Dependencies specify other packages that your package needs in order to work.
