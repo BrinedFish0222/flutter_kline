@@ -30,11 +30,9 @@
 
 :blue_heart: 你可以增加任意数量的副图。
 
-# 快速开始
+# 开始体验
 
-直接[下载 apk 体验](https://github.com/BrinedFish0222/flutter_kline/releases)。
-
-`lib/main.dart` 启动即可。
-
-`example_network/lib/main.dart` 提供了一个分时图接入 websocket 实时刷新的示例，正如前面所说 flutter_kline 的拆分思想，你可以根据你项目的不同情况进行特定优化。
+两种体验方式：
+- 直接[下载 apk 体验](https://github.com/BrinedFish0222/flutter_kline/releases)。
+- `example/lib/main.dart` 启动即可。
 
