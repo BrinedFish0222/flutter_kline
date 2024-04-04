@@ -7,6 +7,7 @@ import 'package:flutter_kline/common/rect_config.dart';
 import '../chart/base_chart.dart';
 import '../chart/line_chart.dart';
 import '../common/constants/line_type.dart';
+import '../common/line_config.dart';
 import '../common/utils/kline_collection_util.dart';
 import '../common/utils/kline_num_util.dart';
 import '../painter/line_chart_painter.dart';
@@ -49,7 +50,7 @@ class MinuteChartRenderer extends CustomPainter {
     // 画矩形
     RectPainter(
       transverseLineNum: 3,
-      transverseLineConfigList: [null, RectLineConfig(type: LineType.dotted)],
+      transverseLineConfigList: [null, LineConfig(type: LineType.dotted)],
       maxValue: maxMinValue.left,
       minValue: maxMinValue.right,
       isDrawVerticalLine: true,

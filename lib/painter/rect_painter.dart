@@ -3,6 +3,7 @@ import 'package:flutter_kline/common/exts/canvas_ext.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 
 import '../common/constants/line_type.dart';
+import '../common/line_config.dart';
 import '../common/utils/kline_collection_util.dart';
 import '../common/utils/kline_num_util.dart';
 
@@ -13,7 +14,7 @@ class RectPainter extends CustomPainter {
   final int transverseLineNum;
 
   /// 中间线配置
-  final List<RectLineConfig?>? transverseLineConfigList;
+  final List<LineConfig?>? transverseLineConfigList;
   final Color lineColor;
   final double lineWidth;
   final TextStyle? textStyle;
@@ -99,7 +100,7 @@ class RectPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     _init(canvas: canvas, size: size);
-    List<RectLineConfig> transverseLineConfigList = _initTransverseLineConfig();
+    List<LineConfig> transverseLineConfigList = _initTransverseLineConfig();
 
     // 绘制矩形边框
     Rect rect = Offset.zero & size;
@@ -125,7 +126,7 @@ class RectPainter extends CustomPainter {
 
   // 绘制横线和文本数字
   void _drawTransverseLine({
-    required List<RectLineConfig> transverseLineConfigList,
+    required List<LineConfig> transverseLineConfigList,
     required Size size,
   }) {
     double leftPadding = 2;
@@ -149,7 +150,7 @@ class RectPainter extends CustomPainter {
     Color oldColor = _painter.color;
     for (int i = 1; i <= transverseLineNum + 1; i++) {
       double y = i * _transverseLineHeight;
-      RectLineConfig transverseLineConfig = transverseLineConfigList[i - 1];
+      LineConfig transverseLineConfig = transverseLineConfigList[i - 1];
       _painter.color = transverseLineConfig.color;
 
       // 根据实际情况画实线还是虚线
@@ -193,18 +194,18 @@ class RectPainter extends CustomPainter {
   }
 
   /// 初始化横线样式
-  List<RectLineConfig> _initTransverseLineConfig() {
-    List<RectLineConfig> result = [];
+  List<LineConfig> _initTransverseLineConfig() {
+    List<LineConfig> result = [];
     if (KlineCollectionUtil.isNotEmpty(transverseLineConfigList)) {
-      result.addAll(transverseLineConfigList!.map((e) => e ?? RectLineConfig()));
+      result.addAll(transverseLineConfigList!.map((e) => e ?? LineConfig()));
     }
 
     if (result.length >= transverseLineNum) {
-      return result..add(RectLineConfig());
+      return result..add(LineConfig());
     }
 
     for (int i = 0; i < (transverseLineNum - result.length + 4); ++i) {
-      result.add(RectLineConfig());
+      result.add(LineConfig());
     }
 
     return result;
@@ -212,20 +213,3 @@ class RectPainter extends CustomPainter {
 }
 
 
-/// 矩形线配置
-class RectLineConfig {
-  LineType type;
-  Color color;
-
-  /// 虚线长度
-  double dottedLineLength;
-
-  /// 虚线间隔
-  double dottedLineSpace;
-
-  RectLineConfig(
-      {this.type = LineType.full,
-        this.color = Colors.black,
-        this.dottedLineLength = 2,
-        this.dottedLineSpace = 2});
-}
