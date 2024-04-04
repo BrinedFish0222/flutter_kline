@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/renderer/chart_renderer.dart';
-import 'package:flutter_kline/setting/rect_setting.dart';
+import 'package:flutter_kline/common/rect_config.dart';
 
 import '../chart/base_chart.dart';
 import '../chart/line_chart.dart';
@@ -60,7 +60,7 @@ class MinuteChartRenderer extends CustomPainter {
     if (KlineCollectionUtil.isNotEmpty(minuteChartSubjoinData)) {
       ChartRenderer(
         chartData: minuteChartSubjoinData!,
-        rectSetting: const RectSetting(isShow: false),
+        rectSetting: const RectConfig(isShow: false),
         maxMinValue: maxMinValue,
 
       ).paint(canvas, size);

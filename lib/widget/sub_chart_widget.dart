@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/renderer/chart_renderer.dart';
-import 'package:flutter_kline/setting/rect_setting.dart';
+import 'package:flutter_kline/common/rect_config.dart';
 import 'package:flutter_kline/widget/badge_widget.dart';
 import 'package:flutter_kline/widget/mask_layer_widget.dart';
 
@@ -125,7 +125,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                               pointGap: widget.pointGap,
                               maxMinValue: maxMinValue,
                               padding: widget.padding,
-                              rectSetting: const RectSetting(transverseLineNum: 0)),
+                              rectSetting: const RectConfig(transverseLineNum: 0)),
                         ),
                       );
                     }

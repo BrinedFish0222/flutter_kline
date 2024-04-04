@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/price_line_painter.dart';
-import 'package:flutter_kline/setting/rect_setting.dart';
+import 'package:flutter_kline/common/rect_config.dart';
 
 import '../chart/base_chart.dart';
 import '../chart/candlestick_chart.dart';
@@ -15,7 +15,7 @@ class ChartRenderer extends CustomPainter {
   final List<BaseChart> chartData;
 
   /// 矩形设置
-  final RectSetting rectSetting;
+  final RectConfig rectSetting;
 
   /// 数据宽度和空间间隔比
   final double candlestickGapRatio;
@@ -31,7 +31,7 @@ class ChartRenderer extends CustomPainter {
 
   const ChartRenderer({
     required this.chartData,
-    this.rectSetting = const RectSetting(),
+    this.rectSetting = const RectConfig(),
     this.candlestickGapRatio = 3,
     EdgeInsets? padding,
     this.pointWidth,
