@@ -5,9 +5,9 @@ import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/volume_profile_painter.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 
+import '../common/volume_profile.dart';
 import '../painter/cross_curve_painter.dart';
 import '../utils/kline_util.dart';
-import '../vo/volume_profile_vo.dart';
 
 /// 筹码峰
 class VolumeProfileWidget extends StatelessWidget {
@@ -22,7 +22,7 @@ class VolumeProfileWidget extends StatelessWidget {
 
   final double? maxValue;
   final double? minValue;
-  final List<VolumeProfileVo> dataList;
+  final List<VolumeProfile> dataList;
 
   /// 十字线流
   final StreamController<Pair<double?, double?>>? crossCurveStream;
@@ -36,7 +36,7 @@ class VolumeProfileWidget extends StatelessWidget {
 
     Pair<double, double>? maxMinPrice = _getMaxMinPrice(dataList: dataList);
     _fillDataList(dataList: dataList, maxMinPrice: maxMinPrice);
-    VolumeProfileVo.sortByPrice(dataList: dataList);
+    VolumeProfile.sortByPrice(dataList: dataList);
 
     return LayoutBuilder(builder: (context, constraints) {
       return Stack(
@@ -87,7 +87,7 @@ class VolumeProfileWidget extends StatelessWidget {
     });
   }
 
-  Pair<double, double>? _getMaxMinPrice({required List<VolumeProfileVo> dataList}) {
+  Pair<double, double>? _getMaxMinPrice({required List<VolumeProfile> dataList}) {
     Pair<double, double> result;
     if (maxValue != null && minValue != null) {
       result = Pair(left: maxValue!, right: minValue!);
@@ -99,7 +99,7 @@ class VolumeProfileWidget extends StatelessWidget {
   }
 
   /// 填充数据
-  void _fillDataList({required List<VolumeProfileVo> dataList, Pair<num, num>? maxMinPrice}) {
+  void _fillDataList({required List<VolumeProfile> dataList, Pair<num, num>? maxMinPrice}) {
     if (dataList.isEmpty || maxMinPrice == null) {
       return;
     }
@@ -110,7 +110,7 @@ class VolumeProfileWidget extends StatelessWidget {
         continue;
       }
 
-      dataList.add(VolumeProfileVo(price: i));
+      dataList.add(VolumeProfile(price: i));
     }
 
     KlineUtil.logd("volume profile fill dataList length: ${dataList.length}");

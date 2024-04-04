@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 
+import '../chart/candlestick_chart.dart';
 import '../utils/kline_date_util.dart';
-import '../vo/candlestick_chart_vo.dart';
 
 /// 蜡烛图显示数据
 class CandlestickShowDataWidget extends StatelessWidget {

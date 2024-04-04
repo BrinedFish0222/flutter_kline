@@ -2,19 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/minute_chart_widget.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
+import '../chart/base_chart.dart';
+import '../chart/line_chart.dart';
+import '../common/main_chart_selected_data_vo.dart';
+import '../common/mask_layer.dart';
 import '../common/kline_config.dart';
 import '../common/pair.dart';
 import '../utils/kline_collection_util.dart';
 import '../utils/kline_date_util.dart';
 import '../utils/kline_util.dart';
-import '../vo/base_chart_vo.dart';
-import '../vo/main_chart_selected_data_vo.dart';
-import '../vo/mask_layer.dart';
 import 'kline_gesture_detector_controller.dart';
 
 /// k线分时图
@@ -147,12 +147,12 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
 
   int get _showDataNum => widget.source.showDataNum;
 
-  LineChartVo get _minuteChartData {
-    BaseChartVo? firstLineChart = KlineCollectionUtil.firstWhere(widget.source.mainChartBaseChartsShow, (element) => element is LineChartVo);
+  LineChart get _minuteChartData {
+    BaseChart? firstLineChart = KlineCollectionUtil.firstWhere(widget.source.mainChartBaseChartsShow, (element) => element is LineChart);
     if (firstLineChart == null) {
-      return LineChartVo(id: '_minuteChartData', data: []);
+      return LineChart(id: '_minuteChartData', data: []);
     }
-    return firstLineChart as LineChartVo;
+    return firstLineChart as LineChart;
   }
 
 
@@ -165,7 +165,7 @@ class _KMinuteChartWidgetState extends State<KMinuteChartWidget> {
     }
   }
 
-  List<List<BaseChartVo<BaseChartData>>> get _subChartData => widget.source.subChartBaseCharts;
+  List<List<BaseChart<BaseChartData>>> get _subChartData => widget.source.subChartBaseCharts;
 
   @override
   void dispose() {

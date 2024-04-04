@@ -2,9 +2,9 @@ import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/painter/gradient_chart_painter.dart';
 import 'package:flutter_kline/utils/kline_date_util.dart';
 import 'package:flutter_kline/utils/kline_random_util.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 
-import '../vo/base_chart_vo.dart';
+import '../chart/base_chart.dart';
+import '../chart/line_chart.dart';
 
 /// 分时示例数据
 class ExampleMinuteData {
@@ -661,7 +661,7 @@ class ExampleMinuteData {
     11.349096643119942
   ];
 
-  static LineChartVo get lineData {
+  static LineChart get lineData {
     var dataList = _lineData
         .asMap()
         .entries
@@ -670,13 +670,13 @@ class ExampleMinuteData {
             value: e.value[5],
             dateTime: KlineDateUtil.parseIntTime(e.value.last.toInt())))
         .toList();
-    LineChartVo result = LineChartVo(id: 'lineData', data: dataList);
+    LineChart result = LineChart(id: 'lineData', data: dataList);
     result.maxValue = 11.48;
     result.minValue = 11.30;
     return result;
   }
 
-  static LineChartVo get lineData2 {
+  static LineChart get lineData2 {
     var dataList = _lineData2
         .asMap()
         .entries
@@ -685,18 +685,18 @@ class ExampleMinuteData {
             value: e.value[5],
             dateTime: KlineDateUtil.parseIntTime(e.value.last.toInt())))
         .toList();
-    LineChartVo result = LineChartVo(id: 'lineData2', data: dataList);
+    LineChart result = LineChart(id: 'lineData2', data: dataList);
     result.maxValue = 11.48;
     result.minValue = 11.30;
     return result;
   }
 
-  static List<BaseChartVo> subData() {
-    List<BaseChartVo> result = [];
+  static List<BaseChart> subData() {
+    List<BaseChart> result = [];
 
     for (int i = 0; i < 1; ++i) {
       result.add(
-        LineChartVo(
+        LineChart(
           id: 'A1',
           name: 'A1',
           data: _a1
@@ -713,12 +713,12 @@ class ExampleMinuteData {
     return result;
   }
 
-  static List<BaseChartVo> subDataMinute() {
-    List<BaseChartVo> result = [];
+  static List<BaseChart> subDataMinute() {
+    List<BaseChart> result = [];
 
     for (int i = 0; i < 1; ++i) {
       result.add(
-        LineChartVo(
+        LineChart(
           id: 'A1',
           name: 'A1',
           data: _a1
@@ -736,15 +736,15 @@ class ExampleMinuteData {
     return result;
   }
 
-  static List<BaseChartVo> generateLineData(
+  static List<BaseChart> generateLineData(
       {int generateNum = 240,
       double maxValue = 11.48,
       double minValue = 11.3}) {
     List<double> genDataList = [];
-    List<BaseChartVo> result = [];
+    List<BaseChart> result = [];
     double lastValue = minValue + (maxValue - minValue) / 2;
     for (int i = 0; i < 1; ++i) {
-      result.add(LineChartVo(
+      result.add(LineChart(
           id: 'A1',
           name: 'A1',
           data: List.generate(generateNum, (index) {

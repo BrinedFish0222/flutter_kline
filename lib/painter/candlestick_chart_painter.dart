@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/painter/candlestick_painter.dart';
-import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
+
+import '../chart/candlestick_chart.dart';
 
 /// 蜡烛图
 /// 影响蜡烛图的宽度：自身宽度和下一根蜡烛的间隔距离，1根蜡烛大概等于3个间隔宽度。
 class CandlestickChartPainter extends CustomPainter {
-  final CandlestickChartVo data;
+  final CandlestickChart data;
 
   /// 高度范围。左 最高，右 最低。
   final Pair<num, num> maxMinHeight;

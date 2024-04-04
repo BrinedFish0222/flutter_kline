@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
 
+import '../chart/base_chart.dart';
+import '../chart/candlestick_chart.dart';
 import '../common/pair.dart';
-import '../vo/candlestick_chart_vo.dart';
 import 'dart:developer' as developer;
 
 class KlineUtil {
@@ -169,8 +169,8 @@ class KlineUtil {
 
   /// 计算最大最小值
   static Pair<double, double> getMaxMinValue(
-      {CandlestickChartVo? candlestickCharVo,
-      List<BaseChartVo?>? chartDataList}) {
+      {CandlestickChart? candlestickCharVo,
+      List<BaseChart?>? chartDataList}) {
     Pair<double, double> result = candlestickCharVo?.getMaxMinData() ??
         Pair(left: -double.maxFinite, right: double.maxFinite);
 

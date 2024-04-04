@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/painter/candlestick_chart_painter.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
+import 'base_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
 
-/// 蜡烛图数据vo
-class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
-  CandlestickChartVo({
+/// 蜡烛图
+class CandlestickChart<E> extends BaseChart<CandlestickChartData<E>> {
+  CandlestickChart({
     required super.id,
     super.name,
     super.maxValue,
@@ -39,8 +39,8 @@ class CandlestickChartVo<E> extends BaseChartVo<CandlestickChartData<E>> {
   }
 
   @override
-  BaseChartVo copy() {
-    return CandlestickChartVo(
+  BaseChart copy() {
+    return CandlestickChart(
       id: id,
       name: name,
       maxValue: maxValue,

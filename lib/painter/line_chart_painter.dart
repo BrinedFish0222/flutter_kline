@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 
+import '../chart/line_chart.dart';
 import 'gradient_chart_painter.dart';
 
 /// 折线图
 class LineChartPainter extends CustomPainter {
-  final LineChartVo lineChartData;
+  final LineChart lineChartData;
   final double? pointWidth;
   final double pointGap;
   final Pair<double, double>? maxMinValue;

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/bar_chart_vo.dart';
-import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
+import 'bar_chart.dart';
+import 'candlestick_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
 
 /// 图数据基类
-abstract class BaseChartVo<T extends BaseChartData> {
+abstract class BaseChart<T extends BaseChartData> {
   String id;
   String? name;
 
@@ -22,7 +22,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
 
   List<T?> data = [];
 
-  BaseChartVo({
+  BaseChart({
     required this.id,
     this.name,
     this.maxValue,
@@ -41,7 +41,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
   });
 
   /// 更新数据
-  void updateDataBy(BaseChartVo newBaseChart, {bool isEnd = true}) {
+  void updateDataBy(BaseChart newBaseChart, {bool isEnd = true}) {
     if (newBaseChart.data.isEmpty) {
       return;
     }
@@ -85,7 +85,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
   Pair<double, double> getMaxMinData();
 
   /// 子数据
-  BaseChartVo subData({required int start, int? end}) {
+  BaseChart subData({required int start, int? end}) {
     var newVo = copy();
     if (end != null && end > newVo.data.length) {
       var maxLength = end - newVo.data.length;
@@ -98,7 +98,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
   }
 
   /// 复制
-  BaseChartVo copy();
+  BaseChart copy();
 
   int get dataLength;
 
@@ -106,7 +106,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
   double? getDataMaxValueByIndex(int index);
 
   /// 获取最后一根显示的数据
-  static List<ChartShowDataItemVo>? getLastShowData(List<BaseChartVo>? voList) {
+  static List<ChartShowDataItemVo>? getLastShowData(List<BaseChart>? voList) {
     if (KlineCollectionUtil.isEmpty(voList)) {
       return null;
     }
@@ -118,7 +118,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
   }
 
   static List<ChartShowDataItemVo>? getShowDataByIndex(
-      List<BaseChartVo>? voList, int index) {
+      List<BaseChart>? voList, int index) {
     if (KlineCollectionUtil.isEmpty(voList)) {
       return null;
     }
@@ -131,8 +131,8 @@ abstract class BaseChartVo<T extends BaseChartData> {
         .toList();
   }
 
-  static Pair<double, double> maxMinValue(List<BaseChartVo> dataList) {
-    var hasBarChart = dataList.any((element) => element is BarChartVo);
+  static Pair<double, double> maxMinValue(List<BaseChart> dataList) {
+    var hasBarChart = dataList.any((element) => element is BarChart);
 
     dataList.map((e) {
       var maxMinData = e.getMaxMinData();
@@ -153,21 +153,21 @@ abstract class BaseChartVo<T extends BaseChartData> {
   }
 
   /// 获取蜡烛图数据
-  static CandlestickChartVo? getCandlestickChartVo(List<BaseChartVo> dataList) {
+  static CandlestickChart? getCandlestickChartVo(List<BaseChart> dataList) {
     bool hasCandlestick =
-        dataList.any((element) => element is CandlestickChartVo);
+        dataList.any((element) => element is CandlestickChart);
     if (!hasCandlestick) {
       return null;
     }
 
-    return dataList.firstWhere((element) => element is CandlestickChartVo)
-        as CandlestickChartVo;
+    return dataList.firstWhere((element) => element is CandlestickChart)
+        as CandlestickChart;
   }
 
   /// 根据索引获取数据
   /// [index] 如果是-1，则是最后一个。
   static List<ChartShowDataItemVo?>? getSelectedShowDataByIndex({
-    required List<BaseChartVo<BaseChartData>> chartData,
+    required List<BaseChart<BaseChartData>> chartData,
     required int index,
   }) {
     bool isLast = index == -1;
@@ -183,7 +183,7 @@ abstract class BaseChartVo<T extends BaseChartData> {
   }
 
   /// 最大数据长度
-  static int maxDataLength(List<BaseChartVo<BaseChartData>> mainChartData) {
+  static int maxDataLength(List<BaseChart<BaseChartData>> mainChartData) {
     var dataLengths = mainChartData.map((e) => e.dataLength).toList();
     return KlineNumUtil.maxMinValue(dataLengths)?.left.toInt() ?? 0;
   }

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/badge_chart_vo.dart';
 
+import '../chart/badge_chart.dart';
 import '../common/pair.dart';
 
 class BadgeWidget extends StatelessWidget {
@@ -16,7 +16,7 @@ class BadgeWidget extends StatelessWidget {
     this.padding = EdgeInsets.zero,
   });
 
-  final BadgeChartVo badgeChartVo;
+  final BadgeChart badgeChartVo;
   final double? pointWidth;
   final double pointGap;
   final Pair<double, double> maxMinValue;

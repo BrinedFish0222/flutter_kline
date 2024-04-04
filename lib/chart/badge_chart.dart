@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
-import 'base_chart_vo.dart';
+import 'base_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
 
-class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
-  BadgeChartVo({
+/// badge chart
+class BadgeChart<E> extends BaseChart<BadgeChartData<E>> {
+  BadgeChart({
     required super.id,
     super.name,
     super.maxValue,
@@ -17,17 +18,17 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
 
   /// 初始化 [data] 的 value
   /// 默认是同一列最大值
-  static void initDataValue(List<BaseChartVo> chartData) {
+  static void initDataValue(List<BaseChart> chartData) {
     if (chartData.isEmpty) {
       return;
     }
 
-    List<BadgeChartVo> badgeList = chartData.whereType<BadgeChartVo>().toList();
+    List<BadgeChart> badgeList = chartData.whereType<BadgeChart>().toList();
     if (badgeList.isEmpty) {
       return;
     }
 
-    for (BadgeChartVo badge in badgeList) {
+    for (BadgeChart badge in badgeList) {
       for (int i = 0; i < badge.dataLength; ++i) {
         BadgeChartData? data = badge.data[i];
         if (data?.value != null) {
@@ -44,8 +45,8 @@ class BadgeChartVo<E> extends BaseChartVo<BadgeChartData<E>> {
   }
 
   @override
-  BaseChartVo copy() {
-    return BadgeChartVo(
+  BaseChart copy() {
+    return BadgeChart(
       id: id,
       name: name,
       maxValue: maxValue,

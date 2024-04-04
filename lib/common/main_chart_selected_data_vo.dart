@@ -1,9 +1,9 @@
 import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
 
+import '../chart/base_chart.dart';
+import '../chart/candlestick_chart.dart';
 import 'chart_show_data_item_vo.dart';
-import 'line_chart_vo.dart';
+import '../chart/line_chart.dart';
 
 class MainChartSelectedDataVo {
   /// 蜡烛数据
@@ -16,8 +16,8 @@ class MainChartSelectedDataVo {
 
   /// 获取最后显示的数据
   static MainChartSelectedDataVo? getLastShowData(
-      {CandlestickChartVo? candlestickChartVo,
-      List<LineChartVo>? lineChartVoList}) {
+      {CandlestickChart? candlestickChartVo,
+      List<LineChart>? lineChartVoList}) {
     if (candlestickChartVo == null &&
         KlineCollectionUtil.isEmpty(lineChartVoList)) {
       return null;
@@ -29,7 +29,7 @@ class MainChartSelectedDataVo {
       result.candlestickChartData = candlestickChartVo.data.last;
     }
     if (KlineCollectionUtil.isNotEmpty(lineChartVoList)) {
-      result.lineChartList = BaseChartVo.getLastShowData(lineChartVoList);
+      result.lineChartList = BaseChart.getLastShowData(lineChartVoList);
     }
 
     return result;

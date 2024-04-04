@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../chart/bar_chart.dart';
 import '../common/kline_config.dart';
-import '../vo/bar_chart_vo.dart';
 
 class ExampleRmoData {
   static final List<double?> _dataList = [
@@ -807,7 +807,7 @@ class ExampleRmoData {
     -4.5702737413730965
   ];
 
-  static BarChartVo get barChartData {
+  static BarChart get barChartData {
     List<BarChartData?> dataList = [];
     for (int i = 0; i < _dataList.length; ++i) {
       Color color = _dataList[i] == null || _dataList[i]! < 0
@@ -818,10 +818,10 @@ class ExampleRmoData {
           BarChartData(id: i.toString(), value: _dataList[i] ?? 0, color: color, isFill: isFill));
     }
 
-    return BarChartVo(id: "RMO", name: 'RMO', data: dataList);
+    return BarChart(id: "RMO", name: 'RMO', data: dataList);
   }
 
-  static BarChartVo get barChartDataMinute {
+  static BarChart get barChartDataMinute {
     List<BarChartData?> dataList = [];
     for (int i = 0; i < _dataList.length; ++i) {
       Color color = _dataList[i] == null || _dataList[i]! < 0
@@ -833,6 +833,6 @@ class ExampleRmoData {
     }
 
     dataList.length = KlineConfig.minuteDataNum;
-    return BarChartVo(id: "RMO", name: 'RMO', data: dataList);
+    return BarChart(id: "RMO", name: 'RMO', data: dataList);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_kline/utils/kline_util.dart';
 
-import '../vo/candlestick_chart_vo.dart';
+import '../chart/candlestick_chart.dart';
 
 class ExampleCandlestickData {
   static const List<List<double>?> originData = [
@@ -3614,9 +3614,9 @@ class ExampleCandlestickData {
     [20230818, 11.57, 11.58, 11.74, 11.53, 11.56, 659818, 767047296]
   ];
 
-  static CandlestickChartVo? _candlestickData;
+  static CandlestickChart? _candlestickData;
 
-  static CandlestickChartVo getCandlestickData() {
+  static CandlestickChart getCandlestickData() {
     if (_candlestickData != null) {
       return _candlestickData!;
     }
@@ -3636,7 +3636,7 @@ class ExampleCandlestickData {
           low: e[4]);
     }).toList();
 
-    _candlestickData = CandlestickChartVo(id: 'CandlestickChartVo', data: dataList);
+    _candlestickData = CandlestickChart(id: 'CandlestickChartVo', data: dataList);
 
     return _candlestickData!;
   }

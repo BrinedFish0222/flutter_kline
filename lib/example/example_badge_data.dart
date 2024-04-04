@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/vo/badge_chart_vo.dart';
 import 'package:flutter_kline/widget/bs_point_widget.dart';
 
+import '../chart/badge_chart.dart';
+
 class ExampleBadgeData {
-  static BadgeChartVo get badgeChartVo {
+  static BadgeChart get badgeChartVo {
     List<BadgeChartData?> dataList = [];
     for (int i = 0; i < 794; ++i) {
       dataList.add(null);
@@ -38,10 +39,10 @@ class ExampleBadgeData {
       ),
     ]);
 
-    return BadgeChartVo(id: 'BadgeChartVo', data: dataList);
+    return BadgeChart(id: 'BadgeChartVo', data: dataList);
   }
 
-  static BadgeChartVo get volBadgeChartVo {
+  static BadgeChart get volBadgeChartVo {
     List<BadgeChartData?> dataList = [];
     for (int i = 0; i < 796; ++i) {
       dataList.add(null);
@@ -63,6 +64,6 @@ class ExampleBadgeData {
       ),
     ]);
 
-    return BadgeChartVo(id: "BadgeChartVo", data: dataList);
+    return BadgeChart(id: "BadgeChartVo", data: dataList);
   }
 }

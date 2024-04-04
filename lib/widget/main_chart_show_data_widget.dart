@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
+import '../common/chart_show_data_item_vo.dart';
+import '../common/main_chart_selected_data_vo.dart';
 import '../common/kline_config.dart';
-import '../vo/main_chart_selected_data_vo.dart';
 
 /// 主图信息栏
 class MainChartShowDataWidget extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
-import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/k_line_chart_widget.dart';
 
+import '../common/chart_data.dart';
 import '../common/k_chart_data_source.dart';
 import '../utils/kline_util.dart';
 import '../widget/bottom_date_widget.dart';

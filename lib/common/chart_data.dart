@@ -1,5 +1,6 @@
 import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
+
+import '../chart/base_chart.dart';
 
 /// 图数据
 class ChartData {
@@ -7,7 +8,7 @@ class ChartData {
   final String name;
 
   /// 图数据
-  final List<BaseChartVo> baseCharts;
+  final List<BaseChart> baseCharts;
 
   const ChartData({
     required this.id,
@@ -23,7 +24,7 @@ class ChartData {
       return currentMaxIndex;
     }
 
-    for (BaseChartVo chart in baseCharts) {
+    for (BaseChart chart in baseCharts) {
       if (chart.data.isEmpty) {
         continue;
       }
@@ -41,7 +42,7 @@ class ChartData {
   ChartData copyWith({
     String? id,
     String? name,
-    List<BaseChartVo>? charts,
+    List<BaseChart>? charts,
   }) {
     return ChartData(
       id: id ?? this.id,
@@ -52,13 +53,13 @@ class ChartData {
 
 
   ChartData subData({required int start, int? end}) {
-    List<BaseChartVo> chartsNew = baseCharts.map((e) => e.subData(start: start, end: end)).toList();
+    List<BaseChart> chartsNew = baseCharts.map((e) => e.subData(start: start, end: end)).toList();
     return copyWith(charts: chartsNew);
   }
 
   /// 第一个存在的图数据
   BaseChartData? firstData() {
-    for (BaseChartVo chart in baseCharts) {
+    for (BaseChart chart in baseCharts) {
       if (chart.data.isEmpty || chart.data.first == null) {
         continue;
       }
@@ -95,7 +96,7 @@ class ChartData {
     BaseChartData? result;
     int currentMaxIndex = 0;
 
-    for (BaseChartVo chart in baseCharts) {
+    for (BaseChart chart in baseCharts) {
       if (chart.data.isEmpty || chart.dataLength - 1 < currentMaxIndex) {
         continue;
       }
@@ -151,15 +152,15 @@ class ChartData {
       return;
     }
 
-    for (BaseChartVo newBaseChart in newChart.baseCharts) {
+    for (BaseChart newBaseChart in newChart.baseCharts) {
       _updateBaseChartById(newBaseChart, isEnd: isEnd);
     }
   }
 
 
   /// 根据ID更新基础图数据
-  void _updateBaseChartById(BaseChartVo newBaseChart, {bool isEnd = true}) {
-    BaseChartVo? originBaseChart = KlineCollectionUtil.firstWhere(baseCharts, (element) => element.id == newBaseChart.id);
+  void _updateBaseChartById(BaseChart newBaseChart, {bool isEnd = true}) {
+    BaseChart? originBaseChart = KlineCollectionUtil.firstWhere(baseCharts, (element) => element.id == newBaseChart.id);
     if (originBaseChart == null) {
       baseCharts.add(newBaseChart);
       return;

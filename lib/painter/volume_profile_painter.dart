@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../vo/volume_profile_vo.dart';
+import '../common/volume_profile.dart';
+
 
 /// 筹码峰
 class VolumeProfilePainter extends CustomPainter {
@@ -11,7 +12,7 @@ class VolumeProfilePainter extends CustomPainter {
 
   final double maxValue;
   final double minValue;
-  final List<VolumeProfileVo> dataList;
+  final List<VolumeProfile> dataList;
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../common/pair.dart';
 import '../painter/line_chart_painter.dart';
-import 'base_chart_vo.dart';
-import 'candlestick_chart_vo.dart';
+import 'base_chart.dart';
+import 'candlestick_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
 
-/// 折线图数据
-class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
+/// 折线图
+class LineChart<E> extends BaseChart<LineChartData<E>> {
   Color color;
 
   /// 渐变色，空表示不显示
@@ -18,7 +18,7 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   List<ChartShowDataItemVo?>? _selectedShowData;
   Pair<double, double>? _maxMinData;
 
-  LineChartVo({
+  LineChart({
     required super.id,
     super.name,
     super.maxValue,
@@ -31,9 +31,9 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   }
 
   @override
-  BaseChartVo copy() {
+  BaseChart copy() {
     var newDataList = data.map((e) => e).toList();
-    return LineChartVo(
+    return LineChart(
       id: id,
       name: name,
       color: color,
@@ -45,7 +45,7 @@ class LineChartVo<E> extends BaseChartVo<LineChartData<E>> {
   }
 
   /// result: left maxValue; right minValue
-  static Pair<double, double> getHeightRange(List<LineChartVo?> lineChartData) {
+  static Pair<double, double> getHeightRange(List<LineChart?> lineChartData) {
     Pair<double, double> result =
         Pair(left: -double.maxFinite, right: double.maxFinite);
 
@@ -151,7 +151,7 @@ class SelectedLineChartDataStreamVo {
   double? value;
 
   /// 对应的蜡烛图数据
-  CandlestickChartVo? candlestickChartVo;
+  CandlestickChart? candlestickChartVo;
 
   SelectedLineChartDataStreamVo(
       {this.name, required this.color, this.value, this.candlestickChartVo});

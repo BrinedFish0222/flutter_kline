@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
-import 'package:flutter_kline/vo/bar_chart_vo.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 
+import '../chart/bar_chart.dart';
+import '../chart/line_chart.dart';
 import 'example_candlestick_data.dart';
 
 class ExampleVolData {
@@ -2416,9 +2416,9 @@ class ExampleVolData {
     660265.193999999
   ];
 
-  static BarChartVo? barChartVo;
+  static BarChart? barChartVo;
 
-  static BarChartVo get barChartData {
+  static BarChart get barChartData {
     if (barChartVo != null) {
       return barChartVo!;
     }
@@ -2439,11 +2439,11 @@ class ExampleVolData {
           isFill: isFill));
     }
 
-    return BarChartVo(id: 'VOLUME', name: 'VOLUME', data: dataList);
+    return BarChart(id: 'VOLUME', name: 'VOLUME', data: dataList);
   }
 
-  static BarChartVo barChartDataLastN(int lastN) {
-    return BarChartVo(
+  static BarChart barChartDataLastN(int lastN) {
+    return BarChart(
       id: "BarChartVo",
       data: KlineCollectionUtil.lastN(_volume, lastN)
               ?.asMap()
@@ -2455,9 +2455,9 @@ class ExampleVolData {
     );
   }
 
-  static List<LineChartVo> get lineChartData {
+  static List<LineChart> get lineChartData {
     return [
-      LineChartVo(
+      LineChart(
         id: "M5",
         name: 'M5',
         data: _vol1
@@ -2467,7 +2467,7 @@ class ExampleVolData {
             .toList(),
         color: KlineConfig.kLineColors[0],
       ),
-      LineChartVo(
+      LineChart(
         id: "M10",
         name: 'M10',
         data: _vol2
@@ -2480,9 +2480,9 @@ class ExampleVolData {
     ];
   }
 
-  static List<LineChartVo> lineChartDataLastN(int lastN) {
+  static List<LineChart> lineChartDataLastN(int lastN) {
     return [
-      LineChartVo(
+      LineChart(
         id: "vol1",
         data: KlineCollectionUtil.lastN(_vol1, lastN)
                 ?.asMap()
@@ -2492,7 +2492,7 @@ class ExampleVolData {
             [],
         color: KlineConfig.kLineColors[0],
       ),
-      LineChartVo(
+      LineChart(
         id: 'vol2',
         data: KlineCollectionUtil.lastN(_vol2, lastN)
                 ?.asMap()

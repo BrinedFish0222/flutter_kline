@@ -5,14 +5,14 @@ import 'package:flutter_kline/painter/price_line_painter.dart';
 import 'package:flutter_kline/setting/rect_setting.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 
+import '../chart/base_chart.dart';
+import '../chart/candlestick_chart.dart';
 import '../painter/rect_painter.dart';
-import '../vo/base_chart_vo.dart';
-import '../vo/candlestick_chart_vo.dart';
 
 /// 图渲染器
 class ChartRenderer extends CustomPainter {
   /// 图数据
-  final List<BaseChartVo> chartData;
+  final List<BaseChart> chartData;
 
   /// 矩形设置
   final RectSetting rectSetting;
@@ -46,7 +46,7 @@ class ChartRenderer extends CustomPainter {
         Size(size.width - padding.right - padding.left, size.height);
 
     Pair<double, double> maxMinValue =
-        this.maxMinValue ?? BaseChartVo.maxMinValue(chartData);
+        this.maxMinValue ?? BaseChart.maxMinValue(chartData);
     double pointWidth = this.pointWidth ??
         KlineUtil.getPointWidth(
           width: paddingSize.width,
@@ -55,8 +55,8 @@ class ChartRenderer extends CustomPainter {
         );
     double pointGap = this.pointGap ?? pointWidth / candlestickGapRatio;
 
-    CandlestickChartVo? candlestickChartVo =
-        BaseChartVo.getCandlestickChartVo(chartData);
+    CandlestickChart? candlestickChartVo =
+        BaseChart.getCandlestickChartVo(chartData);
 
     // 画矩形
     if (rectSetting.isShow) {

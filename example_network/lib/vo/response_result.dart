@@ -4,11 +4,11 @@
 
 import 'dart:convert';
 
+import 'package:flutter_kline/chart/base_chart.dart';
+import 'package:flutter_kline/chart/candlestick_chart.dart';
+import 'package:flutter_kline/chart/line_chart.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_date_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 
 ResponseResult responseResultFromJson(String str) =>
     ResponseResult.fromJson(json.decode(str));
@@ -58,12 +58,12 @@ class ResponseResult {
 
   /// 解析日K数据
   /// type daySingle dayAll daySingleAll
-  List<BaseChartVo> parseDayData({String type = 'dayAll'}) {
+  List<BaseChart> parseDayData({String type = 'dayAll'}) {
     if (this.type != type) {
       return [];
     }
 
-    List<BaseChartVo> result = [];
+    List<BaseChart> result = [];
     var dataList = jsonDecode(jsonEncode(data));
 
     var candlestickList = KlineCollectionUtil.first(dataList as List<dynamic>);
@@ -91,7 +91,7 @@ class ResponseResult {
 
       }
 
-      result.add(CandlestickChartVo(data: dataList, id: 'CandlestickChartVo'));
+      result.add(CandlestickChart(data: dataList, id: 'CandlestickChartVo'));
     }
 
 

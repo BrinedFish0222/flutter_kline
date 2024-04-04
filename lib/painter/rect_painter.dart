@@ -4,7 +4,7 @@ import 'package:flutter_kline/constants/line_type.dart';
 import 'package:flutter_kline/exts/canvas_ext.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/line_config.dart';
+
 
 /// 矩形背景图
 class RectPainter extends CustomPainter {
@@ -12,7 +12,7 @@ class RectPainter extends CustomPainter {
   final int transverseLineNum;
 
   /// 中间线配置
-  final List<LineConfig?>? transverseLineConfigList;
+  final List<RectLineConfig?>? transverseLineConfigList;
   final Color lineColor;
   final double lineWidth;
   final TextStyle? textStyle;
@@ -98,7 +98,7 @@ class RectPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     _init(canvas: canvas, size: size);
-    List<LineConfig> transverseLineConfigList = _initTransverseLineConfig();
+    List<RectLineConfig> transverseLineConfigList = _initTransverseLineConfig();
 
     // 绘制矩形边框
     Rect rect = Offset.zero & size;
@@ -124,7 +124,7 @@ class RectPainter extends CustomPainter {
 
   // 绘制横线和文本数字
   void _drawTransverseLine({
-    required List<LineConfig> transverseLineConfigList,
+    required List<RectLineConfig> transverseLineConfigList,
     required Size size,
   }) {
     double leftPadding = 2;
@@ -148,7 +148,7 @@ class RectPainter extends CustomPainter {
     Color oldColor = _painter.color;
     for (int i = 1; i <= transverseLineNum + 1; i++) {
       double y = i * _transverseLineHeight;
-      LineConfig transverseLineConfig = transverseLineConfigList[i - 1];
+      RectLineConfig transverseLineConfig = transverseLineConfigList[i - 1];
       _painter.color = transverseLineConfig.color;
 
       // 根据实际情况画实线还是虚线
@@ -192,20 +192,39 @@ class RectPainter extends CustomPainter {
   }
 
   /// 初始化横线样式
-  List<LineConfig> _initTransverseLineConfig() {
-    List<LineConfig> result = [];
+  List<RectLineConfig> _initTransverseLineConfig() {
+    List<RectLineConfig> result = [];
     if (KlineCollectionUtil.isNotEmpty(transverseLineConfigList)) {
-      result.addAll(transverseLineConfigList!.map((e) => e ?? LineConfig()));
+      result.addAll(transverseLineConfigList!.map((e) => e ?? RectLineConfig()));
     }
 
     if (result.length >= transverseLineNum) {
-      return result..add(LineConfig());
+      return result..add(RectLineConfig());
     }
 
     for (int i = 0; i < (transverseLineNum - result.length + 4); ++i) {
-      result.add(LineConfig());
+      result.add(RectLineConfig());
     }
 
     return result;
   }
+}
+
+
+/// 矩形线配置
+class RectLineConfig {
+  LineType type;
+  Color color;
+
+  /// 虚线长度
+  double dottedLineLength;
+
+  /// 虚线间隔
+  double dottedLineSpace;
+
+  RectLineConfig(
+      {this.type = LineType.full,
+        this.color = Colors.black,
+        this.dottedLineLength = 2,
+        this.dottedLineSpace = 2});
 }

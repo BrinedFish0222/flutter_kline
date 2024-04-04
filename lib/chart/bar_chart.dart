@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../painter/bar_chart_painter.dart';
+import 'base_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
 
-class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
+/// 柱图
+class BarChart<E> extends BaseChart<BarChartData<E>> {
   /// 柱体宽度
   double? barWidth;
 
   List<ChartShowDataItemVo?>? _selectedShowData;
   Pair<double, double>? _maxMinData;
 
-  BarChartVo({
+  BarChart({
     required super.id,
     super.name,
     super.maxValue,
@@ -43,12 +44,12 @@ class BarChartVo<E> extends BaseChartVo<BarChartData<E>> {
   }
 
   @override
-  BaseChartVo copy() {
+  BaseChart copy() {
     List<BarChartData<E>?> newData = [];
     if (data.isNotEmpty) {
       newData = data.sublist(0);
     }
-    return BarChartVo(
+    return BarChart(
       id: id,
       name: name,
       maxValue: maxValue,

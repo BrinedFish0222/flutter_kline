@@ -1,7 +1,7 @@
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
 
-import '../vo/line_chart_vo.dart';
+import '../chart/base_chart.dart';
+import '../chart/line_chart.dart';
 
 class ExampleLineData {
   static List<double?> ma13 = [
@@ -2413,7 +2413,7 @@ class ExampleLineData {
     12.80729166666664
   ];
 
-  static List<BaseChartVo> getLineChartMA13({int end = 800}) {
+  static List<BaseChart> getLineChartMA13({int end = 800}) {
     var ma13Values = ExampleLineData.ma13.sublist(0, end).toList();
     var ma34Values = ExampleLineData.ma34.sublist(0, end).toList();
     var ma144Values = ExampleLineData.ma144.sublist(0, end).toList();
@@ -2434,20 +2434,20 @@ class ExampleLineData {
     }
 
     return [
-      LineChartVo(id: "MA", name: 'MA', data: []),
-      LineChartVo(
+      LineChart(id: "MA", name: 'MA', data: []),
+      LineChart(
         id: "MA13",
         name: 'MA13',
         data: ma13,
         color: KlineConfig.kLineColors[0],
       ),
-      LineChartVo(
+      LineChart(
         id: "MA34",
         name: 'MA34',
         data: ma34,
         color: KlineConfig.kLineColors[1],
       ),
-      LineChartVo(
+      LineChart(
         id: "MA144",
         name: 'MA144',
         data: ma144,

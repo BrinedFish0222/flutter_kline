@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../chart/vertical_line_chart.dart';
 import '../common/pair.dart';
 import '../utils/kline_util.dart';
-import '../vo/vertical_line_chart_vo.dart';
 
 /// 竖线 painter
 class VerticalLineChartPainter extends CustomPainter {
@@ -13,7 +13,7 @@ class VerticalLineChartPainter extends CustomPainter {
     required this.pointGap,
   });
 
-  VerticalLineChartVo data;
+  VerticalLineChart data;
   Pair<double, double> maxMinValue;
   double pointWidth;
   double pointGap;

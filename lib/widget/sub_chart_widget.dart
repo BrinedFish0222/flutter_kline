@@ -5,13 +5,13 @@ import 'package:flutter_kline/renderer/chart_renderer.dart';
 import 'package:flutter_kline/setting/rect_setting.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/badge_chart_vo.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
-import 'package:flutter_kline/vo/mask_layer.dart';
 import 'package:flutter_kline/widget/badge_widget.dart';
 import 'package:flutter_kline/widget/mask_layer_widget.dart';
 
+import '../chart/badge_chart.dart';
+import '../chart/base_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
+import '../common/mask_layer.dart';
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';
 import 'sub_chart_show_data_widget.dart';
@@ -34,7 +34,7 @@ class SubChartWidget extends StatefulWidget {
 
   final Size size;
   final String name;
-  final List<BaseChartVo> chartData;
+  final List<BaseChart> chartData;
   final double? pointWidth;
   final double? pointGap;
   final MaskLayer? maskLayer;
@@ -58,11 +58,11 @@ class _SubChartWidgetState extends State<SubChartWidget> {
       StreamController();
 
   final GlobalKey _chartKey = GlobalKey();
-  List<BadgeChartVo> _badgeChartVoList = [];
+  List<BadgeChart> _badgeChartVoList = [];
 
   @override
   void initState() {
-    BadgeChartVo.initDataValue(widget.chartData);
+    BadgeChart.initDataValue(widget.chartData);
     _initSelectedIndexListen();
 
     super.initState();
@@ -95,7 +95,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
     Pair<double, double> maxMinValue = Pair.getMaxMinValue(
         widget.chartData.map((e) => e.getMaxMinData()).toList());
 
-    _badgeChartVoList = widget.chartData.whereType<BadgeChartVo>().toList();
+    _badgeChartVoList = widget.chartData.whereType<BadgeChart>().toList();
 
     return LayoutBuilder(builder: (context, constraints) {
       return SizedBox(
@@ -105,7 +105,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
           children: [
             // 信息栏
             SubChartShowDataWidget(
-              initData: BaseChartVo.getLastShowData(widget.chartData),
+              initData: BaseChart.getLastShowData(widget.chartData),
               name: widget.name,
               onTapName: widget.onTapIndicator,
               chartShowDataItemsStream: _chartShowDataItemsStream,
@@ -164,7 +164,7 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                   ),
 
                   /// badge
-                  for (BadgeChartVo vo in _badgeChartVoList)
+                  for (BadgeChart vo in _badgeChartVoList)
                     BadgeWidget(
                       badgeChartVo: vo,
                       pointWidth: widget.pointWidth,

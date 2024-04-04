@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
-import 'package:flutter_kline/vo/chart_data.dart';
-import 'package:flutter_kline/vo/mask_layer.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 
+import '../common/chart_data.dart';
+import '../common/mask_layer.dart';
 import '../utils/kline_date_util.dart';
 import '../utils/kline_util.dart';
 import '../widget/bottom_date_widget.dart';

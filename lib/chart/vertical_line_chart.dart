@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/pair.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/chart_show_data_item_vo.dart';
 
 import '../painter/vertical_line_chart_painter.dart';
+import 'base_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
 
 /// 竖线
-class VerticalLineChartVo<E> extends BaseChartVo<VerticalLineChartData<E>> {
-  VerticalLineChartVo({
+class VerticalLineChart<E> extends BaseChart<VerticalLineChartData<E>> {
+  VerticalLineChart({
     required super.id,
     required super.data,
     super.name,
@@ -17,14 +17,14 @@ class VerticalLineChartVo<E> extends BaseChartVo<VerticalLineChartData<E>> {
     super.minValue,
   });
 
-  VerticalLineChartVo<E> copyWith({
+  VerticalLineChart<E> copyWith({
     String? id,
     List<VerticalLineChartData<E>?>? data,
     String? name,
     double? maxValue,
     double? minValue,
   }) {
-    return VerticalLineChartVo<E>(
+    return VerticalLineChart<E>(
       id: id ?? this.id,
       data: data ?? this.data,
       name: name ?? this.name,
@@ -34,7 +34,7 @@ class VerticalLineChartVo<E> extends BaseChartVo<VerticalLineChartData<E>> {
   }
 
   @override
-  BaseChartVo<BaseChartData> copy() {
+  BaseChart<BaseChartData> copy() {
     return copyWith();
   }
 

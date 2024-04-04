@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/painter/line_chart_painter.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
+
+import '../chart/line_chart.dart';
 
 /// 线图组件
 class KLineChartWidget extends StatelessWidget {
@@ -9,7 +10,7 @@ class KLineChartWidget extends StatelessWidget {
     required this.chart,
   });
 
-  final LineChartVo chart;
+  final LineChart chart;
 
   @override
   Widget build(BuildContext context) {

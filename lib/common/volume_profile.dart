@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 筹码峰
-class VolumeProfileVo {
+class VolumeProfile {
   /// 价格
   double price;
 
@@ -11,24 +11,24 @@ class VolumeProfileVo {
   /// 颜色
   Color color;
 
-  VolumeProfileVo({
+  VolumeProfile({
     this.price = 0,
     this.percent = 0,
     this.color = Colors.red,
   });
 
-  VolumeProfileVo copyWith({
+  VolumeProfile copyWith({
     double? price,
     double? percent,
     Color? color,
   }) =>
-      VolumeProfileVo(
+      VolumeProfile(
         price: price ?? this.price,
         percent: percent ?? this.percent,
         color: color ?? this.color,
       );
 
-  static List<VolumeProfileVo> copyWithList(List<VolumeProfileVo> dataList) {
+  static List<VolumeProfile> copyWithList(List<VolumeProfile> dataList) {
     if (dataList.isEmpty) {
       return [];
     }
@@ -37,7 +37,7 @@ class VolumeProfileVo {
   }
 
   /// 根据价格排序
-  static void sortByPrice({required List<VolumeProfileVo> dataList}) {
+  static void sortByPrice({required List<VolumeProfile> dataList}) {
     dataList.sort((a, b) => b.price.compareTo(a.price));
   }
 

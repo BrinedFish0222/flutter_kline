@@ -5,16 +5,16 @@ import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/chart_data.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/sub_chart_widget.dart';
 
+import '../chart/base_chart.dart';
+import '../chart/candlestick_chart.dart';
+import '../common/chart_data.dart';
+import '../common/mask_layer.dart';
 import '../common/k_chart_data_source.dart';
 import '../common/pair.dart';
-import '../vo/candlestick_chart_vo.dart';
-import '../vo/mask_layer.dart';
 import 'kline_gesture_detector.dart';
 import 'kline_gesture_detector_controller.dart';
 import 'main_chart_widget.dart';
@@ -338,7 +338,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       }
 
       var candlestickChartVo =
-          BaseChartVo.getCandlestickChartVo(_showMainChartData);
+          BaseChart.getCandlestickChartVo(_showMainChartData);
 
       var vo = candlestickChartVo?.data[index];
       if (vo == null) {
@@ -359,9 +359,9 @@ class _KChartWidgetState extends State<KChartWidget> {
     });
   }
 
-  List<List<BaseChartVo>> get _subChartData => widget.source.subChartBaseCharts;
+  List<List<BaseChart>> get _subChartData => widget.source.subChartBaseCharts;
 
-  List<BaseChartVo<BaseChartData>> get _showMainChartData =>
+  List<BaseChart<BaseChartData>> get _showMainChartData =>
       widget.source.mainChartBaseChartsShow;
 
   /// 显示数据的开始索引值。

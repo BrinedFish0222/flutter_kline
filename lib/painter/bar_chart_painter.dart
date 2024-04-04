@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/pair.dart';
 
-import '../vo/bar_chart_vo.dart';
+import '../chart/bar_chart.dart';
+
 
 /// 柱图
 class BarChartPainter extends CustomPainter {
-  final BarChartVo barData;
+  final BarChart barData;
   final double? pointWidth;
   final double pointGap;
 

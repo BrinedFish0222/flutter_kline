@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/vo/badge_chart_vo.dart';
 
+import '../chart/badge_chart.dart';
+import '../chart/base_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
+import '../chart/line_chart.dart';
+import '../common/main_chart_selected_data_vo.dart';
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';
 import '../renderer/chart_renderer.dart';
 import '../utils/kline_util.dart';
-import '../vo/base_chart_vo.dart';
-import '../vo/chart_show_data_item_vo.dart';
-import '../vo/line_chart_vo.dart';
-import '../vo/main_chart_selected_data_vo.dart';
 import 'badge_widget.dart';
 import 'main_chart_show_data_widget.dart';
 
@@ -36,7 +36,7 @@ class MainChartWidget extends StatefulWidget {
   /// 信息栏名称
   final String? infoBarName;
 
-  final List<BaseChartVo> chartData;
+  final List<BaseChart> chartData;
 
   final double? pointWidth;
   final double? pointGap;
@@ -64,11 +64,11 @@ class _MainChartWidgetState extends State<MainChartWidget> {
 
   final GlobalKey _chartKey = GlobalKey();
 
-  List<BadgeChartVo> _badgeList = [];
+  List<BadgeChart> _badgeList = [];
 
   @override
   void initState() {
-    BadgeChartVo.initDataValue(widget.chartData);
+    BadgeChart.initDataValue(widget.chartData);
     _initSelectedChartData();
     super.initState();
   }
@@ -77,7 +77,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
   _initSelectedChartData() {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
       List<ChartShowDataItemVo?>? lineShowData =
-          BaseChartVo.getSelectedShowDataByIndex(
+          BaseChart.getSelectedShowDataByIndex(
         chartData: widget.chartData,
         index: index,
       );
@@ -91,9 +91,9 @@ class _MainChartWidgetState extends State<MainChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var maxMinValue = BaseChartVo.maxMinValue(widget.chartData);
+    var maxMinValue = BaseChart.maxMinValue(widget.chartData);
 
-    _badgeList = widget.chartData.whereType<BadgeChartVo>().toList();
+    _badgeList = widget.chartData.whereType<BadgeChart>().toList();
 
     return SizedBox(
       width: widget.size.width,
@@ -104,9 +104,9 @@ class _MainChartWidgetState extends State<MainChartWidget> {
           MainChartShowDataWidget(
             initData: MainChartSelectedDataVo.getLastShowData(
               candlestickChartVo:
-                  BaseChartVo.getCandlestickChartVo(widget.chartData),
+                  BaseChart.getCandlestickChartVo(widget.chartData),
               lineChartVoList:
-                  widget.chartData.whereType<LineChartVo>().toList(),
+                  widget.chartData.whereType<LineChart>().toList(),
             ),
             name: widget.infoBarName ?? '',
             mainChartSelectedDataStream: _mainChartSelectedDataStream,
@@ -175,7 +175,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                 ),
 
                 /// badge
-                for (BadgeChartVo vo in _badgeList)
+                for (BadgeChart vo in _badgeList)
                   BadgeWidget(
                     badgeChartVo: vo,
                     padding: widget.padding ?? EdgeInsets.zero,

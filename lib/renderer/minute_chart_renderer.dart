@@ -6,17 +6,16 @@ import 'package:flutter_kline/renderer/chart_renderer.dart';
 import 'package:flutter_kline/setting/rect_setting.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
-import 'package:flutter_kline/vo/line_config.dart';
 
+import '../chart/base_chart.dart';
+import '../chart/line_chart.dart';
 import '../painter/line_chart_painter.dart';
 import '../painter/rect_painter.dart';
-import '../vo/base_chart_vo.dart';
 
 /// 分时图
 class MinuteChartRenderer extends CustomPainter {
-  final LineChartVo minuteChartVo;
-  final List<BaseChartVo>? minuteChartSubjoinData;
+  final LineChart minuteChartVo;
+  final List<BaseChart>? minuteChartSubjoinData;
 
   /// 中间值
   final double middleNum;
@@ -41,8 +40,8 @@ class MinuteChartRenderer extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    LineChartVo minuteChartVo = _initData();
-    List<BaseChartVo>? minuteChartSubjoinData = _initSubData();
+    LineChart minuteChartVo = _initData();
+    List<BaseChart>? minuteChartSubjoinData = _initSubData();
 
     // 统计所有数据的最大最小值
     Pair<double, double> maxMinValue = _computeMaxMinValue();
@@ -50,7 +49,7 @@ class MinuteChartRenderer extends CustomPainter {
     // 画矩形
     RectPainter(
       transverseLineNum: 3,
-      transverseLineConfigList: [null, LineConfig(type: LineType.dotted)],
+      transverseLineConfigList: [null, RectLineConfig(type: LineType.dotted)],
       maxValue: maxMinValue.left,
       minValue: maxMinValue.right,
       isDrawVerticalLine: true,
@@ -78,8 +77,8 @@ class MinuteChartRenderer extends CustomPainter {
     return true;
   }
 
-  LineChartVo _initData() {
-    LineChartVo minuteChartVo = this.minuteChartVo.copy() as LineChartVo;
+  LineChart _initData() {
+    LineChart minuteChartVo = this.minuteChartVo.copy() as LineChart;
 
     if (dataNum <= minuteChartVo.data.length) {
       minuteChartVo.data =
@@ -95,13 +94,13 @@ class MinuteChartRenderer extends CustomPainter {
     return minuteChartVo;
   }
 
-  List<BaseChartVo<BaseChartData>>? _initSubData() {
+  List<BaseChart<BaseChartData>>? _initSubData() {
     if (minuteChartSubjoinData?.isEmpty ?? true) {
       return null;
     }
 
-    List<BaseChartVo<BaseChartData>> result = [];
-    for (BaseChartVo subData in minuteChartSubjoinData!) {
+    List<BaseChart<BaseChartData>> result = [];
+    for (BaseChart subData in minuteChartSubjoinData!) {
       var newSubData = subData.subData(start: 0, end: dataNum);
       result.add(newSubData);
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/vo/mask_layer.dart';
+
+import '../common/mask_layer.dart';
 
 /// 遮罩层
 class MaskLayerWidget extends StatelessWidget {

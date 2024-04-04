@@ -1,8 +1,8 @@
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/vo/bar_chart_vo.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 
-import '../vo/base_chart_vo.dart';
+import '../chart/bar_chart.dart';
+import '../chart/base_chart.dart';
+import '../chart/line_chart.dart';
 
 class ExampleMacdData {
   static final List<double?> _macd = [
@@ -2414,8 +2414,8 @@ class ExampleMacdData {
     0.05096822295338299
   ];
 
-  static List<BaseChartVo> get macd {
-    List<BaseChartVo> result = [];
+  static List<BaseChart> get macd {
+    List<BaseChart> result = [];
     List<BarChartData?> barChartDataList = [];
     for (int i = 0; i < _macd.length; ++i) {
       double? value = _macd[i];
@@ -2432,7 +2432,7 @@ class ExampleMacdData {
       ));
     }
 
-    BarChartVo barChartVo = BarChartVo(
+    BarChart barChartVo = BarChart(
       id: "MACD",
       data: barChartDataList,
       name: 'MACD',
@@ -2440,7 +2440,7 @@ class ExampleMacdData {
     );
     result.add(barChartVo);
 
-    var dea = LineChartVo(
+    var dea = LineChart(
       id: "DEA",
       name: 'DEA',
       color: KlineConfig.kLineColors[0],
@@ -2452,7 +2452,7 @@ class ExampleMacdData {
     );
     result.add(dea);
 
-    var dif = LineChartVo(
+    var dif = LineChart(
       id: "DIF",
       name: 'DIF',
       color: KlineConfig.kLineColors[1],
@@ -2467,8 +2467,8 @@ class ExampleMacdData {
     return result;
   }
 
-  static List<BaseChartVo> get macdMinute {
-    List<BaseChartVo> result = [];
+  static List<BaseChart> get macdMinute {
+    List<BaseChart> result = [];
     List<BarChartData?> barChartDataList = _macd
         .asMap()
         .entries
@@ -2483,7 +2483,7 @@ class ExampleMacdData {
                 ),
         )
         .toList();
-    BarChartVo barChartVo = BarChartVo(
+    BarChart barChartVo = BarChart(
       id: "MACD",
       data: barChartDataList,
       name: 'MACD',
@@ -2491,7 +2491,7 @@ class ExampleMacdData {
     );
     result.add(barChartVo);
 
-    var dea = LineChartVo(
+    var dea = LineChart(
       id: "DEA",
       name: 'DEA',
       color: KlineConfig.kLineColors[0],
@@ -2503,7 +2503,7 @@ class ExampleMacdData {
     );
     result.add(dea);
 
-    var dif = LineChartVo(
+    var dif = LineChart(
       id: "DIF",
       name: 'DIF',
       color: KlineConfig.kLineColors[1],

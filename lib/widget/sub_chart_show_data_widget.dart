@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 
-import '../vo/chart_show_data_item_vo.dart';
+import '../common/chart_show_data_item_vo.dart';
+
 
 /// 图显示的信息栏
 /// 例如：MA  MA13:11.37  MA34:12.15

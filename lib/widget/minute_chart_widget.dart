@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/renderer/minute_chart_renderer.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 
+import '../chart/base_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
+import '../chart/line_chart.dart';
 import '../common/kline_config.dart';
 import '../common/pair.dart';
 import '../painter/cross_curve_painter.dart';
+import '../utils/kline_collection_util.dart';
 import '../utils/kline_num_util.dart';
 import '../utils/kline_util.dart';
-import '../vo/chart_show_data_item_vo.dart';
-import '../vo/minute_chart_selected_data_vo.dart';
 
 /// 分时图
 class MinuteChartWidget extends StatefulWidget {
@@ -36,10 +36,10 @@ class MinuteChartWidget extends StatefulWidget {
   final String name;
 
   /// 分时图数据 - 分时数据
-  final LineChartVo minuteChartData;
+  final LineChart minuteChartData;
 
   /// 分时图数据 - 附加数据
-  final List<BaseChartVo>? minuteChartSubjoinData;
+  final List<BaseChart>? minuteChartSubjoinData;
 
   /// 中间值
   final double middleNum;
@@ -91,7 +91,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
     widget.selectedChartDataIndexStream?.stream.listen((index) {
       if (index == -1 || (widget.minuteChartSubjoinData?.length ?? 0 - 1) < index) {
         List<ChartShowDataItemVo>? showData =
-            BaseChartVo.getLastShowData(widget.minuteChartSubjoinData);
+            BaseChart.getLastShowData(widget.minuteChartSubjoinData);
         _minuteChartSelectedDataStream.add(MinuteChartSelectedDataVo(
             overlayData: null, indicatorsData: showData));
 
@@ -99,7 +99,7 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
       }
 
       List<ChartShowDataItemVo>? showData =
-          BaseChartVo.getShowDataByIndex(widget.minuteChartSubjoinData, index);
+          BaseChart.getShowDataByIndex(widget.minuteChartSubjoinData, index);
       _minuteChartSelectedDataStream.add(MinuteChartSelectedDataVo(
           overlayData: null, indicatorsData: showData));
     });
@@ -251,5 +251,41 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
     maxMinValue.right = middleNum - differenceValue;
 
     return maxMinValue;
+  }
+}
+
+
+/// 分时图显示的选中数据
+class MinuteChartSelectedDataVo {
+  /// 悬浮数据
+  List<ChartShowDataItemVo?>? overlayData;
+
+  /// 显示的指标数据
+  List<ChartShowDataItemVo?>? indicatorsData;
+
+  MinuteChartSelectedDataVo({this.overlayData, this.indicatorsData});
+
+  /// 获取分时最后一根显示的数据
+  static MinuteChartSelectedDataVo getLastShowData(
+      {required LineChart minuteChartData,
+        List<BaseChart>? minuteChartSubjoinData}) {
+    MinuteChartSelectedDataVo result = MinuteChartSelectedDataVo();
+
+    var selectedShowData = minuteChartData.getSelectedShowData();
+    if (KlineCollectionUtil.isNotEmpty(selectedShowData)) {
+      result.overlayData = [minuteChartData.getSelectedShowData()!.last];
+    }
+
+    if (KlineCollectionUtil.isEmpty(minuteChartSubjoinData)) {
+      return result;
+    }
+
+    result.indicatorsData = minuteChartSubjoinData!
+        .map((e) => e.getSelectedShowData())
+        .where((e) => KlineCollectionUtil.isNotEmpty(e))
+        .map((e) => e!.last)
+        .toList();
+
+    return result;
   }
 }

@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:example_network/main.dart';
 import 'package:example_network/vo/response_result.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/chart/line_chart.dart';
+import 'package:flutter_kline/common/chart_data.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
-import 'package:flutter_kline/vo/chart_data.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
 
 class ExampleMinuteNetworkWidget extends StatefulWidget {
@@ -25,7 +25,7 @@ class _ExampleMinuteNetworkWidgetState
     extends State<ExampleMinuteNetworkWidget> {
   late StreamSubscription _streamSubscription;
   late KChartDataSource _source;
-  final LineChartVo _vo = LineChartVo(data: [], id: 'minute');
+  final LineChart _vo = LineChart(data: [], id: 'minute');
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _ExampleMinuteNetworkWidgetState
         _source.updateData(
           newCharts: [
             ChartData(
-                id: '0', baseCharts: [LineChartVo(data: lineChartDataList!, id: 'minute')])
+                id: '0', baseCharts: [LineChart(data: lineChartDataList!, id: 'minute')])
           ],
           isEnd: true,
         );

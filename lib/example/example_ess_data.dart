@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/vo/line_chart_vo.dart';
 
+import '../chart/bar_chart.dart';
+import '../chart/line_chart.dart';
 import '../common/kline_config.dart';
-import '../vo/bar_chart_vo.dart';
 
 class ExampleEssData {
   static final List<double?> _dataList = [
@@ -808,7 +808,7 @@ class ExampleEssData {
     2.9097547662713446
   ];
 
-  static BarChartVo get barChartData {
+  static BarChart get barChartData {
     List<BarChartData?> dataList = [];
     for (int i = 0; i < _dataList.length; ++i) {
       Color color = i % 2 == 0 ? KlineConfig.green : KlineConfig.red;
@@ -817,11 +817,11 @@ class ExampleEssData {
           BarChartData(id: i.toString(), value: _dataList[i] ?? 0, color: color, isFill: isFill));
     }
 
-    return BarChartVo(id: 'ESS', name: 'ESS', data: dataList.toList());
+    return BarChart(id: 'ESS', name: 'ESS', data: dataList.toList());
   }
 
-  static LineChartVo get lineChartA {
-    return LineChartVo(
+  static LineChart get lineChartA {
+    return LineChart(
       id: 'A',
       name: 'A',
       color: KlineConfig.kLineColors[0],
@@ -829,8 +829,8 @@ class ExampleEssData {
     );
   }
 
-  static LineChartVo get lineChartB {
-    return LineChartVo(
+  static LineChart get lineChartB {
+    return LineChart(
       id: "B",
       name: "B",
       color: KlineConfig.kLineColors[1],

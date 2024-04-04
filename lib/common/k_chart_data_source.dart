@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
-import 'package:flutter_kline/vo/base_chart_vo.dart';
-import 'package:flutter_kline/vo/candlestick_chart_vo.dart';
-import 'package:flutter_kline/vo/chart_data.dart';
 
+import '../chart/base_chart.dart';
+import '../chart/candlestick_chart.dart';
+import 'chart_data.dart';
 import '../utils/kline_collection_util.dart';
 import '../utils/kline_util.dart';
 
@@ -49,7 +49,7 @@ class KChartDataSource extends ChangeNotifier {
   /// 获取显示图首个时间
   /// 规则：第一张图，找出蜡烛图（没有蜡烛，直接取第一张图），获取对应的首个时间
   DateTime? get showChartStartDateTime {
-    BaseChartVo? chart = _getShowCandlestickChart;
+    BaseChart? chart = _getShowCandlestickChart;
     chart ??= showCharts.first.baseCharts.first;
     return KlineCollectionUtil.first(chart.data)?.dateTime;
   }
@@ -57,7 +57,7 @@ class KChartDataSource extends ChangeNotifier {
   /// 获取显示图最后时间
   /// 规则：第一张图，找出蜡烛图（没有蜡烛，直接取第一张图），获取对应的首个时间
   DateTime? get showChartEndDateTime {
-    BaseChartVo? chart = _getShowCandlestickChart;
+    BaseChart? chart = _getShowCandlestickChart;
     chart ??= showCharts.first.baseCharts.first;
     return KlineCollectionUtil.last(chart.data)?.dateTime;
   }
@@ -65,7 +65,7 @@ class KChartDataSource extends ChangeNotifier {
   /// 根据索引获取显示图的时间
   /// 规则：第一张图，找出蜡烛图（没有蜡烛，直接取第一张图），获取对应的首个时间
   DateTime? showChartDateTimeByIndex(int index) {
-    BaseChartVo? chart = _getShowCandlestickChart;
+    BaseChart? chart = _getShowCandlestickChart;
     chart ??= showCharts.first.baseCharts.first;
 
     if (!chart.data.hasIndex(index)) {
@@ -77,15 +77,15 @@ class KChartDataSource extends ChangeNotifier {
 
   /// 获取显示的蜡烛图
   /// 规则：第一张图，找出蜡烛图
-  CandlestickChartVo? get _getShowCandlestickChart {
-    List<BaseChartVo> firstChart = showCharts.first.baseCharts;
+  CandlestickChart? get _getShowCandlestickChart {
+    List<BaseChart> firstChart = showCharts.first.baseCharts;
     if (firstChart.isEmpty) {
       return null;
     }
 
     // 寻找蜡烛图
-    List<CandlestickChartVo> candlestickChart =
-        firstChart.whereType<CandlestickChartVo>().toList();
+    List<CandlestickChart> candlestickChart =
+        firstChart.whereType<CandlestickChart>().toList();
     if (candlestickChart.isEmpty) {
       return null;
     }
@@ -105,10 +105,10 @@ class KChartDataSource extends ChangeNotifier {
 
   ChartData? get mainChartShow => showCharts.isEmpty ? null : showCharts.first;
 
-  List<BaseChartVo<BaseChartData>> get mainChartBaseCharts =>
+  List<BaseChart<BaseChartData>> get mainChartBaseCharts =>
       originCharts.isEmpty ? [] : originCharts.first.baseCharts;
 
-  List<BaseChartVo<BaseChartData>> get mainChartBaseChartsShow =>
+  List<BaseChart<BaseChartData>> get mainChartBaseChartsShow =>
       showCharts.isEmpty ? [] : showCharts.first.baseCharts;
 
   List<ChartData> get subChartsShow {
@@ -120,7 +120,7 @@ class KChartDataSource extends ChangeNotifier {
     return result;
   }
 
-  List<List<BaseChartVo>> get subChartBaseCharts {
+  List<List<BaseChart>> get subChartBaseCharts {
     if (originCharts.isEmpty || originCharts.length == 1) {
       return [];
     }
@@ -128,7 +128,7 @@ class KChartDataSource extends ChangeNotifier {
     return originCharts.sublist(1).map((e) => e.baseCharts).toList();
   }
 
-  List<List<BaseChartVo>> get subChartBaseChartsShow {
+  List<List<BaseChart>> get subChartBaseChartsShow {
     if (showCharts.isEmpty || showCharts.length == 1) {
       return [];
     }
