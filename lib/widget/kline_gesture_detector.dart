@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/constants/direction.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 
+import '../common/constants/direction.dart';
 import '../common/pointer_info.dart';
 import '../common/pair.dart';
 import 'k_chart_controller.dart';

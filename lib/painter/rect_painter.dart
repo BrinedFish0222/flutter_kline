@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/constants/line_type.dart';
 import 'package:flutter_kline/exts/canvas_ext.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
+
+import '../common/constants/line_type.dart';
 
 
 /// 矩形背景图

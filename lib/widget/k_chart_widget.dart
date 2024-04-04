@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_collection_util.dart';
 import 'package:flutter_kline/utils/kline_util.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_kline/widget/sub_chart_widget.dart';
 import '../chart/base_chart.dart';
 import '../chart/candlestick_chart.dart';
 import '../common/chart_data.dart';
+import '../common/constants/chart_location.dart';
 import '../common/mask_layer.dart';
 import '../common/k_chart_data_source.dart';
 import '../common/pair.dart';

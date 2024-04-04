@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
-import 'package:flutter_kline/constants/chart_location.dart';
 import 'package:flutter_kline/utils/kline_num_util.dart';
 
 import '../chart/base_chart.dart';
@@ -8,6 +7,7 @@ import '../chart/candlestick_chart.dart';
 import 'chart_data.dart';
 import '../utils/kline_collection_util.dart';
 import '../utils/kline_util.dart';
+import 'constants/chart_location.dart';
 
 /// k线图数据源
 class KChartDataSource extends ChangeNotifier {
