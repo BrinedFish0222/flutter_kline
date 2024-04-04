@@ -8,8 +8,9 @@ import 'package:flutter_kline/common/chart_data.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/utils/kline_util.dart';
-import 'package:flutter_kline/example/example_minute_data.dart';
 import 'package:flutter_kline/widget/k_minute_chart_widget.dart';
+
+import '../data/example_minute_data.dart';
 
 class ExampleMinuteNetworkWidget extends StatefulWidget {
   const ExampleMinuteNetworkWidget(

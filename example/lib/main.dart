@@ -1,27 +1,14 @@
-import 'package:example_network/example_network/example_day_network_widget.dart';
-import 'package:example_network/example_network/example_minute_network_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_kline/common/widget/color_block_widget.dart';
 import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'data/example_candlestick_data.dart';
+import 'data/example_day_widget.dart';
+import 'data/example_minute_widget.dart';
 
-const String ip = '192.168.31.205:8080';
-
-late WebSocketChannel webSocketChannel;
-late Stream webSocketChannelStream;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   ExampleCandlestickData.getCandlestickData();
-
-  webSocketChannel = WebSocketChannel.connect(
-    Uri.parse("ws://$ip/websocket/123"),
-  );
-
-  webSocketChannelStream = webSocketChannel.stream.asBroadcastStream();
-
   // 设置应用程序的方向为竖屏（只允许竖屏显示）
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
@@ -38,12 +25,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        tabBarTheme: const TabBarTheme(
-          labelColor: Colors.black
-        )
       ),
       home: const DoubleBackExitAppWidget(
-          child: MyHomePage(title: 'Flutter Demo Home Page')),
+          child: MyHomePage(title: 'Flutter Kline')),
     );
   }
 }
@@ -61,15 +45,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey _globalKey = GlobalKey();
 
   @override
-  void dispose() {
-    webSocketChannel.sink.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
+      initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -78,48 +57,38 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             TabBar(key: _globalKey, tabs: const [
               Tab(
-                text: '分时',
-              ),
-              Tab(
-                text: '日K',
-              ),
-            ]),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Center(
-                  child: TabBarView(children: [
-                    _buildMinute(),
-                    _buildDay()
-                  ]),
+                child: Text(
+                  '分时',
+                  style: TextStyle(color: Colors.black),
                 ),
               ),
+              Tab(
+                child: Text(
+                  '日K',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              /*Tab(
+                child: Text(
+                  '筹码峰',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),*/
+            ]),
+            Expanded(
+              child: TabBarView(children: [
+                ExampleMinuteWidget(
+                  overlayEntryLocationKey: _globalKey,
+                ),
+                ExampleDayWidget(
+                  overlayEntryLocationKey: _globalKey,
+                ),
+                // const ExampleVolumeProfileWidget(),
+              ]),
             )
           ],
         ),
       ),
-    );
-  }
-
-  _buildMinute() {
-    return ListView(
-      children: [
-        ExampleMinuteNetworkWidget(
-          overlayEntryLocationKey: _globalKey,
-        ),
-        const ColorBlockWidget(),
-      ],
-    );
-  }
-
-  _buildDay() {
-    return ListView(
-      children: [
-        ExampleDayNetworkWidget(
-          overlayEntryLocationKey: _globalKey,
-        ),
-        const ColorBlockWidget(),
-      ],
     );
   }
 }
