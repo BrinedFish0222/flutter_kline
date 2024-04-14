@@ -1,3 +1,4 @@
+import 'package:example/widget/draw_mode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/chart_data.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
@@ -30,6 +31,8 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
 
   late KChartController _controller;
   late KChartDataSource _source;
+
+  bool _drawMode = false;
 
   @override
   void initState() {
@@ -79,6 +82,12 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
         children: [
           Column(
             children: [
+              Row(
+                children: [
+                  DrawModeWidget(
+                      drawMode: _drawMode, onPressed: _drawModeBtnEven),
+                ],
+              ),
               KChartWidget(
                 key: _chartKey,
                 controller: _controller,
@@ -113,11 +122,16 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                       return ListenableBuilder(
                           listenable: _controller.source,
                           builder: (context, _) {
-                            double leftPadding = _controller.crossCurveGlobalPosition.dx;
-                            RenderObject? renderBox = _chartKey.currentContext?.findRenderObject();
+                            double leftPadding =
+                                _controller.crossCurveGlobalPosition.dx;
+                            RenderObject? renderBox =
+                                _chartKey.currentContext?.findRenderObject();
                             if (renderBox != null && renderBox is RenderBox) {
                               try {
-                                leftPadding = renderBox.globalToLocal(_controller.crossCurveGlobalPosition).dx;
+                                leftPadding = renderBox
+                                    .globalToLocal(
+                                        _controller.crossCurveGlobalPosition)
+                                    .dx;
                               } catch (e) {
                                 KlineUtil.loge(e.toString());
                               }
@@ -190,5 +204,11 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
         ],
       ),
     );
+  }
+
+  /// 画线按钮事件
+  void _drawModeBtnEven() {
+    _drawMode = !_drawMode;
+    setState(() {});
   }
 }
