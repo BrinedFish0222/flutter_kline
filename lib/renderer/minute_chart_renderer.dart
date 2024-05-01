@@ -11,7 +11,7 @@ import '../common/line_config.dart';
 import '../common/utils/kline_collection_util.dart';
 import '../common/utils/kline_num_util.dart';
 import '../painter/line_chart_painter.dart';
-import '../painter/rect_painter.dart';
+import '../painter/char_rect_background_painter.dart';
 
 /// 分时图
 class MinuteChartRenderer extends CustomPainter {
@@ -48,7 +48,7 @@ class MinuteChartRenderer extends CustomPainter {
     Pair<double, double> maxMinValue = _computeMaxMinValue();
 
     // 画矩形
-    RectPainter(
+    ChartRectBackgroundPainter(
       transverseLineNum: 3,
       transverseLineConfigList: [null, LineConfig(type: LineType.dotted)],
       maxValue: maxMinValue.left,

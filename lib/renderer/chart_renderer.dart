@@ -7,7 +7,7 @@ import 'package:flutter_kline/common/rect_config.dart';
 import '../chart/base_chart.dart';
 import '../chart/candlestick_chart.dart';
 import '../common/utils/kline_util.dart';
-import '../painter/rect_painter.dart';
+import '../painter/char_rect_background_painter.dart';
 
 /// 图渲染器
 class ChartRenderer extends CustomPainter {
@@ -61,7 +61,7 @@ class ChartRenderer extends CustomPainter {
     // 画矩形
     if (rectSetting.isShow) {
       canvas.save();
-      RectPainter(
+      ChartRectBackgroundPainter(
         transverseLineNum: rectSetting.transverseLineNum,
         maxValue: maxMinValue.left,
         minValue: maxMinValue.right,

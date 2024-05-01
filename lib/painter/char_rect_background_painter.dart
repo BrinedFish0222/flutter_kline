@@ -9,7 +9,7 @@ import '../common/utils/kline_num_util.dart';
 
 
 /// 矩形背景图
-class RectPainter extends CustomPainter {
+class ChartRectBackgroundPainter extends CustomPainter {
   /// 中间的横线数量
   final int transverseLineNum;
 
@@ -27,7 +27,7 @@ class RectPainter extends CustomPainter {
   /// 是否显示最低值文本
   final bool showMinValueText;
 
-  RectPainter({
+  ChartRectBackgroundPainter({
     this.transverseLineNum = 2,
     this.transverseLineConfigList,
     this.isDrawVerticalLine = false,
