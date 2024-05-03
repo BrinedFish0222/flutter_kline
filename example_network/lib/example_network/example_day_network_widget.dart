@@ -63,9 +63,8 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
         return;
       }
       KlineUtil.logd('更新日K数据，数据长度：${dataList.first.dataLength}');
-      _source.updateData(newCharts: [
-        ChartData(id: '0', baseCharts: dataList)
-      ], isEnd: true);
+      _source.updateData(
+          newCharts: [ChartData(id: '0', baseCharts: dataList)], isEnd: true);
       _source.notifyListeners();
     });
     super.initState();
@@ -79,6 +78,7 @@ class _ExampleDayNetworkWidgetState extends State<ExampleDayNetworkWidget> {
         KlineUtil.showToast(context: context, text: '指标索引位置：$val');
       },
       overlayEntryLocationKey: widget.overlayEntryLocationKey,
+      drawChartCallback: (value) {},
     );
   }
 }

@@ -187,6 +187,21 @@ abstract class BaseChart<T extends BaseChartData> {
     var dataLengths = mainChartData.map((e) => e.dataLength).toList();
     return KlineNumUtil.maxMinValue(dataLengths)?.left.toInt() ?? 0;
   }
+
+  /// 自动补全数据
+  BaseChart<BaseChartData> autoCompleteData({
+    required int maxLength,
+    required int currentIndex,
+  }) {
+    var newVo = copy();
+    newVo.data.clear();
+    for (int i = 0; i < maxLength; ++i) {
+      newVo.data.add(null);
+    }
+
+    newVo.data.replaceRange(currentIndex, currentIndex + this.data.length, this.data);
+    return newVo;
+  }
 }
 
 /// 图基础数据

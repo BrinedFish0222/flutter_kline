@@ -1,14 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/utils/kline_collection_util.dart';
+import 'package:flutter_kline/draw/draw_chart_callback.dart';
 
 import '../chart/badge_chart.dart';
 import '../chart/base_chart.dart';
-import '../common/chart_show_data_item_vo.dart';
 import '../chart/line_chart.dart';
+import '../common/chart_show_data_item_vo.dart';
 import '../common/main_chart_selected_data_vo.dart';
 import '../common/pair.dart';
 import '../common/utils/kline_util.dart';
+import '../draw/draw_chart.dart';
+import '../draw/draw_line_chart.dart';
 import '../painter/cross_curve_painter.dart';
 import '../renderer/chart_renderer.dart';
 import 'badge_widget.dart';
@@ -28,6 +32,8 @@ class MainChartWidget extends StatefulWidget {
     this.candlestickGapRatio,
     required this.onTapIndicator,
     this.realTimePrice,
+    this.drawChartType,
+    required this.drawChartCallback,
   });
 
   final Size size;
@@ -54,13 +60,19 @@ class MainChartWidget extends StatefulWidget {
   /// 实时价格
   final double? realTimePrice;
 
+  /// 画图类型
+  final DrawChartType? drawChartType;
+
+  /// 画图回调
+  final ValueChanged<DrawChartCallback> drawChartCallback;
+
   @override
   State<MainChartWidget> createState() => _MainChartWidgetState();
 }
 
 class _MainChartWidgetState extends State<MainChartWidget> {
   final StreamController<MainChartSelectedDataVo> _mainChartSelectedDataStream =
-      StreamController();
+      StreamController.broadcast();
 
   final GlobalKey _chartKey = GlobalKey();
 
@@ -95,6 +107,36 @@ class _MainChartWidgetState extends State<MainChartWidget> {
 
     _badgeList = widget.chartData.whereType<BadgeChart>().toList();
 
+    Widget chart = RepaintBoundary(
+      child: CustomPaint(
+        key: _chartKey,
+        size: widget.size,
+        painter: ChartRenderer(
+          chartData: widget.chartData,
+          padding: widget.padding,
+          pointWidth: widget.pointWidth,
+          pointGap: widget.pointGap,
+          maxMinValue: maxMinValue,
+          candlestickGapRatio: widget.candlestickGapRatio ?? 3,
+          realTimePrice: widget.realTimePrice,
+        ),
+      ),
+    );
+    if (widget.drawChartType == DrawChartType.line &&
+        KlineCollectionUtil.isNotEmpty(widget.chartData.first.data)) {
+      debugPrint("main_chart_widget drawChartType is not null.");
+      chart = DrawLineChart(
+        size: widget.size,
+        maxMinValue: maxMinValue,
+        pointWidth: widget.pointWidth ?? 0,
+        pointGap: widget.pointGap ?? 0,
+        padding: widget.padding ?? EdgeInsets.zero,
+        candlestickChart: KlineUtil.findCandlestickChart(widget.chartData),
+        drawChartCallback: widget.drawChartCallback,
+        child: chart,
+      );
+    }
+
     return SizedBox(
       width: widget.size.width,
       height: widget.size.height,
@@ -105,8 +147,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
             initData: MainChartSelectedDataVo.getLastShowData(
               candlestickChartVo:
                   BaseChart.getCandlestickChartVo(widget.chartData),
-              lineChartVoList:
-                  widget.chartData.whereType<LineChart>().toList(),
+              lineChartVoList: widget.chartData.whereType<LineChart>().toList(),
             ),
             name: widget.infoBarName ?? '',
             mainChartSelectedDataStream: _mainChartSelectedDataStream,
@@ -115,21 +156,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
           Expanded(
             child: Stack(
               children: [
-                RepaintBoundary(
-                  child: CustomPaint(
-                    key: _chartKey,
-                    size: widget.size,
-                    painter: ChartRenderer(
-                      chartData: widget.chartData,
-                      padding: widget.padding,
-                      pointWidth: widget.pointWidth,
-                      pointGap: widget.pointGap,
-                      maxMinValue: maxMinValue,
-                      candlestickGapRatio: widget.candlestickGapRatio ?? 3,
-                      realTimePrice: widget.realTimePrice,
-                    ),
-                  ),
-                ),
+                chart,
                 RepaintBoundary(
                   child: StreamBuilder(
                       stream: widget.crossCurveStream?.stream,
@@ -141,13 +168,12 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                         Pair<double?, double?> selectedXY =
                             Pair(left: null, right: null);
 
-                        RenderBox renderBox = _chartKey.currentContext!
-                            .findRenderObject() as RenderBox;
+                        RenderBox? renderBox = _chartKey.currentContext?.findRenderObject() as RenderBox?;
                         if (snapshot.data != null && !snapshot.data!.isNull()) {
                           Offset? selectedOffset =
                               snapshot.data == null || snapshot.data!.isNull()
                                   ? null
-                                  : renderBox.globalToLocal(
+                                  : renderBox?.globalToLocal(
                                       Offset(snapshot.data?.left ?? 0,
                                           snapshot.data?.right ?? 0),
                                     );
@@ -158,7 +184,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                         double? selectedHorizontalValue =
                             KlineUtil.computeSelectedHorizontalValue(
                           maxMinValue: maxMinValue,
-                          height: renderBox.size.height,
+                          height: renderBox?.size.height ?? 100,
                           selectedY: selectedXY.right,
                         );
 

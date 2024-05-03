@@ -1,9 +1,12 @@
 import 'package:example/widget/draw_mode_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/chart/base_chart.dart';
 import 'package:flutter_kline/common/chart_data.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/utils/kline_util.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
+import 'package:flutter_kline/draw/draw_chart.dart';
+import 'package:flutter_kline/draw/draw_chart_callback.dart';
 import 'package:flutter_kline/widget/bottom_date_widget.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
 import 'package:flutter_kline/widget/k_chart_widget.dart';
@@ -94,6 +97,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                 showDataNum: 30,
                 source: _source,
                 realTimePrice: 11.56,
+                drawChartType: _drawMode ? DrawChartType.line : null,
                 onTapIndicator: (index) {
                   KlineUtil.showToast(context: context, text: '点击指标索引：$index');
                 },
@@ -105,6 +109,15 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                 overlayEntryLocationKey: widget.overlayEntryLocationKey,
                 onHorizontalDragUpdate: (details, location) {
                   KlineUtil.logd('移动的位置：$location');
+                },
+                drawChartCallback: (DrawChartCallback value) {
+                  BaseChart data = value.chart.autoCompleteData(
+                    maxLength: _source.dataMaxLength,
+                    currentIndex: _source.showDataStartIndex,
+                  );
+                  _source.originCharts.first.baseCharts.add(data);
+                  _drawMode = false;
+                  setState(() {});
                 },
               ),
               SizedBox(
@@ -209,6 +222,8 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
   /// 画线按钮事件
   void _drawModeBtnEven() {
     _drawMode = !_drawMode;
+    _controller.hideCrossCurve();
+    _controller.hideOverlayEntry();
     setState(() {});
   }
 }

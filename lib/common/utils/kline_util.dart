@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/chart_data_by_local_position.dart';
+import 'package:flutter_kline/common/utils/kline_collection_util.dart';
 import 'dart:developer' as developer;
 
 import '../../chart/base_chart.dart';
@@ -169,8 +171,7 @@ class KlineUtil {
 
   /// 计算最大最小值
   static Pair<double, double> getMaxMinValue(
-      {CandlestickChart? candlestickCharVo,
-      List<BaseChart?>? chartDataList}) {
+      {CandlestickChart? candlestickCharVo, List<BaseChart?>? chartDataList}) {
     Pair<double, double> result = candlestickCharVo?.getMaxMinData() ??
         Pair(left: -double.maxFinite, right: double.maxFinite);
 
@@ -187,6 +188,43 @@ class KlineUtil {
     });
 
     return result;
+  }
+
+  /// 找出蜡烛图
+  static CandlestickChart findCandlestickChart(
+      List<BaseChart<BaseChartData>> chartData) {
+    CandlestickChart defaultResult = CandlestickChart(id: '', data: []);
+    return (KlineCollectionUtil.firstWhere(
+                chartData, (element) => element is CandlestickChart)
+            as CandlestickChart?) ??
+        defaultResult;
+  }
+
+  /// 根据手势点位转为对应的图数据
+  static ChartDataByLocalPosition getChartDataByLocalPosition({
+    required Offset localPosition,
+    required Size canvasSize,
+    required Pair<double, double> maxMinValue,
+    required double pointWidth,
+    required double pointGap,
+    required EdgeInsets padding,
+    required CandlestickChart candlestickChart,
+  }) {
+    // 根据x得到时间，时间：(x - padding.left) / (pointWidth + pointGap) =>>> 得到索引位置，从蜡烛图中取出时间
+    int index =
+        ((localPosition.dx - padding.left) / (pointWidth + pointGap)).round();
+    DateTime dateTime = (index >= candlestickChart.dataLength
+            ? candlestickChart.data.last?.dateTime
+            : candlestickChart.data[index]?.dateTime) ??
+        DateTime.now();
+
+    // 根据y得到value，value：(canvasSize.height - dy) / (canvasSize.height / (maxVal - minVal)) + minVal
+    double value = (canvasSize.height - localPosition.dy) /
+            (canvasSize.height / (maxMinValue.left - maxMinValue.right)) +
+        maxMinValue.right;
+    /*debugPrint(
+        "getChartDataByLocalPosition, index: $index; value: $value; y: ${localPosition.dy}; maxValue: ${maxMinValue.left}; minValue: ${maxMinValue.right}; canvasSize.height: ${canvasSize.height}; ");*/
+    return ChartDataByLocalPosition(index: index, dateTime: dateTime, value: value);
   }
 }
 

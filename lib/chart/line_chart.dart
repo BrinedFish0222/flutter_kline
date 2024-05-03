@@ -132,6 +132,11 @@ class LineChart<E> extends BaseChart<LineChartData<E>> {
       pointGap: pointGap,
     ).paint(canvas, size);
   }
+
+  @override
+  String toString() {
+    return 'LineChart{color: $color, gradient: $gradient, _selectedShowData: $_selectedShowData, _maxMinData: $_maxMinData}';
+  }
 }
 
 class LineChartData<E> extends BaseChartData<E> {
@@ -143,6 +148,11 @@ class LineChartData<E> extends BaseChartData<E> {
     this.value,
     super.extrasData,
   });
+
+  @override
+  String toString() {
+    return 'LineChartData{value: $value}';
+  }
 }
 
 class SelectedLineChartDataStreamVo {
