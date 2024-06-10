@@ -35,7 +35,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
   late KChartController _controller;
   late KChartDataSource _source;
 
-  bool _drawMode = false;
+  DrawChartType _drawMode = DrawChartType.none;
 
   @override
   void initState() {
@@ -85,11 +85,9 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
         children: [
           Column(
             children: [
-              Row(
-                children: [
-                  DrawModeWidget(
-                      drawMode: _drawMode, onPressed: _drawModeBtnEven),
-                ],
+              DrawModeWidget(
+                drawMode: _drawMode,
+                onPressed: _drawModeBtnEven,
               ),
               KChartWidget(
                 key: _chartKey,
@@ -97,8 +95,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                 showDataNum: 30,
                 source: _source,
                 realTimePrice: 11.56,
-                drawChartType:
-                    _drawMode ? DrawChartType.line : DrawChartType.none,
+                drawChartType: _drawMode,
                 onTapIndicator: (index) {
                   KlineUtil.showToast(context: context, text: '点击指标索引：$index');
                 },
@@ -111,15 +108,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                 onHorizontalDragUpdate: (details, location) {
                   KlineUtil.logd('移动的位置：$location');
                 },
-                drawChartCallback: (DrawChartCallback value) {
-                  BaseChart data = value.chart.autoCompleteData(
-                    maxLength: _source.dataMaxLength,
-                    currentIndex: _source.showDataStartIndex,
-                  );
-                  _source.originCharts.first.baseCharts.add(data);
-                  _drawMode = false;
-                  setState(() {});
-                },
+                drawChartCallback: _drawChartCallback,
               ),
               SizedBox(
                 height: 12,
@@ -220,9 +209,20 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
     );
   }
 
+  /// 画图回调
+  void _drawChartCallback(DrawChartCallback value) {
+    BaseChart data = value.chart.autoCompleteData(
+      maxLength: _source.dataMaxLength,
+      currentIndex: _source.showDataStartIndex,
+    );
+    _source.originCharts.first.baseCharts.add(data);
+    _drawMode = DrawChartType.edit;
+    setState(() {});
+  }
+
   /// 画线按钮事件
-  void _drawModeBtnEven() {
-    _drawMode = !_drawMode;
+  void _drawModeBtnEven(DrawChartType type) {
+    _drawMode = type;
     _controller.hideCrossCurve();
     _controller.hideOverlayEntry();
     setState(() {});

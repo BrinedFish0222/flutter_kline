@@ -186,7 +186,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     realTimePrice: widget.realTimePrice,
                     drawChartCallback: widget.drawChartCallback,
                   );
-                  if (widget.drawChartType.isNone) {
+                  if (widget.drawChartType.isNoneOrEdit) {
                     mainChart = KlineGestureDetector(
                       controller: gestureDetectorController,
                       kChartController: _controller,

@@ -10,6 +10,9 @@ enum DrawChartType {
   /// 无样式
   none,
 
+  /// 编辑模式
+  edit,
+
   /// 线图
   line,
 
@@ -19,6 +22,9 @@ enum DrawChartType {
     return this == none;
   }
 
+  bool get isNoneOrEdit {
+    return this == none || this == edit;
+  }
 
 }
 
