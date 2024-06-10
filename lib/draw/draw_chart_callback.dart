@@ -8,5 +8,7 @@ class DrawChartCallback {
   });
 
   final BaseChart chart;
+
+  /// 源数据（蜡烛图）开始索引位置
   final int originStartIndex;
 }

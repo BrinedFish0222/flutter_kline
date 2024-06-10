@@ -26,6 +26,7 @@ class LineChart<E> extends BaseChart<LineChartData<E>> {
     required super.data,
     this.color = Colors.black,
     this.gradient,
+    super.isUserDefine,
   }) {
     getSelectedShowData();
   }

@@ -22,12 +22,16 @@ abstract class BaseChart<T extends BaseChartData> {
 
   List<T?> data = [];
 
+  /// 是否是用户自定义的画图数据
+  bool isUserDefine;
+
   BaseChart({
     required this.id,
     this.name,
     this.maxValue,
     this.minValue,
     required this.data,
+    this.isUserDefine = false,
   });
 
   /// 画图

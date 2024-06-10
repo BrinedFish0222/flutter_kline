@@ -33,14 +33,16 @@ class _DrawLineChartState extends State<DrawLineChart> {
 
   @override
   void initState() {
-    debugPrint("start time: ${widget.candlestickChart.data.first?.dateTime} ");
-    debugPrint("end time: ${widget.candlestickChart.data.last?.dateTime} ");
+    KlineUtil.logd("start time: ${widget.candlestickChart.data.first?.dateTime} ");
+    KlineUtil.logd("end time: ${widget.candlestickChart.data.last?.dateTime} ");
     List<LineChartData> dataList = [];
     for (var cdata in widget.candlestickChart.data) {
       dataList.add(LineChartData(
           id: cdata?.dateTime.toString() ?? '', dateTime: cdata?.dateTime));
     }
-    _lineChart = LineChart(id: "", data: dataList);
+
+    // 当前是用户画线功能，指定 isUserDefine 为 false
+    _lineChart = LineChart(id: "", data: dataList, isUserDefine: true);
     super.initState();
   }
 
