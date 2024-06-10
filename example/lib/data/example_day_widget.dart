@@ -29,7 +29,8 @@ class ExampleDayWidget extends StatefulWidget {
   State<ExampleDayWidget> createState() => _ExampleDayWidgetState();
 }
 
-class _ExampleDayWidgetState extends State<ExampleDayWidget> {
+class _ExampleDayWidgetState extends State<ExampleDayWidget>
+    with AutomaticKeepAliveClientMixin {
   final GlobalKey _chartKey = GlobalKey();
 
   late KChartController _controller;
@@ -79,6 +80,8 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
       child: ListView(
@@ -227,4 +230,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
     _controller.hideOverlayEntry();
     setState(() {});
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
