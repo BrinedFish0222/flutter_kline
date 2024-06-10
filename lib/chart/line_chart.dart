@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/draw/draw_chart.dart';
 
 import '../common/pair.dart';
 import '../common/utils/kline_collection_util.dart';
@@ -26,7 +27,7 @@ class LineChart<E> extends BaseChart<LineChartData<E>> {
     required super.data,
     this.color = Colors.black,
     this.gradient,
-    super.isUserDefine,
+    super.drawChartType = DrawChartType.line,
   }) {
     getSelectedShowData();
   }

@@ -4,6 +4,7 @@ import 'package:flutter_kline/common/kline_config.dart';
 import '../common/pair.dart';
 import '../common/utils/kline_collection_util.dart';
 import '../common/utils/kline_num_util.dart';
+import '../draw/draw_chart.dart';
 import 'bar_chart.dart';
 import 'candlestick_chart.dart';
 import '../common/chart_show_data_item_vo.dart';
@@ -22,8 +23,8 @@ abstract class BaseChart<T extends BaseChartData> {
 
   List<T?> data = [];
 
-  /// 是否是用户自定义的画图数据
-  bool isUserDefine;
+  /// 画线类型，默认是[DrawChartType.none]，代表非用户自定义画图类型。
+  DrawChartType drawChartType;
 
   BaseChart({
     required this.id,
@@ -31,7 +32,7 @@ abstract class BaseChart<T extends BaseChartData> {
     this.maxValue,
     this.minValue,
     required this.data,
-    this.isUserDefine = false,
+    this.drawChartType = DrawChartType.none,
   });
 
   /// 画图

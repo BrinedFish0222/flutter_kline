@@ -42,7 +42,7 @@ class _DrawLineChartState extends State<DrawLineChart> {
     }
 
     // 当前是用户画线功能，指定 isUserDefine 为 false
-    _lineChart = LineChart(id: "", data: dataList, isUserDefine: true);
+    _lineChart = LineChart(id: "", data: dataList);
     super.initState();
   }
 
