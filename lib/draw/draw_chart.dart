@@ -6,7 +6,20 @@ import '../common/pair.dart';
 
 /// 画图类型
 enum DrawChartType {
+
+  /// 无样式
+  none,
+
+  /// 线图
   line,
+
+  ;
+
+  bool get isNone {
+    return this == none;
+  }
+
+
 }
 
 /// 画图

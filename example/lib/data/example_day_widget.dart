@@ -97,7 +97,8 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget> {
                 showDataNum: 30,
                 source: _source,
                 realTimePrice: 11.56,
-                drawChartType: _drawMode ? DrawChartType.line : null,
+                drawChartType:
+                    _drawMode ? DrawChartType.line : DrawChartType.none,
                 onTapIndicator: (index) {
                   KlineUtil.showToast(context: context, text: '点击指标索引：$index');
                 },

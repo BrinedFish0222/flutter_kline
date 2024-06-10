@@ -37,7 +37,7 @@ class KChartWidget extends StatefulWidget {
     this.realTimePrice,
     this.onHorizontalDragUpdate,
     this.chartNum,
-    this.drawChartType,
+    this.drawChartType = DrawChartType.none,
     required this.drawChartCallback,
   }) : assert(chartNum == null || chartNum > 0, "chartNum is null or gt 1");
 
@@ -80,7 +80,7 @@ class KChartWidget extends StatefulWidget {
   final void Function(DragUpdateDetails, ChartLocation)? onHorizontalDragUpdate;
 
   /// 画图类型
-  final DrawChartType? drawChartType;
+  final DrawChartType drawChartType;
 
   /// 画图回调
   final ValueChanged<DrawChartCallback> drawChartCallback;
@@ -142,7 +142,7 @@ class _KChartWidgetState extends State<KChartWidget> {
     super.dispose();
   }
 
-  bool get _isDrawMode => widget.drawChartType != null;
+  bool get _isDrawMode => widget.drawChartType != DrawChartType.none;
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +186,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     realTimePrice: widget.realTimePrice,
                     drawChartCallback: widget.drawChartCallback,
                   );
-                  if (widget.drawChartType == null) {
+                  if (widget.drawChartType.isNone) {
                     mainChart = KlineGestureDetector(
                       controller: gestureDetectorController,
                       kChartController: _controller,
