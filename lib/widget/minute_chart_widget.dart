@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/renderer/minute_chart_renderer.dart';
+import 'package:flutter_kline/widget/cross_curve_widget.dart';
 
 import '../chart/base_chart.dart';
 import '../common/chart_show_data_item_vo.dart';
@@ -10,8 +11,6 @@ import '../common/kline_config.dart';
 import '../common/pair.dart';
 import '../common/utils/kline_collection_util.dart';
 import '../common/utils/kline_num_util.dart';
-import '../common/utils/kline_util.dart';
-import '../painter/cross_curve_painter.dart';
 
 /// 分时图
 class MinuteChartWidget extends StatefulWidget {
@@ -185,42 +184,15 @@ class _MinuteChartWidgetState extends State<MinuteChartWidget> {
                         ),
                       ),
                     ),
-                    RepaintBoundary(
-                      child: StreamBuilder(
-                          stream: widget.crossCurveStream?.stream,
-                          builder: (context, snapshot) {
-                            Pair<double?, double?> selectedXY =
-                                Pair(left: null, right: null);
-                            if (snapshot.data != null && !snapshot.data!.isNull()) {
-                              RenderBox renderBox = _chartKey.currentContext!
-                                  .findRenderObject() as RenderBox;
-          
-                              Offset? selectedOffset =
-                                  snapshot.data == null || snapshot.data!.isNull()
-                                      ? null
-                                      : renderBox.globalToLocal(Offset(
-                                          snapshot.data?.left ?? 0,
-                                          snapshot.data?.right ?? 0));
-                              selectedXY.left = selectedOffset?.dx;
-                              selectedXY.right = selectedOffset?.dy;
-                            }
-          
-                            double? selectedHorizontalValue =
-                                KlineUtil.computeSelectedHorizontalValue(
-                                    maxMinValue: maxMinValue,
-                                    height: widget.size.height,
-                                    selectedY: selectedXY.right);
-          
-                            return CustomPaint(
-                              size: widget.size,
-                              painter: CrossCurvePainter(
-                                  selectedXY: selectedXY,
-                                  selectedHorizontalValue: selectedHorizontalValue,
-                                  pointWidth: widget.pointWidth,
-                                  pointGap: widget.pointGap),
-                            );
-                          }),
-                    )
+                    
+                    CrossCurveWidget(
+                      crossCurveStream: widget.crossCurveStream,
+                      chartKey: _chartKey,
+                      size: widget.size,
+                      padding: null,
+                      pointWidth: widget.pointWidth,
+                      pointGap: widget.pointGap,
+                      maxMinValue: maxMinValue,),
                   ],
                 );
               }

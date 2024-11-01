@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/utils/kline_collection_util.dart';
 import 'package:flutter_kline/draw/draw_chart_callback.dart';
+import 'package:flutter_kline/widget/cross_curve_widget.dart';
 
 import '../chart/badge_chart.dart';
 import '../chart/base_chart.dart';
@@ -13,7 +14,6 @@ import '../common/pair.dart';
 import '../common/utils/kline_util.dart';
 import '../draw/draw_chart.dart';
 import '../draw/draw_line_chart.dart';
-import '../painter/cross_curve_painter.dart';
 import '../renderer/chart_renderer.dart';
 import 'badge_widget.dart';
 import 'main_chart_show_data_widget.dart';
@@ -157,48 +157,17 @@ class _MainChartWidgetState extends State<MainChartWidget> {
             child: Stack(
               children: [
                 chart,
-                RepaintBoundary(
-                  child: StreamBuilder(
-                      stream: widget.crossCurveStream?.stream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data?.isNull() ?? true) {
-                          return const SizedBox();
-                        }
-
-                        Pair<double?, double?> selectedXY =
-                            Pair(left: null, right: null);
-
-                        RenderBox? renderBox = _chartKey.currentContext?.findRenderObject() as RenderBox?;
-                        if (snapshot.data != null && !snapshot.data!.isNull()) {
-                          Offset? selectedOffset =
-                              snapshot.data == null || snapshot.data!.isNull()
-                                  ? null
-                                  : renderBox?.globalToLocal(
-                                      Offset(snapshot.data?.left ?? 0,
-                                          snapshot.data?.right ?? 0),
-                                    );
-                          selectedXY.left = selectedOffset?.dx;
-                          selectedXY.right = selectedOffset?.dy;
-                        }
-
-                        double? selectedHorizontalValue =
-                            KlineUtil.computeSelectedHorizontalValue(
-                          maxMinValue: maxMinValue,
-                          height: renderBox?.size.height ?? 100,
-                          selectedY: selectedXY.right,
-                        );
-
-                        return CustomPaint(
-                          size: widget.size,
-                          painter: CrossCurvePainter(
-                              selectedXY: selectedXY,
-                              padding: widget.padding,
-                              selectedHorizontalValue: selectedHorizontalValue,
-                              pointWidth: widget.pointWidth,
-                              pointGap: widget.pointGap),
-                        );
-                      }),
+                
+                CrossCurveWidget(
+                  crossCurveStream: widget.crossCurveStream,
+                  chartKey: _chartKey,
+                  size: widget.size,
+                  padding: widget.padding,
+                  pointWidth: widget.pointWidth,
+                  pointGap: widget.pointGap,
+                  maxMinValue: maxMinValue,
                 ),
+                
 
                 /// badge
                 for (BadgeChart vo in _badgeList)

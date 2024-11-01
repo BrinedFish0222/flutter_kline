@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_kline/renderer/chart_renderer.dart';
 import 'package:flutter_kline/common/rect_config.dart';
 import 'package:flutter_kline/widget/badge_widget.dart';
+import 'package:flutter_kline/widget/cross_curve_widget.dart';
 import 'package:flutter_kline/widget/mask_layer_widget.dart';
 
 import '../chart/badge_chart.dart';
@@ -12,8 +13,6 @@ import '../common/chart_show_data_item_vo.dart';
 import '../common/mask_layer.dart';
 import '../common/pair.dart';
 import '../common/utils/kline_collection_util.dart';
-import '../common/utils/kline_util.dart';
-import '../painter/cross_curve_painter.dart';
 import 'sub_chart_show_data_widget.dart';
 
 /// 副图组件
@@ -129,39 +128,18 @@ class _SubChartWidgetState extends State<SubChartWidget> {
                         ),
                       );
                     }
+                  ),            
+                  
+                  CrossCurveWidget(
+                    crossCurveStream: widget.crossCurveStream,
+                    chartKey: _chartKey,
+                    size: widget.size,
+                    padding: widget.padding,
+                    pointWidth: widget.pointWidth,
+                    pointGap: widget.pointGap,
+                    maxMinValue: maxMinValue,
                   ),
-                  RepaintBoundary(
-                    child: StreamBuilder(
-                        stream: widget.crossCurveStream?.stream,
-                        builder: (context, snapshot) {
-                          if (snapshot.data == null) {
-                            return const SizedBox();
-                          }
-
-                          RenderBox renderBox = _chartKey.currentContext!
-                              .findRenderObject() as RenderBox;
-                          var selectedXY = renderBox.globalToLocal(Offset(
-                              snapshot.data?.left ?? 0,
-                              snapshot.data?.right ?? 0));
-
-                          double? selectedHorizontalValue =
-                              KlineUtil.computeSelectedHorizontalValue(
-                                  maxMinValue: maxMinValue,
-                                  height: renderBox.size.height,
-                                  selectedY: selectedXY.dy);
-
-                          return CustomPaint(
-                            size: widget.size,
-                            painter: CrossCurvePainter(
-                                selectedXY: Pair(
-                                    left: selectedXY.dx, right: selectedXY.dy),
-                                pointWidth: widget.pointWidth,
-                                pointGap: widget.pointGap,
-                                padding: widget.padding,
-                                selectedHorizontalValue: selectedHorizontalValue),
-                          );
-                        }),
-                  ),
+                  
 
                   /// badge
                   for (BadgeChart vo in _badgeChartVoList)
