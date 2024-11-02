@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/draw/draw_chart.dart';
+
+import '../data/example_day_widget.dart';
 
 /// 画线模式组件
 class DrawModeWidget extends StatefulWidget {

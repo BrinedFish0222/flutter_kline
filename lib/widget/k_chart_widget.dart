@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/kline_config.dart';
 import 'package:flutter_kline/common/utils/kline_collection_util.dart';
-import 'package:flutter_kline/draw/draw_chart.dart';
 import 'package:flutter_kline/draw/draw_chart_callback.dart';
 import 'package:flutter_kline/widget/candlestick_show_data_widget.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
@@ -37,7 +36,7 @@ class KChartWidget extends StatefulWidget {
     this.realTimePrice,
     this.onHorizontalDragUpdate,
     this.chartNum,
-    this.drawChartType = DrawChartType.none,
+    this.drawChartType = "",
     required this.drawChartCallback,
   }) : assert(chartNum == null || chartNum > 0, "chartNum is null or gt 1");
 
@@ -80,7 +79,7 @@ class KChartWidget extends StatefulWidget {
   final void Function(DragUpdateDetails, ChartLocation)? onHorizontalDragUpdate;
 
   /// 画图类型
-  final DrawChartType drawChartType;
+  final String drawChartType;
 
   /// 画图回调
   final ValueChanged<DrawChartCallback> drawChartCallback;
@@ -183,7 +182,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     realTimePrice: widget.realTimePrice,
                     drawChartCallback: widget.drawChartCallback,
                   );
-                  if (widget.drawChartType.isNoneOrEdit) {
+                  if (widget.drawChartType.isEmpty) {
                     mainChart = KlineGestureDetector(
                       controller: gestureDetectorController,
                       kChartController: _controller,

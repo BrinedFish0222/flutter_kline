@@ -31,7 +31,7 @@ class MainChartWidget extends StatefulWidget {
     this.candlestickGapRatio,
     required this.onTapIndicator,
     this.realTimePrice,
-    this.drawChartType,
+    this.drawChartType = "",
     required this.drawChartCallback,
   });
 
@@ -60,7 +60,7 @@ class MainChartWidget extends StatefulWidget {
   final double? realTimePrice;
 
   /// 画图类型
-  final DrawChartType? drawChartType;
+  final String drawChartType;
 
   /// 画图回调
   final ValueChanged<DrawChartCallback> drawChartCallback;
@@ -121,7 +121,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
         ),
       ),
     );
-    if (widget.drawChartType == DrawChartType.line &&
+    if (widget.drawChartType.isNotEmpty &&
         KlineCollectionUtil.isNotEmpty(widget.chartData.first.data)) {
       debugPrint("main_chart_widget drawChartType is not null.");
 

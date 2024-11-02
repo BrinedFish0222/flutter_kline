@@ -7,30 +7,6 @@ import 'draw_line_chart.dart';
 
 typedef DrawChartCreator = DrawChart Function(DrawChartConfig config, Widget child);
 
-/// 画图类型
-enum DrawChartType {
-
-  /// 无样式
-  none,
-
-  /// 编辑模式
-  edit,
-
-  /// 线图
-  line,
-
-  ;
-
-  bool get isNone {
-    return this == none;
-  }
-
-  bool get isNoneOrEdit {
-    return this == none || this == edit;
-  }
-
-}
-
 /// 画图注册器
 class DrawChartRegister {
   static final DrawChartRegister _instance = DrawChartRegister._internal();

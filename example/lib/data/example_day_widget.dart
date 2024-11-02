@@ -5,7 +5,6 @@ import 'package:flutter_kline/common/chart_data.dart';
 import 'package:flutter_kline/common/k_chart_data_source.dart';
 import 'package:flutter_kline/common/utils/kline_util.dart';
 import 'package:flutter_kline/common/widget/color_block_widget.dart';
-import 'package:flutter_kline/draw/draw_chart.dart';
 import 'package:flutter_kline/draw/draw_chart_callback.dart';
 import 'package:flutter_kline/widget/bottom_date_widget.dart';
 import 'package:flutter_kline/widget/k_chart_controller.dart';
@@ -98,7 +97,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget>
                 showDataNum: 30,
                 source: _source,
                 realTimePrice: 11.56,
-                drawChartType: _drawMode,
+                drawChartType: _drawMode.isNoneOrEdit ? "" : _drawMode.name,
                 onTapIndicator: (index) {
                   KlineUtil.showToast(context: context, text: '点击指标索引：$index');
                 },
@@ -233,4 +232,29 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+
+
+enum DrawChartType {
+
+  /// 无样式
+  none,
+
+  /// 编辑模式
+  edit,
+
+  /// 线图
+  line,
+
+  ;
+
+  bool get isNone {
+    return this == none;
+  }
+
+  bool get isNoneOrEdit {
+    return this == none || this == edit;
+  }
+
 }

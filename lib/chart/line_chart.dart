@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kline/draw/draw_chart.dart';
 
 import '../common/pair.dart';
 import '../common/utils/kline_collection_util.dart';
 import '../common/utils/kline_num_util.dart';
+import '../draw/draw_line_chart.dart';
 import '../painter/line_chart_painter.dart';
 import 'base_chart.dart';
 import 'candlestick_chart.dart';
@@ -27,7 +27,7 @@ class LineChart<E> extends BaseChart<LineChartData<E>> {
     required super.data,
     this.color = Colors.black,
     this.gradient,
-    super.drawChartType = DrawChartType.line,
+    super.drawChartType = DrawLineChart.drawKey,
   }) {
     getSelectedShowData();
   }
