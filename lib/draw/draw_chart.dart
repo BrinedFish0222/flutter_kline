@@ -5,16 +5,7 @@ import 'package:flutter_kline/draw/draw_chart_callback.dart';
 import '../common/pair.dart';
 import 'draw_line_chart.dart';
 
-typedef DrawChartCreator = DrawChart Function({
-  required Size size,
-  required Pair<double, double> maxMinValue,
-  required double pointWidth,
-  required double pointGap,
-  required EdgeInsets padding,
-  required Widget child,
-  required CandlestickChart candlestickChart,
-  required ValueChanged<DrawChartCallback> drawChartCallback,
-});
+typedef DrawChartCreator = DrawChart Function(DrawChartConfig config, Widget child);
 
 /// 画图类型
 enum DrawChartType {
@@ -66,6 +57,21 @@ class DrawChartRegister {
 abstract class DrawChart extends StatefulWidget {
   const DrawChart({
     super.key,
+    required this.config,
+    required this.child,
+  });
+
+ 
+  final DrawChartConfig config;
+  final Widget child;
+
+  @override
+  State<StatefulWidget> createState();
+}
+
+
+class DrawChartConfig {
+  const DrawChartConfig({
     required this.size,
     required this.maxMinValue,
     required this.pointWidth,
@@ -73,7 +79,6 @@ abstract class DrawChart extends StatefulWidget {
     required this.padding,
     required this.candlestickChart,
     required this.drawChartCallback,
-    required this.child,
   });
 
   final Size size;
@@ -81,10 +86,6 @@ abstract class DrawChart extends StatefulWidget {
   final double pointWidth;
   final double pointGap;
   final EdgeInsets padding;
-  final Widget child;
   final CandlestickChart candlestickChart;
   final ValueChanged<DrawChartCallback> drawChartCallback;
-
-  @override
-  State<StatefulWidget> createState();
 }

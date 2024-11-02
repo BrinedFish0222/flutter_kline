@@ -12,29 +12,15 @@ import 'draw_chart.dart';
 class DrawLineChart extends DrawChart {
   const DrawLineChart({
     super.key,
-    required super.size,
-    required super.maxMinValue,
-    required super.pointWidth,
-    required super.pointGap,
-    required super.padding,
-    required super.candlestickChart,
-    required super.drawChartCallback,
+    required super.config,
     required super.child,
   });
   
   static const String drawKey = "line";
   
   static void register() {
-    DrawChartRegister().register(drawKey, ({required candlestickChart, required child, required drawChartCallback, required maxMinValue, required padding, required pointGap, required pointWidth, required size}) {
-      return DrawLineChart(
-          size: size,
-          maxMinValue: maxMinValue,
-          pointWidth: pointWidth,
-          pointGap: pointGap,
-          padding: padding,
-          candlestickChart: candlestickChart,
-          drawChartCallback: drawChartCallback,
-          child: child);
+    DrawChartRegister().register(drawKey, (config, child) {
+      return DrawLineChart(config: config, child: child);
     });
   }
 
@@ -49,10 +35,10 @@ class _DrawLineChartState extends State<DrawLineChart> {
 
   @override
   void initState() {
-    KlineUtil.logd("start time: ${widget.candlestickChart.data.first?.dateTime} ");
-    KlineUtil.logd("end time: ${widget.candlestickChart.data.last?.dateTime} ");
+    KlineUtil.logd("start time: ${widget.config.candlestickChart.data.first?.dateTime} ");
+    KlineUtil.logd("end time: ${widget.config.candlestickChart.data.last?.dateTime} ");
     List<LineChartData> dataList = [];
-    for (var cdata in widget.candlestickChart.data) {
+    for (var cdata in widget.config.candlestickChart.data) {
       dataList.add(LineChartData(
           id: cdata?.dateTime.toString() ?? '', dateTime: cdata?.dateTime));
     }
@@ -76,7 +62,7 @@ class _DrawLineChartState extends State<DrawLineChart> {
         setState(() {});
       },
       onPanEnd: (details) {
-        widget.drawChartCallback(DrawChartCallback(
+        widget.config.drawChartCallback(DrawChartCallback(
             chart: _lineChart, originStartIndex: _originStartIndex));
       },
       onHorizontalDragUpdate: (d) {
@@ -94,9 +80,9 @@ class _DrawLineChartState extends State<DrawLineChart> {
           ),
           foregroundPainter: LineChartPainter(
             lineChartData: _lineChart,
-            pointWidth: widget.pointWidth,
-            pointGap: widget.pointGap,
-            maxMinValue: widget.maxMinValue,
+            pointWidth: widget.config.pointWidth,
+            pointGap: widget.config.pointGap,
+            maxMinValue: widget.config.maxMinValue,
           ),
           child: widget.child,
         );
@@ -109,12 +95,12 @@ class _DrawLineChartState extends State<DrawLineChart> {
     // 将点位数据转为图数据
     ChartDataByLocalPosition data = KlineUtil.getChartDataByLocalPosition(
       localPosition: localPosition,
-      canvasSize: widget.size,
-      maxMinValue: widget.maxMinValue,
-      pointWidth: widget.pointWidth,
-      pointGap: widget.pointGap,
-      padding: widget.padding,
-      candlestickChart: widget.candlestickChart,
+      canvasSize: widget.config.size,
+      maxMinValue: widget.config.maxMinValue,
+      pointWidth: widget.config.pointWidth,
+      pointGap: widget.config.pointGap,
+      padding: widget.config.padding,
+      candlestickChart: widget.config.candlestickChart,
     );
 
     LineChartData currentLineChartData = LineChartData(

@@ -127,7 +127,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
 
       DrawChartCreator? creator = DrawChartRegister().getCreatorByKey('line');
       if (creator != null) {
-        chart = creator(
+        var config = DrawChartConfig(
           size: widget.size,
           maxMinValue: maxMinValue,
           pointWidth: widget.pointWidth ?? 0,
@@ -135,8 +135,8 @@ class _MainChartWidgetState extends State<MainChartWidget> {
           padding: widget.padding ?? EdgeInsets.zero,
           candlestickChart: KlineUtil.findCandlestickChart(widget.chartData),
           drawChartCallback: widget.drawChartCallback,
-          child: chart,
         );
+        chart = creator(config, chart);
       }
     }
 
