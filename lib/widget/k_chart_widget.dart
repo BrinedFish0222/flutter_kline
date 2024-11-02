@@ -142,8 +142,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     super.dispose();
   }
 
-  bool get _isDrawMode => widget.drawChartType != DrawChartType.none;
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -159,7 +157,7 @@ class _KChartWidgetState extends State<KChartWidget> {
       return ListenableBuilder(
           listenable: _controller,
           builder: (context, _) {
-            Widget child = ListenableBuilder(
+            return ListenableBuilder(
                 listenable: widget.source,
                 builder: (context, _) {
                   /// 副图显示的数据
@@ -226,20 +224,6 @@ class _KChartWidgetState extends State<KChartWidget> {
                     ],
                   );
                 });
-
-            if (_isDrawMode) {
-              return child;
-            }
-
-            return GestureDetector(
-              onLongPressStart: _globalOnLongPressStart,
-              onLongPressMoveUpdate: _globalOnLongPressMoveUpdate,
-              onHorizontalDragUpdate:
-                  _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
-              onVerticalDragUpdate:
-                  _isShowCrossCurve ? _globalOnHorizontalDragUpdate : null,
-              child: child,
-            );
           });
     });
   }
@@ -249,7 +233,6 @@ class _KChartWidgetState extends State<KChartWidget> {
     super.didUpdateWidget(oldWidget);
   }
 
-  bool get _isShowCrossCurve => _controller.isShowCrossCurve;
 
   /// 根据索引获取十字线流
   StreamController<Pair<double?, double?>> _getCrossCurveStreamByIndex(
@@ -392,46 +375,4 @@ class _KChartWidgetState extends State<KChartWidget> {
 
   set _showDataStartIndex(int index) =>
       widget.source.showDataStartIndex = index;
-
-  _globalOnLongPressStart(LongPressStartDetails details) {
-    _resetCrossCurve(Pair(
-        left: details.globalPosition.dx, right: details.globalPosition.dy));
-  }
-
-  /// 长按移动事件
-  _globalOnLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
-    _resetCrossCurve(Pair(
-        left: details.globalPosition.dx, right: details.globalPosition.dy));
-  }
-
-  /// 重置十字线位置
-  void _resetCrossCurve(Pair<double?, double?>? crossCurveXY) {
-    // TODO DELETE
-    /* if (crossCurveXY != null && !crossCurveXY.isNull()) {
-      _controller.crossCurveGlobalPosition =
-          Offset(crossCurveXY.left!, crossCurveXY.right!);
-    }
-
-    _controller.isShowCrossCurve = crossCurveXY != null;
-
-    for (var element in _crossCurveStreamList) {
-      element.add(crossCurveXY ?? Pair(left: null, right: null));
-    } */
-
-    if (crossCurveXY == null || crossCurveXY.isNull()) {
-      _controller.hideCrossCurve();
-    } else {
-      _controller.showCrossCurve(
-          Offset(crossCurveXY.left ?? 0, crossCurveXY.right ?? 0));
-    }
-  }
-
-  void _globalOnHorizontalDragUpdate(DragUpdateDetails details) {
-    if (!_isShowCrossCurve) {
-      return;
-    }
-
-    _resetCrossCurve(Pair(
-        left: details.globalPosition.dx, right: details.globalPosition.dy));
-  }
 }
