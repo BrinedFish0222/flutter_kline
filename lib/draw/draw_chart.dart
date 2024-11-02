@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/chart/candlestick_chart.dart';
 import 'package:flutter_kline/draw/draw_chart_callback.dart';
+import 'package:flutter_kline/draw/draw_circle_chart.dart';
 
 import '../common/pair.dart';
 import 'draw_line_chart.dart';
@@ -18,6 +19,7 @@ class DrawChartRegister {
   /// 初始化，注册已存在的画图组件
   void init() {
     DrawLineChart.register();
+    DrawCircleChart.register();
   }
   
   void register(String key, DrawChartCreator creator) => _data[key] = creator;

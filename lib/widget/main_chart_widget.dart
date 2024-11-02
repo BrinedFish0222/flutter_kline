@@ -125,7 +125,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
         KlineCollectionUtil.isNotEmpty(widget.chartData.first.data)) {
       debugPrint("main_chart_widget drawChartType is not null.");
 
-      DrawChartCreator? creator = DrawChartRegister().getCreatorByKey('line');
+      DrawChartCreator? creator = DrawChartRegister().getCreatorByKey(widget.drawChartType);
       if (creator != null) {
         var config = DrawChartConfig(
           size: widget.size,

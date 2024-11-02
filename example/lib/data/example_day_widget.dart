@@ -247,6 +247,7 @@ enum DrawChartType {
   /// 线图
   line,
 
+  circle,
   ;
 
   bool get isNone {

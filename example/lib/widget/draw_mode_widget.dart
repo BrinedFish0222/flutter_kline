@@ -55,6 +55,10 @@ class _DrawModeWidgetState extends State<DrawModeWidget> {
                     type: DrawChartType.line,
                     icon: Icons.show_chart,
                   ),
+                  _drawChartTypeWidget(
+                    type: DrawChartType.circle,
+                    icon: Icons.circle_outlined,
+                  ),
                 ],
               ),
             )
