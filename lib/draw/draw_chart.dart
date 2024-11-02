@@ -3,6 +3,18 @@ import 'package:flutter_kline/chart/candlestick_chart.dart';
 import 'package:flutter_kline/draw/draw_chart_callback.dart';
 
 import '../common/pair.dart';
+import 'draw_line_chart.dart';
+
+typedef DrawChartCreator = DrawChart Function({
+  required Size size,
+  required Pair<double, double> maxMinValue,
+  required double pointWidth,
+  required double pointGap,
+  required EdgeInsets padding,
+  required Widget child,
+  required CandlestickChart candlestickChart,
+  required ValueChanged<DrawChartCallback> drawChartCallback,
+});
 
 /// 画图类型
 enum DrawChartType {
@@ -27,6 +39,28 @@ enum DrawChartType {
   }
 
 }
+
+/// 画图注册器
+class DrawChartRegister {
+  static final DrawChartRegister _instance = DrawChartRegister._internal();
+  DrawChartRegister._internal();
+  factory DrawChartRegister() => _instance;
+  
+  final Map<String, DrawChartCreator> _data = {};
+  
+  /// 初始化，注册已存在的画图组件
+  void init() {
+    DrawLineChart.register();
+  }
+  
+  void register(String key, DrawChartCreator creator) => _data[key] = creator;
+  
+  DrawChartCreator? getCreatorByKey(String key) => _data[key];
+
+  
+  
+}
+
 
 /// 画图
 abstract class DrawChart extends StatefulWidget {

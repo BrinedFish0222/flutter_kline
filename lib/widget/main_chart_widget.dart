@@ -13,7 +13,6 @@ import '../common/main_chart_selected_data_vo.dart';
 import '../common/pair.dart';
 import '../common/utils/kline_util.dart';
 import '../draw/draw_chart.dart';
-import '../draw/draw_line_chart.dart';
 import '../renderer/chart_renderer.dart';
 import 'badge_widget.dart';
 import 'main_chart_show_data_widget.dart';
@@ -125,16 +124,20 @@ class _MainChartWidgetState extends State<MainChartWidget> {
     if (widget.drawChartType == DrawChartType.line &&
         KlineCollectionUtil.isNotEmpty(widget.chartData.first.data)) {
       debugPrint("main_chart_widget drawChartType is not null.");
-      chart = DrawLineChart(
-        size: widget.size,
-        maxMinValue: maxMinValue,
-        pointWidth: widget.pointWidth ?? 0,
-        pointGap: widget.pointGap ?? 0,
-        padding: widget.padding ?? EdgeInsets.zero,
-        candlestickChart: KlineUtil.findCandlestickChart(widget.chartData),
-        drawChartCallback: widget.drawChartCallback,
-        child: chart,
-      );
+
+      DrawChartCreator? creator = DrawChartRegister().getCreatorByKey('line');
+      if (creator != null) {
+        chart = creator(
+          size: widget.size,
+          maxMinValue: maxMinValue,
+          pointWidth: widget.pointWidth ?? 0,
+          pointGap: widget.pointGap ?? 0,
+          padding: widget.padding ?? EdgeInsets.zero,
+          candlestickChart: KlineUtil.findCandlestickChart(widget.chartData),
+          drawChartCallback: widget.drawChartCallback,
+          child: chart,
+        );
+      }
     }
 
     return SizedBox(
@@ -157,7 +160,7 @@ class _MainChartWidgetState extends State<MainChartWidget> {
             child: Stack(
               children: [
                 chart,
-                
+
                 CrossCurveWidget(
                   crossCurveStream: widget.crossCurveStream,
                   chartKey: _chartKey,
@@ -167,7 +170,6 @@ class _MainChartWidgetState extends State<MainChartWidget> {
                   pointGap: widget.pointGap,
                   maxMinValue: maxMinValue,
                 ),
-                
 
                 /// badge
                 for (BadgeChart vo in _badgeList)

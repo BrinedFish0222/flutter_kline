@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_kline/common/widget/double_back_exit_app_widget.dart';
+import 'package:flutter_kline/draw/draw_chart.dart';
 
 import 'data/example_candlestick_data.dart';
 import 'data/example_day_widget.dart';
@@ -8,6 +9,9 @@ import 'data/example_minute_widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  DrawChartRegister().init();
+  
+  
   ExampleCandlestickData.getCandlestickData();
   // 设置应用程序的方向为竖屏（只允许竖屏显示）
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])

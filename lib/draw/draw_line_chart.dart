@@ -21,6 +21,22 @@ class DrawLineChart extends DrawChart {
     required super.drawChartCallback,
     required super.child,
   });
+  
+  static const String drawKey = "line";
+  
+  static void register() {
+    DrawChartRegister().register(drawKey, ({required candlestickChart, required child, required drawChartCallback, required maxMinValue, required padding, required pointGap, required pointWidth, required size}) {
+      return DrawLineChart(
+          size: size,
+          maxMinValue: maxMinValue,
+          pointWidth: pointWidth,
+          pointGap: pointGap,
+          padding: padding,
+          candlestickChart: candlestickChart,
+          drawChartCallback: drawChartCallback,
+          child: child);
+    });
+  }
 
   @override
   State<DrawLineChart> createState() => _DrawLineChartState();

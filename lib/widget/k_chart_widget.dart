@@ -156,7 +156,6 @@ class _KChartWidgetState extends State<KChartWidget> {
       );
       _controller.gestureDetectorController = _gestureDetectorController;
 
-      debugPrint("_isDrawMode: $_isDrawMode");
       return ListenableBuilder(
           listenable: _controller,
           builder: (context, _) {
