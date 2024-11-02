@@ -9,7 +9,7 @@ import 'custom_gesture_detector.dart';
 import 'draw_chart.dart';
 
 /// 画线 - 线图
-class DrawLineChart extends DrawChart {
+class DrawLineChart extends DrawChartWidget {
   const DrawLineChart({
     super.key,
     required super.config,

@@ -5,7 +5,7 @@ import 'package:flutter_kline/draw/draw_chart_callback.dart';
 import '../common/pair.dart';
 import 'draw_line_chart.dart';
 
-typedef DrawChartCreator = DrawChart Function(DrawChartConfig config, Widget child);
+typedef DrawChartCreator = DrawChartWidget Function(DrawChartConfig config, Widget child);
 
 /// 画图注册器
 class DrawChartRegister {
@@ -30,8 +30,8 @@ class DrawChartRegister {
 
 
 /// 画图
-abstract class DrawChart extends StatefulWidget {
-  const DrawChart({
+abstract class DrawChartWidget extends StatefulWidget {
+  const DrawChartWidget({
     super.key,
     required this.config,
     required this.child,
