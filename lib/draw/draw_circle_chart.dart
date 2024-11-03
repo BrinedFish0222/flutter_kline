@@ -78,7 +78,10 @@ class CirclePainter extends CustomPainter {
       ..strokeWidth = 1;
 
     double radius = last.distance - first.distance;
+
+    canvas.saveLayer(Rect.fromLTRB(0, 0, size.width, size.height), paint);
     canvas.drawCircle(first, radius, paint);
+    canvas.restore();
   }
 
   @override
