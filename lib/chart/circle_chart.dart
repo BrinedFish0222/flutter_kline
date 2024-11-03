@@ -10,6 +10,7 @@ import 'package:flutter_kline/draw/draw_circle_chart.dart';
 import '../common/utils/kline_num_util.dart';
 import 'base_chart.dart';
 
+/// 圆形图
 class CircleChart<E> extends BaseChart<CircleChartData<E>> {
   CircleChart({
     required super.id,
