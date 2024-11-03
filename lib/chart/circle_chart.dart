@@ -73,12 +73,18 @@ class CircleChart<E> extends BaseChart<CircleChartData<E>> {
     required double pointGap,
     required EdgeInsets padding,
   }) {
-    // TODO: implement paint
+    CirclePainter(
+      chart: this,
+      pointWidth: pointWidth,
+      pointGap: pointGap,
+      maxMinValue: maxMinValue,
+      padding: padding,
+    ).paint(canvas, size);
   }
 }
 
 class CircleChartData<E> extends BaseChartData<E> {
-  /// 最左边顶点数值
+  /// 中心点数值
   final double value;
 
   /// 左边和右边的间隔数

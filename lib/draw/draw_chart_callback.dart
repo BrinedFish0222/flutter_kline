@@ -9,6 +9,7 @@ class DrawChartCallback {
 
   final BaseChart chart;
 
+  /// todo hhg delete
   /// 源数据（蜡烛图）开始索引位置
   final int originStartIndex;
 }
