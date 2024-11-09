@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/chart/circle_chart.dart';
 import '../common/chart_data_by_local_position.dart';
@@ -176,7 +178,10 @@ class CirclePainter extends CustomPainter {
 
       double dx = index * width;
       double radius = width * data.spaceNumber;
-      canvas.drawCircle(Offset(dx, dy), radius, paint);
+      
+      Path path = Path();
+      path.addArc(Rect.fromCircle(center: Offset(dx, dy), radius: radius), 0, 2 * pi);
+      canvas.drawPath(path, paint);
     }
 
     canvas.restore();
