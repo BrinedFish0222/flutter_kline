@@ -20,6 +20,14 @@ import 'kline_gesture_detector.dart';
 import 'kline_gesture_detector_controller.dart';
 import 'main_chart_widget.dart';
 
+/// K线图模式
+enum KChartMode {
+  /// 正常模式
+  normal,
+  /// 画线模式，点击手势增加选中已画图形判定。
+  drawChart,
+}
+
 /// k线图手势操作组件
 class KChartWidget extends StatefulWidget {
   const KChartWidget({
@@ -36,6 +44,7 @@ class KChartWidget extends StatefulWidget {
     this.realTimePrice,
     this.onHorizontalDragUpdate,
     this.chartNum,
+    this.mode = KChartMode.normal,
     this.drawChartType = "",
     required this.drawChartCallback,
   }) : assert(chartNum == null || chartNum > 0, "chartNum is null or gt 1");
@@ -78,7 +87,16 @@ class KChartWidget extends StatefulWidget {
   /// 图滑动时触发，提供图位置（最左、中、最右）
   final void Function(DragUpdateDetails, ChartLocation)? onHorizontalDragUpdate;
 
-  /// 画图类型
+  /// K线图模式
+  final KChartMode mode;
+
+  /// 画图类型，配合[mode]使用，[mode]必须为[KChartMode.drawChart]类型才能生效。
+  ///
+  /// [mode]为[KChartMode.drawChart]并且[drawChartType]为空字符串时，表示当前处于画线
+  /// 模式，但是没选择任何图形。
+  ///
+  /// [mode]为[KChartMode.drawChart]并且[drawChartType]并非空字符串时，表示当前处于画
+  /// 线模式，并且选中了图形。
   final String drawChartType;
 
   /// 画图回调
