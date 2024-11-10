@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/chart/circle_chart.dart';
 import '../common/chart_data_by_local_position.dart';
-import '../common/pair.dart';
 import '../common/utils/kline_util.dart';
+import '../painter/circle_painter.dart';
 import 'custom_gesture_detector.dart';
 import 'draw_chart.dart';
 import 'draw_chart_callback.dart';
@@ -134,61 +132,3 @@ class _DrawCircleChartState extends State<DrawCircleChart> {
   }
 }
 
-class CirclePainter extends CustomPainter {
-  final CircleChart chart;
-  final double pointWidth;
-  final double pointGap;
-  final Pair<double, double> maxMinValue;
-  final EdgeInsets padding;
-
-  const CirclePainter({
-    required this.chart,
-    required this.pointWidth,
-    required this.pointGap,
-    required this.maxMinValue,
-    required this.padding,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (chart.dataLength == 0) {
-      return;
-    }
-
-    size = Size(size.width - padding.left - padding.right, size.height);
-
-    Paint paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = Colors.black
-      ..strokeWidth = 1;
-    canvas.saveLayer(Rect.fromLTRB(0, 0, size.width, size.height), paint);
-
-    int index = -1;
-    double width = pointWidth + pointGap;
-    for (var data in chart.data) {
-      index += 1;
-      if (data == null) continue;
-
-      double? dy = KlineUtil.convertDataToChartData(
-        [data.value],
-        size.height,
-        maxMinValue: maxMinValue,
-      )[0];
-      if (dy == null) continue;
-
-      double dx = index * width;
-      double radius = width * data.spaceNumber;
-      
-      Path path = Path();
-      path.addArc(Rect.fromCircle(center: Offset(dx, dy), radius: radius), 0, 2 * pi);
-      canvas.drawPath(path, paint);
-    }
-
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(covariant CirclePainter oldDelegate) {
-    return true;
-  }
-}

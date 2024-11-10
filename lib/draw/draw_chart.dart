@@ -30,6 +30,9 @@ class DrawChartRegister {
   
 }
 
+mixin DrawChartPainter {
+  List<Path> get chartPaths;
+}
 
 /// 画图
 abstract class DrawChartWidget extends StatefulWidget {
