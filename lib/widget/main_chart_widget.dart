@@ -15,6 +15,7 @@ import '../common/utils/kline_util.dart';
 import '../draw/draw_chart.dart';
 import '../renderer/chart_renderer.dart';
 import 'badge_widget.dart';
+import 'k_chart_widget.dart';
 import 'main_chart_show_data_widget.dart';
 
 class MainChartWidget extends StatefulWidget {
@@ -31,6 +32,7 @@ class MainChartWidget extends StatefulWidget {
     this.candlestickGapRatio,
     required this.onTapIndicator,
     this.realTimePrice,
+    this.mode = KChartMode.normal,
     this.drawChartType = "",
     required this.drawChartCallback,
   });
@@ -59,7 +61,10 @@ class MainChartWidget extends StatefulWidget {
   /// 实时价格
   final double? realTimePrice;
 
-  /// 画图类型
+  /// K线图模式
+  final KChartMode mode;
+
+  /// 画图类型，使用指南参考[KChartWidget]
   final String drawChartType;
 
   /// 画图回调

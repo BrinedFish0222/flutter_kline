@@ -164,12 +164,15 @@ class _KChartWidgetState extends State<KChartWidget> {
     return LayoutBuilder(builder: (context, constraints) {
       _computeLayout(constraints);
 
-      _gestureDetectorController ??= KlineGestureDetectorController(
-        chartKey: _chartKey,
-        screenMaxWidth: _mainChartSize.width,
-        source: widget.source,
-      );
-      _controller.gestureDetectorController = _gestureDetectorController;
+      if (_gestureDetectorController == null) {
+        _gestureDetectorController = KlineGestureDetectorController(
+          chartKey: _chartKey,
+          screenMaxWidth: _mainChartSize.width,
+          source: widget.source,
+        );
+        _controller.gestureDetectorController = _gestureDetectorController;
+      }
+
 
       return ListenableBuilder(
           listenable: _controller,
@@ -193,6 +196,7 @@ class _KChartWidgetState extends State<KChartWidget> {
                     pointGap: gestureDetectorController.pointGap,
                     crossCurveStream: _getCrossCurveStreamByIndex(0),
                     selectedChartDataIndexStream: _selectedIndexStream,
+                    mode: widget.mode,
                     drawChartType: widget.drawChartType,
                     onTapIndicator: () {
                       widget.onTapIndicator(0);
