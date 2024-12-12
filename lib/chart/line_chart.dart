@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../common/pair.dart';
 import '../common/utils/kline_collection_util.dart';
 import '../common/utils/kline_num_util.dart';
-import '../draw/draw_line_chart.dart';
 import '../painter/line_chart_painter.dart';
 import 'base_chart.dart';
 import 'candlestick_chart.dart';
@@ -27,7 +26,7 @@ class LineChart<E> extends BaseChart<LineChartData<E>> {
     required super.data,
     this.color = Colors.black,
     this.gradient,
-    super.drawChartType = DrawLineChart.drawKey,
+    super.isUserDefine,
   }) {
     getSelectedShowData();
   }
@@ -43,6 +42,7 @@ class LineChart<E> extends BaseChart<LineChartData<E>> {
       minValue: minValue,
       maxValue: maxValue,
       gradient: gradient,
+      isUserDefine: isUserDefine,
     );
   }
 

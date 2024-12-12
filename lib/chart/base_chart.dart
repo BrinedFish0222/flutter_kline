@@ -22,9 +22,8 @@ abstract class BaseChart<T extends BaseChartData> {
 
   List<T?> data = [];
 
-  /// 画线类型。
-  /// 默认是空字符串，表示未处于画线模式。
-  String drawChartType;
+  /// 是否是用户自定义的画线。
+  bool isUserDefine;
 
   BaseChart({
     required this.id,
@@ -32,7 +31,7 @@ abstract class BaseChart<T extends BaseChartData> {
     this.maxValue,
     this.minValue,
     required this.data,
-    this.drawChartType = "",
+    this.isUserDefine = false,
   });
 
   /// 画图

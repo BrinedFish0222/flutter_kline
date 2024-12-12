@@ -43,8 +43,8 @@ class _DrawLineChartState extends State<DrawLineChart> {
           id: cdata?.dateTime.toString() ?? '', dateTime: cdata?.dateTime));
     }
 
-    // 当前是用户画线功能，指定 isUserDefine 为 false
-    _lineChart = LineChart(id: "", data: dataList);
+    // 当前是用户画线功能，指定 isUserDefine 为 true
+    _lineChart = LineChart(id: "", isUserDefine: true, data: dataList);
     super.initState();
   }
 

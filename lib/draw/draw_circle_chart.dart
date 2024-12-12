@@ -39,7 +39,13 @@ class _DrawCircleChartState extends State<DrawCircleChart> {
     }
 
     _chart = CircleChart(
-        id: "", name: "", maxValue: null, minValue: null, data: dataList);
+      id: "",
+      name: "",
+      isUserDefine: true,
+      maxValue: null,
+      minValue: null,
+      data: dataList,
+    );
     super.initState();
   }
 

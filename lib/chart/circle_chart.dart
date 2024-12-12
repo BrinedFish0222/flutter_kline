@@ -14,7 +14,7 @@ class CircleChart<E> extends BaseChart<CircleChartData<E>> {
     required super.maxValue,
     required super.minValue,
     required super.data,
-    super.drawChartType = DrawCircleChart.drawKey,
+    super.isUserDefine,
   });
 
   @override
@@ -25,6 +25,7 @@ class CircleChart<E> extends BaseChart<CircleChartData<E>> {
       maxValue: maxValue,
       minValue: minValue,
       data: data.sublist(0),
+      isUserDefine: isUserDefine,
     );
   }
 
