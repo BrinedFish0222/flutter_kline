@@ -208,14 +208,14 @@ class KlineUtil {
     required double pointWidth,
     required double pointGap,
     required EdgeInsets padding,
-    required CandlestickChart candlestickChart,
+    required CandlestickChart? candlestickChart,
   }) {
     // 根据x得到时间，时间：(x - padding.left) / (pointWidth + pointGap) =>>> 得到索引位置，从蜡烛图中取出时间
     int index =
         ((localPosition.dx - padding.left) / (pointWidth + pointGap)).round();
-    DateTime dateTime = (index >= candlestickChart.dataLength
-            ? candlestickChart.data.last?.dateTime
-            : candlestickChart.data[index]?.dateTime) ??
+    DateTime dateTime = (index >= (candlestickChart?.dataLength ?? 0)
+            ? candlestickChart?.data.last?.dateTime
+            : candlestickChart?.data[index]?.dateTime) ??
         DateTime.now();
 
     // 根据y得到value，value：(canvasSize.height - dy) / (canvasSize.height / (maxVal - minVal)) + minVal

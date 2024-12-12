@@ -26,6 +26,10 @@ enum KChartMode {
   normal,
   /// 画线模式，点击手势增加选中已画图形判定。
   drawChart,
+
+  ;
+
+  bool get isDrawChart => this == KChartMode.drawChart;
 }
 
 /// k线图手势操作组件
