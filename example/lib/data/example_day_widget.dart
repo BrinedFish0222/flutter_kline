@@ -97,6 +97,7 @@ class _ExampleDayWidgetState extends State<ExampleDayWidget>
                 showDataNum: 30,
                 source: _source,
                 realTimePrice: 11.56,
+                mode: _drawMode.isEdit ? KChartMode.drawChart : KChartMode.normal,
                 drawChartType: _drawMode.isNoneOrEdit ? "" : _drawMode.name,
                 onTapIndicator: (index) {
                   KlineUtil.showToast(context: context, text: '点击指标索引：$index');
@@ -256,6 +257,10 @@ enum DrawChartType {
 
   bool get isNoneOrEdit {
     return this == none || this == edit;
+  }
+  
+  bool get isEdit {
+    return this == edit;
   }
 
 }

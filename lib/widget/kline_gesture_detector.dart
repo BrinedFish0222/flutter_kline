@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kline/common/exts/offset_ext.dart';
+import 'package:flutter_kline/draw/draw_chart.dart';
 
 import '../common/constants/direction.dart';
 import '../common/pointer_info.dart';
 import '../common/pair.dart';
 import '../common/utils/kline_util.dart';
 import 'k_chart_controller.dart';
+import 'k_chart_widget.dart';
 import 'kline_gesture_detector_controller.dart';
 
 class KlineGestureDetector extends StatefulWidget {
@@ -12,8 +15,10 @@ class KlineGestureDetector extends StatefulWidget {
     super.key,
     required this.controller,
     required this.kChartController,
-    required this.child,
+    required this.mode,
+    required this.drawChartType,
     required this.totalDataNum,
+    required this.child,
   });
 
   final KlineGestureDetectorController controller;
@@ -22,6 +27,12 @@ class KlineGestureDetector extends StatefulWidget {
 
   /// 数据总数量
   final int totalDataNum;
+  
+  /// K线图模式
+  final KChartMode mode;
+
+  /// 画图类型，使用指南参考[KChartWidget]
+  final String drawChartType;
 
   final Widget child;
 
@@ -54,6 +65,9 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
 
   /// 横向拖动速率
   double _primaryVelocity = 0;
+  
+  /// 点击范围
+  Pair<Offset, Offset>? _clickRange;
   
 
   @override
@@ -159,17 +173,28 @@ class _KlineGestureDetectorState extends State<KlineGestureDetector>
             return;
           }
 
-          if (widget.kChartController.isShowCrossCurve) {
+          if (widget.kChartController.isShowCrossCurve && widget.mode.isNormal) {
             // 取消选中的十字线
             widget.kChartController.hideCrossCurve();
             return;
           }
 
-          if (lastPointerInfo != null) {
+          if (lastPointerInfo != null && widget.mode.isNormal) {
             // 显示十字线
             widget.kChartController.showCrossCurve(Offset(
                 lastPointerInfo!.globalPosition.dx,
                 lastPointerInfo!.globalPosition.dy));
+            return;
+          }
+          
+          if (widget.mode.isDrawChart) {
+            // 打印点击位置
+            KlineUtil.logd('点击位置：${lastPointerInfo!.localPosition}');
+            _clickRange = lastPointerInfo!.localPosition
+                .increaseSize(kDrawChartClickSelectedIncreaseRange);
+            KlineUtil.logd(
+                '点击位置范围：${_clickRange!.left}, ${_clickRange!.right}');
+            return;
           }
         },
         onHorizontalDragUpdate: (details) {

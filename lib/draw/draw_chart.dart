@@ -8,6 +8,9 @@ import 'draw_line_chart.dart';
 
 typedef DrawChartCreator = DrawChartWidget Function(DrawChartConfig config, Widget child);
 
+// 画图点击选中默认增大范围
+const Size kDrawChartClickSelectedIncreaseRange = Size(8, 8);
+
 /// 画图注册器
 class DrawChartRegister {
   static final DrawChartRegister _instance = DrawChartRegister._internal();

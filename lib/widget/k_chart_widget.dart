@@ -30,6 +30,7 @@ enum KChartMode {
   ;
 
   bool get isDrawChart => this == KChartMode.drawChart;
+  bool get isNormal => this == KChartMode.normal;
 }
 
 /// k线图手势操作组件
@@ -213,6 +214,8 @@ class _KChartWidgetState extends State<KChartWidget> {
                       controller: gestureDetectorController,
                       kChartController: _controller,
                       totalDataNum: widget.source.dataMaxLength,
+                      mode: widget.mode,
+                      drawChartType: widget.drawChartType,
                       child: mainChart,
                     );
                   }

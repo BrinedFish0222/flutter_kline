@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kline/common/chart_show_data_item_vo.dart';
 import 'package:flutter_kline/common/pair.dart';
-import 'package:flutter_kline/draw/draw_circle_chart.dart';
 import '../common/utils/kline_num_util.dart';
 import '../painter/circle_painter.dart';
 import 'base_chart.dart';
